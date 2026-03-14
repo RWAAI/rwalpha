@@ -594,25 +594,6 @@ export default function VaultApp() {
                 ))}
               </div>
 
-              {/* NAV 走势图 */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs text-slate-400 font-medium">{zh ? "NAV 走势" : "NAV Trend"}</p>
-                  <div className="flex gap-1">
-                    {(["7D", "1M", "6M", "1Y"] as ChartPeriod[]).map(p => (
-                      <button
-                        key={p}
-                        onClick={() => setPeriod(p)}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors ${
-                          period === p ? "bg-emerald-600 text-white" : "text-slate-400 hover:text-slate-600"
-                        }`}
-                      >{p}</button>
-                    ))}
-                  </div>
-                </div>
-                <SparkLine data={navTrend} />
-              </div>
-
               {/* 交易框 */}
               <div className="rounded-2xl bg-slate-50 border border-slate-200 overflow-hidden">
                 <div className="flex items-center justify-between px-4 pt-3 pb-2">
