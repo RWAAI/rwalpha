@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import NavBar from '@/components/NavBar';
-import { Eye, BrainCircuit, CheckCircle2, Activity, Cpu, Zap, Diamond, Target, TrendingUp, Link2, Shield, Users, BookOpen, ArrowRight } from 'lucide-react';
+import { Eye, BrainCircuit, CheckCircle2, Activity, Cpu, Zap, Diamond, Target, TrendingUp, Link2, Shield, Users, BookOpen, Wallet, Layers, RefreshCw, Building2, BarChart3, ChevronRight } from 'lucide-react';
 
 type Lang = 'zh' | 'en';
 
@@ -245,27 +245,55 @@ function TrustIcon({ type }: { type: string }) {
 }
 
 // Flow diagram node
-function FlowNode({ label, sub, badge }: { label: string; sub: string; badge?: string }) {
+// Flow node icons map
+const nodeIconMap: Record<string, React.ReactNode> = {
+  user: <Wallet size={18} className="text-indigo-500" />,
+  rwalpha: <Layers size={18} className="text-violet-500" />,
+  fomo: <RefreshCw size={18} className="text-teal-500" />,
+  broker: <Building2 size={18} className="text-amber-500" />,
+  asset: <BarChart3 size={18} className="text-green-500" />,
+  wallet: <Wallet size={18} className="text-indigo-500" />,
+};
+
+function FlowCard({
+  iconKey, label, sub, badge, badgeColor = 'bg-amber-400 text-slate-900', accent = 'border-slate-200'
+}: {
+  iconKey: string; label: string; sub: string; badge?: string;
+  badgeColor?: string; accent?: string;
+}) {
   return (
-    <div className="flex flex-col items-center gap-1 min-w-[80px]">
-      <div className="w-16 h-16 rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col items-center justify-center gap-0.5">
-        <span className="text-xs font-bold text-slate-800 text-center leading-tight">{label}</span>
+    <div className="flex flex-col items-center gap-2">
+      <div className={`relative w-[88px] bg-white rounded-2xl border-2 ${accent} shadow-md px-2 pt-4 pb-3 flex flex-col items-center gap-1.5 transition-transform hover:-translate-y-0.5`}>
+        <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
+          {nodeIconMap[iconKey]}
+        </div>
+        <span className="text-[11px] font-bold text-slate-800 text-center leading-tight">{label}</span>
         <span className="text-[9px] text-slate-400 text-center leading-tight">{sub}</span>
       </div>
       {badge && (
-        <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-amber-400 text-slate-900">{badge}</span>
+        <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${badgeColor}`}>{badge}</span>
       )}
     </div>
   );
 }
 
-function FlowArrow({ label, reverse }: { label: string; reverse?: boolean }) {
+function FlowConnector({ label, reverse }: { label: string; reverse?: boolean }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-0.5 px-1">
-      <span className="text-[9px] text-slate-400 whitespace-nowrap">{label}</span>
-      {reverse
-        ? <ArrowRight size={14} className="text-slate-300 rotate-180" />
-        : <ArrowRight size={14} className="text-slate-300" />}
+    <div className="flex flex-col items-center justify-center gap-1 px-1 shrink-0">
+      <span className="text-[9px] font-medium text-slate-400 whitespace-nowrap bg-white px-1.5 py-0.5 rounded-full border border-slate-100">{label}</span>
+      <div className="flex items-center gap-0.5">
+        {reverse ? (
+          <>
+            <div className="w-8 h-px bg-gradient-to-l from-indigo-300 to-slate-200" />
+            <ChevronRight size={10} className="text-indigo-300 rotate-180 -ml-1" />
+          </>
+        ) : (
+          <>
+            <div className="w-8 h-px bg-gradient-to-r from-slate-200 to-indigo-300" />
+            <ChevronRight size={10} className="text-indigo-300 -ml-1" />
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -480,16 +508,16 @@ export default function HowItWorks() {
               {T.investFlow}
             </div>
             <div className="overflow-x-auto">
-              <div className="flex items-center gap-1 min-w-[600px] p-6 rounded-2xl border border-slate-100 bg-slate-50/50">
-                <FlowNode label={T.flowNodes.user} sub={T.flowNodes.userSub} />
-                <FlowArrow label="USDT/USDC" />
-                <FlowNode label={T.flowNodes.rwalpha} sub={T.flowNodes.rwalphaSub} />
-                <FlowArrow label="Transfer" />
-                <FlowNode label={T.flowNodes.fomo} sub={T.flowNodes.fomoSub} badge={T.flowNodes.masBadge} />
-                <FlowArrow label="USD Fiat" />
-                <FlowNode label={T.flowNodes.broker} sub={T.flowNodes.brokerSub} badge={T.flowNodes.topBadge} />
-                <FlowArrow label="Purchase" />
-                <FlowNode label={T.flowNodes.asset} sub={T.flowNodes.assetSub} />
+              <div className="flex items-center justify-between gap-2 min-w-[640px] px-8 py-8 rounded-2xl bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40 border border-indigo-100">
+                <FlowCard iconKey="user" label={T.flowNodes.user} sub={T.flowNodes.userSub} accent="border-indigo-200" />
+                <FlowConnector label="USDT/USDC" />
+                <FlowCard iconKey="rwalpha" label={T.flowNodes.rwalpha} sub={T.flowNodes.rwalphaSub} accent="border-violet-200" />
+                <FlowConnector label="Transfer" />
+                <FlowCard iconKey="fomo" label={T.flowNodes.fomo} sub={T.flowNodes.fomoSub} badge={T.flowNodes.masBadge} accent="border-teal-200" badgeColor="bg-teal-100 text-teal-700" />
+                <FlowConnector label="USD Fiat" />
+                <FlowCard iconKey="broker" label={T.flowNodes.broker} sub={T.flowNodes.brokerSub} badge={T.flowNodes.topBadge} accent="border-amber-200" badgeColor="bg-amber-100 text-amber-700" />
+                <FlowConnector label="Purchase" />
+                <FlowCard iconKey="asset" label={T.flowNodes.asset} sub={T.flowNodes.assetSub} accent="border-green-200" />
               </div>
             </div>
           </div>
@@ -500,16 +528,16 @@ export default function HowItWorks() {
               {T.dividendFlow}
             </div>
             <div className="overflow-x-auto">
-              <div className="flex items-center gap-1 min-w-[600px] p-6 rounded-2xl border border-slate-100 bg-slate-50/50">
-                <FlowNode label={T.flowNodes.wallet} sub={T.flowNodes.walletSub} />
-                <FlowArrow label="Stablecoin" reverse />
-                <FlowNode label={T.flowNodes.rwalphaDist} sub={T.flowNodes.rwalphaDist2} />
-                <FlowArrow label="Transfer" reverse />
-                <FlowNode label={T.flowNodes.fomoRev} sub={T.flowNodes.fomoRevSub} badge={T.flowNodes.masBadge} />
-                <FlowArrow label="USD Fiat" reverse />
-                <FlowNode label={T.flowNodes.broker} sub={T.flowNodes.brokerSub} badge={T.flowNodes.topBadge} />
-                <FlowArrow label="Dividend/Yield" reverse />
-                <FlowNode label={T.flowNodes.asset} sub={T.flowNodes.assetSub} />
+              <div className="flex items-center justify-between gap-2 min-w-[640px] px-8 py-8 rounded-2xl bg-gradient-to-br from-teal-50/60 via-white to-green-50/40 border border-teal-100">
+                <FlowCard iconKey="wallet" label={T.flowNodes.wallet} sub={T.flowNodes.walletSub} accent="border-indigo-200" />
+                <FlowConnector label="Stablecoin" reverse />
+                <FlowCard iconKey="rwalpha" label={T.flowNodes.rwalphaDist} sub={T.flowNodes.rwalphaDist2} accent="border-violet-200" />
+                <FlowConnector label="Transfer" reverse />
+                <FlowCard iconKey="fomo" label={T.flowNodes.fomoRev} sub={T.flowNodes.fomoRevSub} badge={T.flowNodes.masBadge} accent="border-teal-200" badgeColor="bg-teal-100 text-teal-700" />
+                <FlowConnector label="USD Fiat" reverse />
+                <FlowCard iconKey="broker" label={T.flowNodes.broker} sub={T.flowNodes.brokerSub} badge={T.flowNodes.topBadge} accent="border-amber-200" badgeColor="bg-amber-100 text-amber-700" />
+                <FlowConnector label="Dividend/Yield" reverse />
+                <FlowCard iconKey="asset" label={T.flowNodes.asset} sub={T.flowNodes.assetSub} accent="border-green-200" />
               </div>
             </div>
           </div>
