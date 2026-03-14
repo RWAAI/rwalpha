@@ -527,32 +527,6 @@ export default function VaultApp() {
                   : (zh ? "立即领取" : "Claim Now")}
               </button>
 
-              {/* 自动复利 */}
-              <div className="flex items-start justify-between gap-3 py-3 border-t border-slate-50">
-                <div>
-                  <p className="text-sm font-semibold text-slate-800 mb-0.5">
-                    {zh ? "自动复利" : "Auto-Compound"}
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    {zh ? "自动将收益再投入本金金库，" : "Reinvest yield into principal vault, "}
-                    <span className="text-emerald-600 cursor-pointer underline">
-                      {zh ? "实现复利增长" : "compound growth"}
-                    </span>
-                  </p>
-                </div>
-                <button
-                  onClick={() => setAutoCompound(!autoCompound)}
-                  className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 ${
-                    autoCompound ? "bg-emerald-500" : "bg-slate-200"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
-                      autoCompound ? "translate-x-5" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-              </div>
 
               {/* 派息明细 */}
               <div className="space-y-0 border-t border-slate-50 pt-2">
