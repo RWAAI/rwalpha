@@ -156,7 +156,8 @@ export default function VaultApp() {
     <div className="min-h-screen bg-gray-50 font-sans">
 
       {/* ── 顶部导航 — 共用 NavBar，金库 Tab 高亮 ── */}
-      <NavBar activeTab="vault" rightSlot={null} />
+      {/* vault 页自带语言切换，隐藏 NavBar 右侧区域 */}
+      <NavBar activeTab="vault" rightSlot={<></>} />
 
       {/* ── 钱包连接模拟弹层 ── */}
       {walletModal && (
@@ -223,8 +224,14 @@ export default function VaultApp() {
               <ChevronRight size={14} />
             </button>
           </Link>
-          {/* 钱包按鈕—与查看产品详情同行 */}
-          <div className="ml-auto">
+          {/* 语言切换 + 钱包按鈕—与查看产品详情同行 */}
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              onClick={() => setLang(zh ? 'en' : 'zh')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all duration-200"
+            >
+              🌐 {zh ? 'EN' : '中文'}
+            </button>
             <button
               onClick={() => connected ? setConnected(false) : setWalletModal(true)}
               className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all duration-200 active:scale-95 ${
