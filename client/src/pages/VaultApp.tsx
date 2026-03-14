@@ -121,6 +121,7 @@ export default function VaultApp() {
   const [period, setPeriod] = useState<ChartPeriod>("7D");
   const [autoCompound, setAutoCompound] = useState(false);
   const [claimSuccess, setClaimSuccess] = useState(false);
+  const [walletModal, setWalletModal] = useState(false);
   const zh = lang === "zh";
 
   const v = VAULT_DATA;
@@ -131,32 +132,81 @@ export default function VaultApp() {
     setTimeout(() => setClaimSuccess(false), 3000);
   };
 
-  const navTabs = zh
-    ? ["首页", "金库", "如何运作", "洞察", "积分", "文档"]
-    : ["Home", "Vault", "How It Works", "Insights", "Points", "Docs"];
+  const handleConnectWallet = (walletName: string) => {
+    setConnected(true);
+    setWalletModal(false);
+  };
+
+  // 钱包按鈕插入 NavBar 右侧
+  const walletButton = (
+    <button
+      onClick={() => connected ? setConnected(false) : setWalletModal(true)}
+      className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all duration-200 active:scale-95 ${
+        connected
+          ? "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100"
+          : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"
+      }`}
+    >
+      <Wallet size={14} />
+      {connected ? "0x3f...a8c2" : (zh ? "连接钱包" : "Connect Wallet")}
+    </button>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
 
-      {/* ── 顶部导航 — 共用 NavBar，金库 Tab 高亮 ── */}
-      <NavBar activeTab="vault" />
+      {/* ── 顶部导航 — 共用 NavBar，金库 Tab 高亮，钱包按鈕替换右侧 ── */}
+      <NavBar activeTab="vault" rightSlot={walletButton} />
 
-      {/* ── 钱包连接栏 ── */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 py-2 flex justify-end">
-          <button
-            onClick={() => setConnected(!connected)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95 shadow-sm ${
-              connected
-                ? "bg-emerald-50 border border-emerald-200 text-emerald-700"
-                : "bg-slate-900 hover:bg-slate-700 text-white"
-            }`}
+      {/* ── 钱包连接模拟弹层 ── */}
+      {walletModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+          onClick={() => setWalletModal(false)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden"
+            onClick={e => e.stopPropagation()}
           >
-            <Wallet size={15} />
-            {connected ? "0x3f...a8c2" : (zh ? "连接钱包" : "Connect Wallet")}
-          </button>
+            {/* 弹层头部 */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <h2 className="text-base font-bold text-slate-900">{zh ? "连接钱包" : "Connect Wallet"}</h2>
+              <button
+                onClick={() => setWalletModal(false)}
+                className="text-slate-400 hover:text-slate-600 text-xl leading-none"
+              >×</button>
+            </div>
+
+            {/* 钱包列表 */}
+            <div className="px-4 py-3 space-y-2">
+              {[
+                { name: 'MetaMask', icon: '🦊', desc: zh ? '浏览器扩展钱包' : 'Browser Extension' },
+                { name: 'WalletConnect', icon: '🔗', desc: zh ? '扫码连接移动钱包' : 'Scan with mobile wallet' },
+                { name: 'Coinbase Wallet', icon: '🟦', desc: zh ? 'Coinbase 官方钱包' : 'Coinbase official wallet' },
+                { name: 'OKX Wallet', icon: '⬤', desc: zh ? 'OKX 钱包扩展' : 'OKX Wallet Extension' },
+              ].map(w => (
+                <button
+                  key={w.name}
+                  onClick={() => handleConnectWallet(w.name)}
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-xl border border-slate-100 hover:border-sky-200 hover:bg-sky-50 transition-all text-left"
+                >
+                  <span className="text-2xl">{w.icon}</span>
+                  <div>
+                    <div className="text-sm font-semibold text-slate-800">{w.name}</div>
+                    <div className="text-xs text-slate-400">{w.desc}</div>
+                  </div>
+                  <ChevronRight size={16} className="ml-auto text-slate-300" />
+                </button>
+              ))}
+            </div>
+
+            <p className="text-center text-xs text-slate-400 pb-4 px-6">
+              {zh ? '连接即表示同意服务条款与隐私政策' : 'By connecting you agree to our Terms of Service and Privacy Policy'}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── 页面标题 ── */}
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
