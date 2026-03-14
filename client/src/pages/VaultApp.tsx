@@ -139,7 +139,7 @@ export default function VaultApp() {
 
       {/* ── 顶部导航 ── */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
+        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
           {/* Logo + Nav */}
           <div className="flex items-center gap-6">
             <Link href="/">
@@ -187,7 +187,7 @@ export default function VaultApp() {
       </header>
 
       {/* ── 页面标题 ── */}
-      <div className="max-w-7xl mx-auto px-6 pt-8 pb-4">
+      <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
         <div className="flex items-center gap-3 mb-1">
           <BarChart2 size={22} className="text-emerald-600" />
           <h1 className="text-2xl font-bold text-slate-900">
@@ -206,7 +206,7 @@ export default function VaultApp() {
       </div>
 
       {/* ── 双金库主体 ── */}
-      <div className="max-w-7xl mx-auto px-6 pb-12">
+      <div className="max-w-5xl mx-auto px-6 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* ── 左侧：本金金库 ── */}
