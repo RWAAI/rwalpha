@@ -24,3 +24,4 @@
 - [x] 删除 Vault 页面 AI 调仓日志模块（中英文）
 - [x] 创建统一 Footer 组件并添加到所有页面
 - [x] 为 /dashboard（Home.tsx）页面添加 Footer
+- [x] 加大导航栏各栏目之间的间距

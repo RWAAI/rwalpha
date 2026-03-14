@@ -121,10 +121,10 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             {tabs.map((tab, i) => {
               const isActive = i === activeIdx;
-              const cls = `px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+              const cls = `px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                 isActive
                   ? 'bg-slate-900/10 text-slate-900 font-semibold'
                   : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
