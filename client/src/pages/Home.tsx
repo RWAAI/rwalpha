@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, Layers, RefreshCw, Sun, Moon } from 'lucide-react';
+import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, Layers, RefreshCw, Sun, Moon, BrainCircuit, SlidersHorizontal } from 'lucide-react';
 
 const App = () => {
   // 深色主题切换
@@ -57,10 +57,12 @@ const App = () => {
     tooltipBg:  dark ? 'bg-[#1e1e2e] border-white/10' : 'bg-slate-900 border-slate-700',
     // selling point cards
     sp: [
-      { bg: dark ? 'bg-amber-950/40 border-amber-800/30'  : 'bg-amber-50 border-amber-100' },
-      { bg: dark ? 'bg-indigo-950/40 border-indigo-800/30': 'bg-indigo-50 border-indigo-100' },
-      { bg: dark ? 'bg-green-950/40 border-green-800/30'  : 'bg-green-50 border-green-100' },
-      { bg: dark ? 'bg-blue-950/40 border-blue-800/30'    : 'bg-blue-50 border-blue-100' },
+      { bg: dark ? 'bg-amber-950/40 border-amber-800/30'   : 'bg-amber-50 border-amber-100' },
+      { bg: dark ? 'bg-indigo-950/40 border-indigo-800/30' : 'bg-indigo-50 border-indigo-100' },
+      { bg: dark ? 'bg-green-950/40 border-green-800/30'   : 'bg-green-50 border-green-100' },
+      { bg: dark ? 'bg-blue-950/40 border-blue-800/30'     : 'bg-blue-50 border-blue-100' },
+      { bg: dark ? 'bg-violet-950/40 border-violet-800/30' : 'bg-violet-50 border-violet-100' },
+      { bg: dark ? 'bg-rose-950/40 border-rose-800/30'     : 'bg-rose-50 border-rose-100' },
     ],
     // footnote cards
     fn1: dark ? 'bg-amber-950/40 border-amber-800/30'   : 'bg-amber-50 border-amber-100',
@@ -73,10 +75,12 @@ const App = () => {
   };
 
   const sellingPoints = [
-    { icon: <Zap size={18} className="text-amber-500" />,   bg: t.sp[0].bg, title: '每周派息',  desc: 'NVDY 每周到账，现金流不等待' },
-    { icon: <Layers size={18} className="text-indigo-500" />, bg: t.sp[1].bg, title: '指数底仓', desc: '50% QQQM+VGT 底仓保留上涨潜力' },
-    { icon: <TrendingUp size={18} className="text-green-500" />, bg: t.sp[2].bg, title: '稳健增长', desc: '派息 + NAV 增长双轨驱动回报' },
-    { icon: <RefreshCw size={18} className="text-blue-500" />,   bg: t.sp[3].bg, title: '复利再投', desc: '现金流再投入，复利加速资产增长' },
+    { icon: <Zap size={18} className="text-amber-500" />,            bg: t.sp[0].bg, title: '每周派息',     desc: 'NVDY 每周到账，现金流不等待' },
+    { icon: <Layers size={18} className="text-indigo-500" />,         bg: t.sp[1].bg, title: '指数底仓',     desc: '50% QQQM+VGT 底仓保留上涨潜力' },
+    { icon: <TrendingUp size={18} className="text-green-500" />,      bg: t.sp[2].bg, title: '稳健增长',     desc: '派息 + NAV 增长双轨驱动回报' },
+    { icon: <RefreshCw size={18} className="text-blue-500" />,        bg: t.sp[3].bg, title: '复利再投',     desc: '现金流再投入，复利加速资产增长' },
+    { icon: <BrainCircuit size={18} className="text-violet-500" />,   bg: t.sp[4].bg, title: 'AI 驱动调仓', desc: 'AI 实时监控市场，自动优化仓位配置' },
+    { icon: <SlidersHorizontal size={18} className="text-rose-500" />, bg: t.sp[5].bg, title: '智能再分配', desc: '派息收益按策略自动再分配，持续最优化组合' },
   ];
 
   return (
@@ -154,7 +158,7 @@ const App = () => {
         </div>
 
         {/* Selling Points */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {sellingPoints.map((item) => (
             <div key={item.title} className={`flex items-start gap-3 p-4 rounded-2xl border ${item.bg} transition-colors duration-300`}>
               <div className="mt-0.5 shrink-0">{item.icon}</div>
