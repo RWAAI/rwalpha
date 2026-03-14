@@ -72,7 +72,7 @@ const i18n = {
     fn2: { strong: '风控：', text: '50% 底仓（QQQM+VGT）不参与期权卖出，保留了核心资产的上涨潜力，使组合更具韧性。' },
     sellingPoints: [
       { title: '每周派息',     desc: 'NVDY 每周到账，现金流稳定不间断' },
-      { title: '指数底仓',     desc: '50% QQQM+VGT 底仓保留核心资产上涨潜力' },
+      { title: '指数底仓',     desc: '纳指100底仓（50% QQQM+VGT）保留核心资产上涨潜力' },
       { title: 'AI 驱动调仓', desc: 'AI 实时监控市场，自动优化仓位与再分配' },
       { title: '稳健增长',     desc: '派息 + NAV 双轨驱动，复利加速资产增长' },
     ],
@@ -155,7 +155,7 @@ const i18n = {
     fn2: { strong: 'Risk Control: ', text: 'The 50% core position (QQQM+VGT) does not participate in options writing, preserving upside potential and making the portfolio more resilient.' },
     sellingPoints: [
       { title: 'Weekly Income',     desc: 'NVDY distributes every week — consistent, predictable cash flow' },
-      { title: 'Index Core',        desc: '50% QQQM+VGT core preserves long-term capital appreciation' },
+      { title: 'Index Core',        desc: 'Nasdaq 100 core (50% QQQM+VGT) preserves long-term capital appreciation' },
       { title: 'AI Rebalancing',    desc: 'AI monitors markets in real-time and auto-optimizes allocations' },
       { title: 'Steady Growth',     desc: 'Dual-engine: dividends + NAV growth compound over time' },
     ],
