@@ -104,8 +104,9 @@ const App = () => {
         <div className={`flex flex-col md:flex-row justify-between items-start md:items-center ${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className={`text-2xl font-bold ${t.title}`}>RA 指数+卫星周盈计划</h1>
-              <span className="px-2 py-0.5 bg-indigo-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">Active</span>
+              <h1 className={`text-2xl font-bold ${t.title}`}>RWAlpha Index Prime Vault</h1>
+              <span className={`text-sm font-medium ${t.sub}`}>RWAlpha 指数旗舰金库</span>
+              <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">AI Enabled</span>
             </div>
             <p className={`${t.sub} mt-1 tracking-wide`}>AI 驱动调仓 &middot; 每周现金派息 &middot; 指数底仓增値</p>
           </div>
