@@ -511,6 +511,19 @@ export default function VaultApp() {
             >
               🌐 {zh ? 'EN' : '中文'}
             </button>
+            {/* 登录 / 注册 */}
+            <button
+              onClick={() => alert(zh ? '登录功能即将上线' : 'Login coming soon')}
+              className="px-4 py-1.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
+            >
+              {zh ? '登录' : 'Login'}
+            </button>
+            <button
+              onClick={() => alert(zh ? '注册功能即将上线' : 'Register coming soon')}
+              className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-sm font-semibold text-white transition-all duration-200 active:scale-95"
+            >
+              {zh ? '注册' : 'Register'}
+            </button>
             <button
               onClick={() => connected ? setConnected(false) : setWalletModal(true)}
               className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all duration-200 active:scale-95 ${

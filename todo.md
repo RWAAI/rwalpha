@@ -26,3 +26,4 @@
 - [x] 为 /dashboard（Home.tsx）页面添加 Footer
 - [x] 加大导航栏各栏目之间的间距
 - [x] 修复导航栏 activeTab 高亮逻辑（如何运作、洞察等页面无法高亮）
+- [x] 在 Vault 页面导航栏右侧添加登录和注册按鈕
