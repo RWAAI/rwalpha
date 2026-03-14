@@ -367,34 +367,6 @@ export default function VaultApp() {
                 ))}
               </div>
 
-              {/* 走势图 */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
-                    {zh ? "NAV 走势" : "NAV Trend"}
-
-                  </p>
-                  <div className="flex gap-1">
-                    {(["7D", "1M", "6M", "1Y"] as ChartPeriod[]).map(p => (
-                      <button
-                        key={p}
-                        onClick={() => setPeriod(p)}
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
-                          period === p
-                            ? "bg-emerald-600 text-white"
-                            : "text-slate-400 hover:text-slate-600"
-                        }`}
-                      >
-                        {p}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="bg-slate-50 rounded-2xl p-3">
-                  <SparkLine data={v.navTrend} period={period} />
-                </div>
-              </div>
-
               {/* ── 交易框 ── */}
               <div className="rounded-2xl bg-slate-50 border border-slate-200 overflow-hidden">
                 {/* Buy / Sell + 网络选择 */}
@@ -413,11 +385,13 @@ export default function VaultApp() {
                       }`}
                     >{zh ? "赎回" : "Sell"}</button>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm">
-                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-[8px] text-white font-bold">E</div>
-                    Ethereum
-                    <svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                  </div>
+                  <select
+                    className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm outline-none cursor-pointer hover:border-slate-300 transition-colors"
+                    defaultValue="eth"
+                  >
+                    <option value="eth">🔵 Ethereum</option>
+                    <option value="bnb">🟡 BNB Chain</option>
+                  </select>
                 </div>
 
                 {/* Spend 输入框 */}
