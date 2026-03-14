@@ -293,14 +293,12 @@ const App = () => {
         <div>
 
           {/* 顶部导航栏 */}
-          <div className={`flex items-center justify-between gap-4 mb-3 px-4 py-2.5 rounded-2xl ${
-            dark ? 'bg-[#0d0d1a]' : 'bg-[#0d1117]'
-          }`}>
+          <div className="flex items-center justify-between gap-4 mb-3 px-1 py-2">
             {/* 左侧：Logo + 导航 Tab */}
             <div className="flex items-center gap-6">
               {/* Logo */}
-              <span className="text-xl font-extrabold tracking-tight" style={{ color: '#38bdf8', fontFamily: 'sans-serif', letterSpacing: '-0.02em' }}>
-                RWAlpha<span style={{ color: '#38bdf8' }}>.io</span>
+              <span className={`text-xl font-extrabold tracking-tight`} style={{ color: '#38bdf8', fontFamily: 'sans-serif', letterSpacing: '-0.02em' }}>
+                RWAlpha.io
               </span>
               {/* Nav Tabs */}
               <nav className="hidden md:flex items-center gap-1">
@@ -313,8 +311,8 @@ const App = () => {
                     onClick={() => i > 0 && alert(lang === 'zh' ? '即将上线' : 'Coming soon')}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                       i === 1
-                        ? 'bg-white/10 text-white'
-                        : 'text-slate-400 hover:text-white hover:bg-white/8'
+                        ? (dark ? 'bg-white/10 text-white' : 'bg-slate-900/10 text-slate-900 font-semibold')
+                        : (dark ? 'text-slate-400 hover:text-white hover:bg-white/8' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100')
                     }`}
                   >
                     {tab}
@@ -326,7 +324,11 @@ const App = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/15 text-sm font-medium text-slate-300 hover:bg-white/10 transition-all duration-200"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all duration-200 ${
+                  dark
+                    ? 'border-white/15 text-slate-300 hover:bg-white/10'
+                    : 'border-slate-200 text-slate-600 hover:bg-slate-100'
+                }`}
               >
                 🌐 {T.langBtn}
               </button>
