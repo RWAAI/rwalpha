@@ -89,7 +89,7 @@ const i18n = {
   },
   en: {
     vaultTitle: 'RWAlpha Index Prime Vault',
-    vaultSub: 'AI-Driven Rebalancing · Weekly Cash Dividend · Index Core Position',
+    vaultSub: 'AI-Driven Rebalancing · Weekly Dividend · Index Core Position',
     aiEnabled: 'AI Powered',
     principal: 'Principal Calculator',
     annualYield: 'Net Annual Yield',
@@ -107,7 +107,7 @@ const i18n = {
     weeklyIncome: 'Avg. Weekly Income',
     annualEst: (v: string) => `Est. Annual Income: $${v}`,
     totalReturn: 'Annualized Total Return',
-    navNote: 'Includes NAV Growth + Cash Dividend',
+    navNote: 'Includes NAV Growth + Dividend',
     cashflowTitle: 'Cash Flow Calendar (Monthly)',
     week: (n: number) => `Week ${n}`,
     nvdyDist: 'NVDY Dividend',
