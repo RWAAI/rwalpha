@@ -8,10 +8,10 @@ const App = () => {
 
   // 模拟数据源 (截至2026年3月14日市场参考)
   const portfolioData = [
-    { name: 'NVDY', weight: 0.1877, aum: '14.2亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3 },
-    { name: 'QQQI', weight: 0.3015, aum: '9.5亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5 },
-    { name: 'QQQM', weight: 0.3108, aum: '710亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8 },
-    { name: 'VGT',  weight: 0.2000, aum: '1300亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0 },
+    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3 },
+    { name: 'QQQI', weight: 0.3015, aum: '91.8亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5 },
+    { name: 'QQQM', weight: 0.3108, aum: '712.5亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8 },
+    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0 },
   ];
 
   const COLORS = ['#F59E0B', '#3B82F6', '#10B981', '#6366F1'];
