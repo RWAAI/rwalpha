@@ -291,38 +291,6 @@ const App = () => {
 
         {/* Header 外层：按钮组 + 卡片 */}
         <div>
-          {/* 顶部导航栏：左侧语言/深色，右侧 Launch App */}
-          <div className="flex justify-between items-center gap-2 mb-2">
-            {/* 左侧：语言切换 + 深色模式 */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-sm font-bold transition-all duration-200 active:scale-95 ${
-                  dark
-                    ? 'bg-[#1e1e2e] border-white/15 text-slate-200 hover:bg-white/10'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                🌐 {T.langBtn}
-              </button>
-              <button
-                onClick={() => setDark(!dark)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold transition-all duration-200 active:scale-95 ${
-                  dark
-                    ? 'bg-[#1e1e2e] border-white/15 text-slate-200 hover:bg-white/10'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                {dark ? <Sun size={15} /> : <Moon size={15} />}
-                {dark ? T.lightBtn : T.darkBtn}
-              </button>
-            </div>
-            {/* 右侧：Launch App */}
-            <button className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 transition-all duration-200 active:scale-95">
-              <Zap size={15} />
-              Launch App
-            </button>
-          </div>
 
         {/* Header */}
         <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4`}>
