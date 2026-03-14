@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, Layers, RefreshCw, Sun, Moon, BrainCircuit, SlidersHorizontal } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, LineChart, Line, ReferenceLine } from 'recharts';
+import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, Layers, RefreshCw, Sun, Moon, BrainCircuit, SlidersHorizontal, Activity, Eye, Cpu, CheckCircle2 } from 'lucide-react';
 
 const App = () => {
   // 深色主题切换
@@ -324,6 +324,188 @@ const App = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* ===== AI 强化区域 ===== */}
+
+        {/* Row 1: AI 信号面板 + 调仓日志 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          {/* AI 市场信号 */}
+          <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+            <div className="flex items-center gap-2 mb-5">
+              <div className={`p-1.5 rounded-lg ${dark ? 'bg-violet-900/50' : 'bg-violet-100'}`}>
+                <Activity size={16} className="text-violet-500" />
+              </div>
+              <h3 className={`font-bold ${t.title}`}>AI 市场信号</h3>
+              <span className={`ml-auto text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-700'}`}>实时监控中</span>
+            </div>
+            <div className="space-y-3">
+              {[
+                { label: '市场情绪', value: '谨慎偏多', color: 'text-amber-500', dot: 'bg-amber-400', bar: 65 },
+                { label: 'NVDY 波动风险', value: '中等', color: 'text-orange-500', dot: 'bg-orange-400', bar: 48 },
+                { label: '期权溢价水平', value: '偏高', color: 'text-green-500', dot: 'bg-green-400', bar: 72 },
+                { label: '建议调仓方向', value: '维持当前配比', color: 'text-blue-400', dot: 'bg-blue-400', bar: 100 },
+              ].map((sig) => (
+                <div key={sig.label} className="flex items-center gap-3">
+                  <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${sig.dot}`}></div>
+                  <span className={`text-xs ${t.sub} w-28 shrink-0`}>{sig.label}</span>
+                  <div className={`flex-1 h-1.5 rounded-full ${dark ? 'bg-white/8' : 'bg-slate-100'}`}>
+                    <div className={`h-full rounded-full ${sig.dot}`} style={{ width: `${sig.bar}%` }}></div>
+                  </div>
+                  <span className={`text-xs font-bold ${sig.color} w-20 text-right`}>{sig.value}</span>
+                </div>
+              ))}
+            </div>
+            <p className={`text-[10px] ${t.muted} mt-4`}>信号更新于 2026-03-14 22:00 · 下次更新 23:00</p>
+          </div>
+
+          {/* AI 调仓日志 */}
+          <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+            <div className="flex items-center gap-2 mb-5">
+              <div className={`p-1.5 rounded-lg ${dark ? 'bg-violet-900/50' : 'bg-violet-100'}`}>
+                <Cpu size={16} className="text-violet-500" />
+              </div>
+              <h3 className={`font-bold ${t.title}`}>AI 调仓日志</h3>
+            </div>
+            <div className="space-y-3">
+              {[
+                { date: '2026-03-10', icon: '⚖️', action: 'NVDY 波动率上升，权重 22% → 18%，差额补入 QQQM', tag: '调仓', tagColor: dark ? 'bg-amber-900/50 text-amber-400' : 'bg-amber-100 text-amber-700' },
+                { date: '2026-03-07', icon: '💰', action: '本周派息 $283，AI 自动将 60% 再投入 QQQI', tag: '再投资', tagColor: dark ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-700' },
+                { date: '2026-03-03', icon: '📊', action: '期权溢价回升至历史均值 +1σ，NVDY 权重恢复至 20%', tag: '调仓', tagColor: dark ? 'bg-amber-900/50 text-amber-400' : 'bg-amber-100 text-amber-700' },
+                { date: '2026-02-24', icon: '🛡️', action: '市场波动加剧，临时将 VGT 权重上调 2%，增强防御', tag: '风控', tagColor: dark ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-700' },
+              ].map((log) => (
+                <div key={log.date} className={`flex gap-3 p-3 rounded-xl ${dark ? 'bg-white/4' : 'bg-slate-50'}`}>
+                  <span className="text-base shrink-0 mt-0.5">{log.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className={`text-[10px] ${t.muted}`}>{log.date}</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${log.tagColor}`}>{log.tag}</span>
+                    </div>
+                    <p className={`text-xs ${t.sub} leading-relaxed`}>{log.action}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Row 2: AI vs 手动对比图 */}
+        <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <div className={`p-1.5 rounded-lg ${dark ? 'bg-violet-900/50' : 'bg-violet-100'}`}>
+                <TrendingUp size={16} className="text-violet-500" />
+              </div>
+              <h3 className={`font-bold ${t.title}`}>AI 调仓 vs 固定持有 — 模拟收益对比</h3>
+            </div>
+            <div className="flex gap-4 text-[11px] font-bold">
+              <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-violet-500 rounded"></div><span className={t.sub}>AI 动态调仓</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-slate-400 rounded" style={{borderTop:'2px dashed'}}></div><span className={t.sub}>固定持有</span></div>
+            </div>
+          </div>
+          <div className="h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={[
+                { month: 'Mar 25', ai: 100000, manual: 100000 },
+                { month: 'May 25', ai: 104200, manual: 103100 },
+                { month: 'Jul 25', ai: 109800, manual: 107400 },
+                { month: 'Sep 25', ai: 115600, manual: 111200 },
+                { month: 'Nov 25', ai: 121300, manual: 114800 },
+                { month: 'Jan 26', ai: 118900, manual: 112100 },
+                { month: 'Mar 26', ai: 124380, manual: 117200 },
+              ]} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={t.gridStroke} />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: t.axisColor, fontSize: 11 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: t.axisColor, fontSize: 11 }} tickFormatter={(v) => `$${(v/1000).toFixed(0)}K`} />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      const aiVal = payload.find(p => p.dataKey === 'ai')?.value as number;
+                      const manualVal = payload.find(p => p.dataKey === 'manual')?.value as number;
+                      const diff = aiVal - manualVal;
+                      return (
+                        <div className={`${t.tooltipBg} text-white p-3 rounded-xl shadow-xl border`}>
+                          <p className="text-xs opacity-60 mb-1">{label}</p>
+                          <p className="text-sm font-bold text-violet-400">AI 调仓: ${aiVal?.toLocaleString()}</p>
+                          <p className="text-sm font-bold text-slate-400">固定持有: ${manualVal?.toLocaleString()}</p>
+                          <p className="text-xs text-green-400 mt-1 font-bold">AI 超额: +${diff?.toLocaleString()}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Line type="monotone" dataKey="ai" stroke="#8b5cf6" strokeWidth={2.5} dot={{ fill: '#8b5cf6', r: 3 }} activeDot={{ r: 5 }} />
+                <Line type="monotone" dataKey="manual" stroke={dark ? '#475569' : '#94a3b8'} strokeWidth={2} strokeDasharray="5 4" dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className={`mt-3 px-4 py-2.5 rounded-xl ${dark ? 'bg-violet-900/20 border border-violet-800/30' : 'bg-violet-50 border border-violet-100'} flex items-center justify-between`}>
+            <span className={`text-xs ${dark ? 'text-violet-300' : 'text-violet-700'}`}>过去 12 个月，AI 动态调仓策略相比固定持有额外贡献</span>
+            <span className={`text-sm font-bold ${dark ? 'text-violet-300' : 'text-violet-700'}`}>+$7,180 超额收益</span>
+          </div>
+        </div>
+
+        {/* Row 3: AI 工作流程 */}
+        <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+          <div className="flex items-center gap-2 mb-6">
+            <div className={`p-1.5 rounded-lg ${dark ? 'bg-violet-900/50' : 'bg-violet-100'}`}>
+              <Eye size={16} className="text-violet-500" />
+            </div>
+            <h3 className={`font-bold ${t.title}`}>AI 如何工作</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                step: '01',
+                icon: <Eye size={20} className="text-violet-400" />,
+                title: '实时监控',
+                desc: '持续追踪 NVDY 波动率、期权溢价、市场情绪指数及各资产相关性变化',
+                items: ['NVDY IV 波动率', '期权溢价 / 折价', '市场情绪指数'],
+              },
+              {
+                step: '02',
+                icon: <BrainCircuit size={20} className="text-violet-400" />,
+                title: '智能判断',
+                desc: '当关键指标偏离阈值时触发调仓信号，结合历史数据评估最优配比',
+                items: ['波动率超阈值触发', '派息率偏离均值', '相关性异常检测'],
+              },
+              {
+                step: '03',
+                icon: <CheckCircle2 size={20} className="text-violet-400" />,
+                title: '自动执行',
+                desc: '在风控框架内自动调整各资产权重，并将派息收益按策略再分配',
+                items: ['仓位自动再平衡', '派息智能再投资', '风控边界强制执行'],
+              },
+            ].map((step, i) => (
+              <div key={step.step} className="relative">
+                {i < 2 && (
+                  <div className={`hidden md:block absolute top-8 left-full w-full h-px ${dark ? 'bg-violet-800/40' : 'bg-violet-200'} z-0`} style={{width:'calc(100% - 2rem)', left:'calc(100% - 0.5rem)'}}></div>
+                )}
+                <div className={`relative z-10 p-4 rounded-2xl border ${dark ? 'bg-violet-950/30 border-violet-800/30' : 'bg-violet-50 border-violet-100'}`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${dark ? 'bg-violet-900/60' : 'bg-violet-100'}`}>
+                      {step.icon}
+                    </div>
+                    <div>
+                      <div className={`text-[10px] font-bold ${dark ? 'text-violet-500' : 'text-violet-400'}`}>STEP {step.step}</div>
+                      <div className={`text-sm font-bold ${t.title}`}>{step.title}</div>
+                    </div>
+                  </div>
+                  <p className={`text-xs ${t.sub} leading-relaxed mb-3`}>{step.desc}</p>
+                  <div className="space-y-1">
+                    {step.items.map(item => (
+                      <div key={item} className="flex items-center gap-1.5">
+                        <div className="w-1 h-1 rounded-full bg-violet-400 shrink-0"></div>
+                        <span className={`text-[11px] ${t.muted}`}>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
