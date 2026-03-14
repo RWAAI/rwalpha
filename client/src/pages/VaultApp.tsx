@@ -143,6 +143,7 @@ export default function VaultApp() {
   const [tradeMode, setTradeMode] = useState<"buy" | "sell">("buy");
   const [spendAmt, setSpendAmt] = useState("");
   const [backedModal, setBackedModal] = useState(false);
+  const [weeklyDivModal, setWeeklyDivModal] = useState(false);
   const zh = lang === "zh";
 
   const v = VAULT_DATA;
@@ -290,6 +291,39 @@ export default function VaultApp() {
               onClick={e => e.preventDefault()}
             >
               {zh ? "查看链上储备证明" : "View On-chain Reserve Proof"}
+              <ArrowUpRight size={14} />
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* ── 每周派息说明弹层 ── */}
+      {weeklyDivModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setWeeklyDivModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-slate-900 text-base">{zh ? "每周派息说明" : "Weekly Dividend"}</h3>
+              <button onClick={() => setWeeklyDivModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><X size={18} /></button>
+            </div>
+            <p className="text-slate-600 text-sm leading-relaxed mb-3">
+              {zh
+                ? "平台每周将收益自动分配至收益金库，派息金额 = 持仓 rToken 数量 × 当月每 Token 派息额（以 USDT 结算），到账后可随时领取至錢包（T+0到账）。"
+                : "The platform distributes yield to the Yield Vault every week. Dividend = rToken holdings × monthly per-token dividend (settled in USDT). Claimable to wallet anytime after crediting (T+0)."}
+            </p>
+            <div className="bg-amber-50 border border-amber-100 rounded-xl p-3 mb-4">
+              <p className="text-amber-700 text-xs font-semibold mb-1">{zh ? "特别提示" : "Important Notice"}</p>
+              <p className="text-amber-600 text-xs leading-relaxed">
+                {zh
+                  ? "根据平台合规要求，领取收益前需要完成 KYC 认证。"
+                  : "Per platform compliance requirements, KYC verification is required before claiming yield."}
+              </p>
+            </div>
+            <a
+              href="#"
+              className="flex items-center gap-1.5 text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors"
+              onClick={e => e.preventDefault()}
+            >
+              {zh ? "前往 KYC" : "Go to KYC"}
               <ArrowUpRight size={14} />
             </a>
           </div>
@@ -541,9 +575,17 @@ export default function VaultApp() {
                 <div className="w-2 h-2 rounded-full bg-amber-400"></div>
                 <span className="font-bold text-slate-800 text-base">{zh ? "收益金库" : "Yield Vault"}</span>
               </div>
-              <span className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-100">
-                {zh ? "每周派息" : "Weekly Dividend"}
-              </span>
+              <div className="flex items-center gap-1">
+                <span className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-100">
+                  {zh ? "每周派息" : "Weekly Dividend"}
+                </span>
+                <button
+                  onClick={() => setWeeklyDivModal(true)}
+                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <HelpCircle size={14} />
+                </button>
+              </div>
             </div>
 
             <div className="px-6 py-5 space-y-5">
