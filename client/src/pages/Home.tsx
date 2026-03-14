@@ -579,6 +579,43 @@ const App = () => {
           </div>
         </div>
 
+        {/* AI 工作流程 */}
+        <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+          <div className="flex items-center gap-2 mb-6">
+            <div className={`p-1.5 rounded-lg ${dark ? 'bg-violet-900/50' : 'bg-violet-100'}`}><Eye size={16} className="text-violet-500" /></div>
+            <h3 className={`font-bold ${t.title}`}>{T.aiHowTitle}</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {T.aiSteps.map((step, i) => (
+              <div key={step.step} className="relative">
+                {i < 2 && (
+                  <div className={`hidden md:block absolute top-8 left-full w-full h-px ${dark ? 'bg-violet-800/40' : 'bg-violet-200'} z-0`} style={{width:'calc(100% - 2rem)', left:'calc(100% - 0.5rem)'}}></div>
+                )}
+                <div className={`relative z-10 p-4 rounded-2xl border ${dark ? 'bg-violet-950/30 border-violet-800/30' : 'bg-violet-50 border-violet-100'}`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${dark ? 'bg-violet-900/60' : 'bg-violet-100'}`}>
+                      {i === 0 ? <Eye size={20} className="text-violet-400" /> : i === 1 ? <BrainCircuit size={20} className="text-violet-400" /> : <CheckCircle2 size={20} className="text-violet-400" />}
+                    </div>
+                    <div>
+                      <div className={`text-[10px] font-bold ${dark ? 'text-violet-500' : 'text-violet-400'}`}>STEP {step.step}</div>
+                      <div className={`text-sm font-bold ${t.title}`}>{step.title}</div>
+                    </div>
+                  </div>
+                  <p className={`text-xs ${t.sub} leading-relaxed mb-3`}>{step.desc}</p>
+                  <div className="space-y-1">
+                    {step.items.map(item => (
+                      <div key={item} className="flex items-center gap-1.5">
+                        <div className="w-1 h-1 rounded-full bg-violet-400 shrink-0"></div>
+                        <span className={`text-[11px] ${t.muted}`}>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* AI 强化区域 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* AI 市场信号 */}
@@ -623,43 +660,6 @@ const App = () => {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-
-        {/* AI 工作流程 */}
-        <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
-          <div className="flex items-center gap-2 mb-6">
-            <div className={`p-1.5 rounded-lg ${dark ? 'bg-violet-900/50' : 'bg-violet-100'}`}><Eye size={16} className="text-violet-500" /></div>
-            <h3 className={`font-bold ${t.title}`}>{T.aiHowTitle}</h3>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {T.aiSteps.map((step, i) => (
-              <div key={step.step} className="relative">
-                {i < 2 && (
-                  <div className={`hidden md:block absolute top-8 left-full w-full h-px ${dark ? 'bg-violet-800/40' : 'bg-violet-200'} z-0`} style={{width:'calc(100% - 2rem)', left:'calc(100% - 0.5rem)'}}></div>
-                )}
-                <div className={`relative z-10 p-4 rounded-2xl border ${dark ? 'bg-violet-950/30 border-violet-800/30' : 'bg-violet-50 border-violet-100'}`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${dark ? 'bg-violet-900/60' : 'bg-violet-100'}`}>
-                      {i === 0 ? <Eye size={20} className="text-violet-400" /> : i === 1 ? <BrainCircuit size={20} className="text-violet-400" /> : <CheckCircle2 size={20} className="text-violet-400" />}
-                    </div>
-                    <div>
-                      <div className={`text-[10px] font-bold ${dark ? 'text-violet-500' : 'text-violet-400'}`}>STEP {step.step}</div>
-                      <div className={`text-sm font-bold ${t.title}`}>{step.title}</div>
-                    </div>
-                  </div>
-                  <p className={`text-xs ${t.sub} leading-relaxed mb-3`}>{step.desc}</p>
-                  <div className="space-y-1">
-                    {step.items.map(item => (
-                      <div key={item} className="flex items-center gap-1.5">
-                        <div className="w-1 h-1 rounded-full bg-violet-400 shrink-0"></div>
-                        <span className={`text-[11px] ${t.muted}`}>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 
