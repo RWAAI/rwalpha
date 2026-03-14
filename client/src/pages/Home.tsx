@@ -56,9 +56,9 @@ const i18n = {
     ],
     aiLogTitle: 'AI 调仓日志',
     logs: [
-      { date: '2026-03-10', icon: '⚖️', action: 'NVDY 波动率上升，权重 22% → 18%，差额补入 QQQM', tag: '调仓' },
+      { date: '2026-03-10', icon: '⚖️', action: 'NVDY 波动率上升，权重从 25% 临时降至 22%，差额补入 QQQM', tag: '调仓' },
       { date: '2026-03-07', icon: '💰', action: '本周派息 $283，AI 自动将 60% 再投入 QQQI', tag: '再投资' },
-      { date: '2026-03-03', icon: '📊', action: '期权溢价回升至历史均值 +1σ，NVDY 权重恢复至 20%', tag: '调仓' },
+      { date: '2026-03-03', icon: '📊', action: '期权溢价回升至历史均值 +1σ，NVDY 权重恢复至目标位 22%', tag: '调仓' },
       { date: '2026-02-24', icon: '🛡️', action: '市场波动加剧，临时将 VGT 权重上调 2%，增强防御', tag: '风控' },
     ],
     logTags: { '调仓': '调仓', '再投资': '再投资', '风控': '风控' },
@@ -139,9 +139,9 @@ const i18n = {
     ],
     aiLogTitle: 'AI Rebalancing Log',
     logs: [
-      { date: '2026-03-10', icon: '⚖️', action: 'NVDY vol. spiked; weight trimmed 22% → 18%, proceeds added to QQQM', tag: 'Rebalance' },
+      { date: '2026-03-10', icon: '⚖️', action: 'NVDY vol. spiked; weight trimmed 25% → 22% temporarily, proceeds added to QQQM', tag: 'Rebalance' },
       { date: '2026-03-07', icon: '💰', action: 'Weekly dist. $283 received; AI auto-reinvested 60% into QQQI', tag: 'Reinvest' },
-      { date: '2026-03-03', icon: '📊', action: 'Options premium rebounded to +1σ; NVDY weight restored to 20%', tag: 'Rebalance' },
+      { date: '2026-03-03', icon: '📊', action: 'Options premium rebounded to +1σ; NVDY weight restored to target 22%', tag: 'Rebalance' },
       { date: '2026-02-24', icon: '🛡️', action: 'Market turbulence; VGT weight raised +2% temporarily for defense', tag: 'Risk Ctrl' },
     ],
     logTags: { 'Rebalance': 'Rebalance', 'Reinvest': 'Reinvest', 'Risk Ctrl': 'Risk Ctrl' },
