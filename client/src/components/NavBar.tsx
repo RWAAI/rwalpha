@@ -55,22 +55,23 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
 
         {/* 右侧：语言切换 + 自定义插槽或默认 Launch App */}
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setZh(!zh)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all duration-200"
-          >
-            🌐 {zh ? 'EN' : '中文'}
-          </button>
-
           {rightSlot !== undefined ? (
             rightSlot
           ) : (
-            <Link href="/vault">
-              <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#0d1117] shadow-md transition-all duration-200 active:scale-95">
-                <Zap size={14} />
-                {zh ? '进入应用' : 'Launch App'}
+            <>
+              <button
+                onClick={() => setZh(!zh)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all duration-200"
+              >
+                🌐 {zh ? 'EN' : '中文'}
               </button>
-            </Link>
+              <Link href="/vault">
+                <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#0d1117] shadow-md transition-all duration-200 active:scale-95">
+                  <Zap size={14} />
+                  {zh ? '进入应用' : 'Launch App'}
+                </button>
+              </Link>
+            </>
           )}
         </div>
 
