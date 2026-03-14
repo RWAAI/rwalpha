@@ -34,12 +34,13 @@ const VAULT_DATA = {
   nav: 129.72,
   nav24hChange: 0.38,
   holdings: 1250.0,
-  annualYield: 14.30,
-  pendingYield: 784.50,
+  annualYield: 19.18,
+  pendingYield: 628.03,
   totalClaimed: 8240.00,
-  lastYield: 752.20,
-  lastYieldDate: "2026-02-21",
-  lastYieldPerToken: 0.602,
+  lastYield: 628.03,
+  lastYieldDate: "2026-03-07",
+  lastYieldPerToken: 0.502,
+  annualTotalReturn: 29.02,
   nextDistDays: 2,
   nextDistHours: 14,
   navTrend: [
@@ -330,14 +331,20 @@ export default function VaultApp() {
             </div>
 
             <div className="px-6 py-5 space-y-5">
-              {/* 持仓 */}
-              <div>
-                <p className="text-xs text-slate-400 mb-1">{zh ? "rINDEX 持仓" : "rINDEX Holdings"}</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
-                    {v.holdings.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                  </span>
-                  <span className="text-slate-400 font-semibold text-lg">rINDEX</span>
+              {/* 持仓 + 本金价值 */}
+              <div className="flex items-end justify-between gap-2">
+                <div>
+                  <p className="text-xs text-slate-400 mb-1">{zh ? "rINDEX 持仓" : "rINDEX Holdings"}</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
+                      {v.holdings.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-slate-400 font-semibold text-lg">rINDEX</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">{zh ? "本金价值" : "Principal Value"}</p>
+                  <p className="text-sm font-bold font-mono text-slate-800">${principalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
                 </div>
               </div>
 
@@ -352,9 +359,10 @@ export default function VaultApp() {
                     green: true,
                   },
                   {
-                    label: zh ? "本金价值" : "Principal Value",
-                    value: `$${principalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+                    label: zh ? "年化总回报" : "Annual Total Return",
+                    value: `+${v.annualTotalReturn.toFixed(2)}%`,
                     sub: null,
+                    green: true,
                   },
                 ].map(item => (
                   <div key={item.label} className="bg-slate-50 rounded-2xl p-3">
