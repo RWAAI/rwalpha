@@ -262,17 +262,17 @@ function FlowCard({
   badgeColor?: string; accent?: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className={`relative w-[88px] bg-white rounded-2xl border-2 ${accent} shadow-md px-2 pt-4 pb-3 flex flex-col items-center gap-1.5 transition-transform hover:-translate-y-0.5`}>
+    <div className="flex flex-col items-center">
+      <div className={`relative w-[96px] h-[120px] bg-white rounded-2xl border-2 ${accent} shadow-md px-2 flex flex-col items-center justify-center gap-1 transition-transform hover:-translate-y-0.5`}>
         <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
           {nodeIconMap[iconKey]}
         </div>
         <span className="text-[11px] font-bold text-slate-800 text-center leading-tight">{label}</span>
         <span className="text-[9px] text-slate-400 text-center leading-tight">{sub}</span>
+        {badge && (
+          <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-bold whitespace-nowrap ${badgeColor} mt-0.5`}>{badge}</span>
+        )}
       </div>
-      {badge && (
-        <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${badgeColor}`}>{badge}</span>
-      )}
     </div>
   );
 }
@@ -352,16 +352,16 @@ export default function HowItWorks() {
             </div>
             <h2 className="font-bold text-slate-900 text-lg">{T.aiHowTitle}</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
             {T.aiSteps.map((step, i) => (
-              <div key={step.step} className="relative">
+              <div key={step.step} className="relative flex flex-col">
                 {i < 2 && (
                   <div
                     className="hidden md:block absolute top-8 h-px bg-violet-200 z-0"
                     style={{ left: 'calc(100% - 0.5rem)', width: 'calc(100% - 2rem)' }}
                   />
                 )}
-                <div className="relative z-10 p-4 rounded-2xl border bg-violet-50 border-violet-100">
+                <div className="relative z-10 p-4 rounded-2xl border bg-violet-50 border-violet-100 flex flex-col h-full">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-violet-100">
                       {i === 0
@@ -508,7 +508,7 @@ export default function HowItWorks() {
               {T.investFlow}
             </div>
             <div className="overflow-x-auto">
-              <div className="flex items-center justify-between gap-2 min-w-[640px] px-8 py-8 rounded-2xl bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40 border border-indigo-100">
+              <div className="flex items-center justify-between gap-2 min-w-[640px] px-8 py-8 rounded-2xl bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40 border border-indigo-100" style={{alignItems:'center'}}>
                 <FlowCard iconKey="user" label={T.flowNodes.user} sub={T.flowNodes.userSub} accent="border-indigo-200" />
                 <FlowConnector label="USDT/USDC" />
                 <FlowCard iconKey="rwalpha" label={T.flowNodes.rwalpha} sub={T.flowNodes.rwalphaSub} accent="border-violet-200" />
@@ -528,7 +528,7 @@ export default function HowItWorks() {
               {T.dividendFlow}
             </div>
             <div className="overflow-x-auto">
-              <div className="flex items-center justify-between gap-2 min-w-[640px] px-8 py-8 rounded-2xl bg-gradient-to-br from-teal-50/60 via-white to-green-50/40 border border-teal-100">
+              <div className="flex items-center justify-between gap-2 min-w-[640px] px-8 py-8 rounded-2xl bg-gradient-to-br from-teal-50/60 via-white to-green-50/40 border border-teal-100" style={{alignItems:'center'}}>
                 <FlowCard iconKey="wallet" label={T.flowNodes.wallet} sub={T.flowNodes.walletSub} accent="border-indigo-200" />
                 <FlowConnector label="Stablecoin" reverse />
                 <FlowCard iconKey="rwalpha" label={T.flowNodes.rwalphaDist} sub={T.flowNodes.rwalphaDist2} accent="border-violet-200" />

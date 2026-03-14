@@ -15,9 +15,9 @@ const COPY = {
     badge: 'AI × RWA · 下一代资产管理',
     heroTitle1: '当 AI 遇上',
     heroTitle2: '真实世界资产',
-    heroSub1: '机构级策略严选底层资产，AI 实时优化仓位，',
-    heroSub2: '收益每周分配到账。链上可查，透明可信。',
-    cta1: '查看金库数据',
+    heroSub1: '机构级策略严选底层资产 · AI 实时优化仓位 · 收益每周分配到账',
+    heroSub2: '链上可查，透明可信。',
+    cta1: '立即查看金库',
     cta2: '进入应用',
     trust: ['链上可验证', '机构级托管', 'T+3 赎回保障', '每周自动派息'],
     featuresLabel: '四大核心优势',
@@ -35,7 +35,7 @@ const COPY = {
       { label: '链上持仓验证', suffix: '%' },
     ],
     howLabel: '运作机制',
-    howTitle: '三步，让资产替你工作',
+    howTitle: '三步，让 AI 替你资产增値',
     howSub: '从认购到每周收息，全程链上透明，无需信任中间人。',
     steps: [
       { step: '01', title: '认购 rINDEX', desc: '以 USDT/USDC 认购，1:1 映射底层 Fund（挂钩一篮子 ETF）净值，链上即时确认。' },
@@ -44,17 +44,17 @@ const COPY = {
     ],
     ctaTitle: '准备好进入 AI × RWA 的世界了吗？',
     ctaSub: '机构级策略，链上透明，每周派息。现在就开始。',
-    ctaBtn1: '立即进入金库',
-    ctaBtn2: '查看数据 Dashboard',
+    ctaBtn1: '立即查看金库',
+    ctaBtn2: '进入应用',
     footerRight: '© 2026 RWAlpha. All rights reserved.',
   },
   en: {
     badge: 'AI × RWA · Next-Gen Asset Management',
     heroTitle1: 'When AI Meets',
     heroTitle2: 'Real World Assets',
-    heroSub1: 'Institutional-grade strategy. Rigorously selected underlying assets. AI optimizes positions in real time,',
-    heroSub2: 'yield dividend weekly. On-chain, transparent, verifiable.',
-    cta1: 'View Vault Data',
+    heroSub1: 'Institutional-grade strategy · AI-driven rebalancing · Weekly dividend',
+    heroSub2: 'On-chain, transparent, verifiable.',
+    cta1: 'View Vault',
     cta2: 'Launch App',
     trust: ['On-chain Verifiable', 'Institutional Custody', 'T+3 Redemption', 'Weekly Auto-Dividend'],
     featuresLabel: 'Four Core Advantages',
@@ -72,7 +72,7 @@ const COPY = {
       { label: 'On-chain Verification', suffix: '%' },
     ],
     howLabel: 'How It Works',
-    howTitle: 'Three Steps to Put Your Assets to Work',
+    howTitle: 'Three Steps to Grow Your Assets with AI',
     howSub: 'From subscription to weekly dividends — fully on-chain, no trust required.',
     steps: [
       { step: '01', title: 'Subscribe rINDEX', desc: 'Deposit USDT. 1:1 mapped to underlying ETF NAV, confirmed on-chain instantly.' },
@@ -81,8 +81,8 @@ const COPY = {
     ],
     ctaTitle: 'Ready to Enter the World of AI × RWA?',
     ctaSub: 'Institutional strategy. On-chain transparency. Weekly dividends. Start now.',
-    ctaBtn1: 'Enter Vault',
-    ctaBtn2: 'View Dashboard',
+    ctaBtn1: 'View Vault',
+    ctaBtn2: 'Launch App',
     footerRight: '© 2026 RWAlpha. All rights reserved.',
   },
 } as const;
@@ -210,9 +210,10 @@ export default function LandingPage() {
             </span>
           </h1>
 
-          <p className="text-lg text-slate-500 max-w-xl mx-auto leading-relaxed mb-10">
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed mb-3">
             {T.heroSub1}
-            <br className="hidden sm:block" />
+          </p>
+          <p className="text-sm text-slate-400 max-w-xl mx-auto mb-10">
             {T.heroSub2}
           </p>
 
