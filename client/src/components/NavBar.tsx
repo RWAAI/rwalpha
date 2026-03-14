@@ -44,8 +44,8 @@ export default function NavBar({ activeTab = 'home' }: NavBarProps) {
 
               // 首页 Tab → /
               if (i === 0) return <Link key={tab} href="/"><button className={cls}>{tab}</button></Link>;
-              // 金库 Tab → /vault（操作页）
-              if (i === 1) return <Link key={tab} href="/vault"><button className={cls}>{tab}</button></Link>;
+              // 金库 Tab → /dashboard
+              if (i === 1) return <Link key={tab} href="/dashboard"><button className={cls}>{tab}</button></Link>;
               // 其余 Tab → 即将上线
               return (
                 <button
