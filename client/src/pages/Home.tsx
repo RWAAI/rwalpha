@@ -75,12 +75,10 @@ const App = () => {
   };
 
   const sellingPoints = [
-    { icon: <Zap size={18} className="text-amber-500" />,            bg: t.sp[0].bg, title: '每周派息',     desc: 'NVDY 每周到账，现金流不等待' },
-    { icon: <Layers size={18} className="text-indigo-500" />,         bg: t.sp[1].bg, title: '指数底仓',     desc: '50% QQQM+VGT 底仓保留上涨潜力' },
-    { icon: <TrendingUp size={18} className="text-green-500" />,      bg: t.sp[2].bg, title: '稳健增长',     desc: '派息 + NAV 增长双轨驱动回报' },
-    { icon: <RefreshCw size={18} className="text-blue-500" />,        bg: t.sp[3].bg, title: '复利再投',     desc: '现金流再投入，复利加速资产增长' },
-    { icon: <BrainCircuit size={18} className="text-violet-500" />,   bg: t.sp[4].bg, title: 'AI 驱动调仓', desc: 'AI 实时监控市场，自动优化仓位配置' },
-    { icon: <SlidersHorizontal size={18} className="text-rose-500" />, bg: t.sp[5].bg, title: '智能再分配', desc: '派息收益按策略自动再分配，持续最优化组合' },
+    { icon: <Zap size={18} className="text-amber-500" />,          bg: t.sp[0].bg, title: '每周派息',     desc: 'NVDY 每周到账，现金流稳定不间断' },
+    { icon: <Layers size={18} className="text-indigo-500" />,       bg: t.sp[1].bg, title: '指数底仓',     desc: '50% QQQM+VGT 底仓保留核心资产上涨潜力' },
+    { icon: <BrainCircuit size={18} className="text-violet-500" />, bg: t.sp[4].bg, title: 'AI 驱动调仓', desc: 'AI 实时监控市场，自动优化仓位与再分配' },
+    { icon: <TrendingUp size={18} className="text-green-500" />,    bg: t.sp[2].bg, title: '稳健增长',     desc: '派息 + NAV 双轨驱动，复利加速资产增长' },
   ];
 
   return (
@@ -158,7 +156,7 @@ const App = () => {
         </div>
 
         {/* Selling Points */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {sellingPoints.map((item) => (
             <div key={item.title} className={`flex items-start gap-3 p-4 rounded-2xl border ${item.bg} transition-colors duration-300`}>
               <div className="mt-0.5 shrink-0">{item.icon}</div>
