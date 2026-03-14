@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
-import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight } from 'lucide-react';
+import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, BarChart2, Layers, RefreshCw } from 'lucide-react';
 
 const App = () => {
   // 模拟数据源 (截至2026年3月14日市场参考)
@@ -104,6 +104,44 @@ const App = () => {
               />
             </div>
           </div>
+        </div>
+
+        {/* Selling Points Banner */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            {
+              icon: <Zap size={18} className="text-amber-500" />,
+              bg: 'bg-amber-50 border-amber-100',
+              title: '每周派息',
+              desc: 'NVDY 每周到账，现金流不等待',
+            },
+            {
+              icon: <Layers size={18} className="text-indigo-500" />,
+              bg: 'bg-indigo-50 border-indigo-100',
+              title: '指数底仓',
+              desc: '50% QQQM+VGT 底仓保留上涨潜力',
+            },
+            {
+              icon: <TrendingUp size={18} className="text-green-500" />,
+              bg: 'bg-green-50 border-green-100',
+              title: '稳健增长',
+              desc: '派息 + NAV 增长双轨驱动回报',
+            },
+            {
+              icon: <RefreshCw size={18} className="text-blue-500" />,
+              bg: 'bg-blue-50 border-blue-100',
+              title: '复利再投',
+              desc: '现金流再投入，复利复利加速资产增长',
+            },
+          ].map((item) => (
+            <div key={item.title} className={`flex items-start gap-3 p-4 rounded-2xl border ${item.bg}`}>
+              <div className="mt-0.5 shrink-0">{item.icon}</div>
+              <div>
+                <p className="text-sm font-bold text-slate-800">{item.title}</p>
+                <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{item.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Top Metrics Cards */}
