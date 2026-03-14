@@ -317,12 +317,31 @@ const App = () => {
           </div>
 
         {/* Header */}
-        <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className={`text-2xl font-bold ${t.title}`}>{T.vaultTitle}</h1>
-            <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">{T.aiEnabled}</span>
+        <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4`}>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className={`text-2xl font-bold ${t.title}`}>{T.vaultTitle}</h1>
+              <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">{T.aiEnabled}</span>
+            </div>
+            <p className={`${t.sub} mt-1 tracking-wide`}>{T.vaultSub}</p>
           </div>
-          <p className={`${t.sub} mt-1 tracking-wide`}>{T.vaultSub}</p>
+          {/* NAV 数值 */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div className={`p-2.5 rounded-2xl ${dark ? 'bg-emerald-900/40' : 'bg-emerald-50'}`}>
+              <BarChart2 size={20} className="text-emerald-500" />
+            </div>
+            <div className="text-right">
+              <div className="flex items-center gap-2 justify-end">
+                <span className={`text-xs font-bold uppercase tracking-wider ${t.muted}`}>{T.navTitle}</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${dark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700'}`}>{T.navDate}</span>
+              </div>
+              <div className="flex items-baseline gap-2 justify-end mt-0.5">
+                <span className={`text-2xl font-bold font-mono ${t.title}`}>${metrics.navValue}</span>
+                <span className="text-emerald-500 text-sm font-bold">▲ {T.navReturn(metrics.navReturn)}</span>
+              </div>
+              <p className={`text-[10px] ${t.muted} mt-0.5`}>{T.navFeeNote}</p>
+            </div>
+          </div>
         </div>
         </div>{/* end Header outer div */}
 
@@ -339,49 +358,6 @@ const App = () => {
           ))}
         </div>
 
-        {/* NAV Card */}
-        <div className={`${t.card} p-5 rounded-3xl shadow-sm border transition-colors duration-300`}>
-          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-            {/* NAV 主值 */}
-            <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-2xl ${dark ? 'bg-emerald-900/40' : 'bg-emerald-50'}`}>
-                <BarChart2 size={22} className="text-emerald-500" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className={`text-xs font-bold uppercase tracking-wider ${t.muted}`}>{T.navTitle}</span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${dark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700'}`}>{T.navDate}</span>
-                </div>
-                <div className="flex items-baseline gap-2 mt-0.5">
-                  <span className={`text-3xl font-bold font-mono ${t.title}`}>${metrics.navValue}</span>
-                  <span className="text-emerald-500 text-sm font-bold">▲ {T.navReturn(metrics.navReturn)}</span>
-                </div>
-                <p className={`text-[11px] ${t.muted} mt-0.5`}>{T.navSince} · {T.navFeeNote}</p>
-              </div>
-            </div>
-            {/* 分隔线 */}
-            <div className={`hidden md:block w-px h-12 ${dark ? 'bg-white/10' : 'bg-slate-200'}`} />
-            {/* 费率明细 */}
-            <div className="flex gap-6 md:gap-8">
-              <div>
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${t.muted}`}>{T.navExpenseLabel}</p>
-                <p className={`text-sm font-bold mt-0.5 ${dark ? 'text-rose-400' : 'text-rose-600'}`}>{T.navExpenseValue}</p>
-              </div>
-              <div>
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${t.muted}`}>{T.navEtfFeeLabel}</p>
-                <p className={`text-sm font-bold mt-0.5 ${t.sub}`}>{T.navEtfFeeValue}</p>
-              </div>
-              <div>
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${t.muted}`}>{lang === 'zh' ? '毛派息率' : 'Gross Yield'}</p>
-                <p className={`text-sm font-bold mt-0.5 ${dark ? 'text-indigo-400' : 'text-indigo-600'}`}>{metrics.grossYield}%</p>
-              </div>
-              <div>
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${t.muted}`}>{lang === 'zh' ? '净派息率' : 'Net Yield'}</p>
-                <p className={`text-sm font-bold mt-0.5 text-emerald-500`}>{metrics.yield}%</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Top Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
