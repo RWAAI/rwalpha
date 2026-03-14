@@ -420,46 +420,7 @@ const App = () => {
 
           {/* 资产配比 (NAV) + 平均每周到账计算器 */}
           <div className="flex flex-col gap-6">
-            {/* 资产配比 */}
-            <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className={`font-bold ${t.title}`}>{T.allocationTitle}</h3>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? 'bg-violet-900/50 text-violet-400' : 'bg-violet-100 text-violet-700'}`}>{T.aiAdjustedLabel}</span>
-              </div>
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={5} dataKey="weight">
-                      {portfolioData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip contentStyle={dark ? { backgroundColor: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: '#fff' } : undefined} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="space-y-2 mt-2">
-                {portfolioData.map((item, index) => (
-                  <div key={item.name} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COLORS[index] }}></div>
-                    <span className={`text-xs font-bold ${t.title} w-10`}>{item.name}</span>
-                    <div className={`flex-1 h-1 rounded-full ${dark ? 'bg-white/8' : 'bg-slate-100'}`}>
-                      <div className="h-full rounded-full" style={{ width: `${item.weight * 100}%`, backgroundColor: COLORS[index] }}></div>
-                    </div>
-                    <span className={`text-xs ${t.muted} w-10 text-right`}>{(item.weight * 100).toFixed(2)}%</span>
-                    {item.aiAdjust === 0 ? (
-                      <span className={`text-[11px] font-mono w-14 text-right ${t.muted}`}>— 0.00%</span>
-                    ) : (
-                      <span className={`text-[11px] font-bold font-mono w-14 text-right ${item.aiAdjust > 0 ? 'text-green-500' : 'text-red-400'}`}>
-                        {item.aiAdjust > 0 ? '▲' : '▼'} {Math.abs(item.aiAdjust).toFixed(2)}%
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 平均每周到账计算器 */}
+            {/* 平均每周到账计算器 - 移到上方 */}
             <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
               <div className="flex justify-between items-start">
                 <div className={`p-2 ${dark ? 'bg-green-900/40 text-green-400' : 'bg-green-50 text-green-600'} rounded-lg`}><DollarSign size={20} /></div>
@@ -504,6 +465,45 @@ const App = () => {
                     placeholder="100000"
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* 资产配比 - 移到下方 */}
+            <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className={`font-bold ${t.title}`}>{T.allocationTitle}</h3>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? 'bg-violet-900/50 text-violet-400' : 'bg-violet-100 text-violet-700'}`}>{T.aiAdjustedLabel}</span>
+              </div>
+              <div className="h-48">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={5} dataKey="weight">
+                      {portfolioData.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={dark ? { backgroundColor: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: '#fff' } : undefined} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="space-y-2 mt-2">
+                {portfolioData.map((item, index) => (
+                  <div key={item.name} className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COLORS[index] }}></div>
+                    <span className={`text-xs font-bold ${t.title} w-10`}>{item.name}</span>
+                    <div className={`flex-1 h-1 rounded-full ${dark ? 'bg-white/8' : 'bg-slate-100'}`}>
+                      <div className="h-full rounded-full" style={{ width: `${item.weight * 100}%`, backgroundColor: COLORS[index] }}></div>
+                    </div>
+                    <span className={`text-xs ${t.muted} w-10 text-right`}>{(item.weight * 100).toFixed(2)}%</span>
+                    {item.aiAdjust === 0 ? (
+                      <span className={`text-[11px] font-mono w-14 text-right ${t.muted}`}>— 0.00%</span>
+                    ) : (
+                      <span className={`text-[11px] font-bold font-mono w-14 text-right ${item.aiAdjust > 0 ? 'text-green-500' : 'text-red-400'}`}>
+                        {item.aiAdjust > 0 ? '▲' : '▼'} {Math.abs(item.aiAdjust).toFixed(2)}%
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
