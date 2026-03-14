@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight } from 'lucide-react';
 
@@ -13,8 +13,11 @@ const App = () => {
 
   const COLORS = ['#F59E0B', '#3B82F6', '#10B981', '#6366F1'];
 
-  // 计算组合指标 (基于 $100,000 本金)
-  const principal = 100000;
+  // 模拟本金状态（可编辑）
+  const [principalInput, setPrincipalInput] = useState('100000');
+  const principal = parseFloat(principalInput.replace(/,/g, '')) || 0;
+
+  // 计算组合指标（响应 principal 变化）
   const metrics = useMemo(() => {
     const totalYield = portfolioData.reduce((acc, curr) => acc + (curr.weight * curr.yield), 0);
     const totalReturn = portfolioData.reduce((acc, curr) => acc + (curr.weight * curr.totalReturn), 0);
@@ -31,7 +34,7 @@ const App = () => {
       qqqiMonthly: qqqiMonthly.toFixed(0),
       totalMonthly: (nvdyWeekly * 4 + qqqiMonthly * 1).toFixed(0)
     };
-  }, []);
+  }, [principal]);
 
   const weeklySchedule = [
     { week: '第 1 周', amount: parseInt(metrics.nvdyWeekly), desc: 'NVDY 派息' },
@@ -53,9 +56,38 @@ const App = () => {
             </div>
             <p className="text-slate-500 mt-1">20% NVDY + 30% QQQI + 50% 指数增强底仓</p>
           </div>
-          <div className="mt-4 md:mt-0 flex flex-col items-end">
+          <div className="mt-4 md:mt-0 flex flex-col items-end gap-1">
             <span className="text-sm text-slate-400 font-medium">模拟本金 (Principal)</span>
-            <span className="text-xl font-mono font-bold text-slate-900">$100,000.00</span>
+            <div className="flex items-center gap-1">
+              <span className="text-xl font-mono font-bold text-slate-400">$</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={principalInput}
+                onChange={(e) => {
+                  // 只允许数字和逗号
+                  const raw = e.target.value.replace(/[^0-9]/g, '');
+                  setPrincipalInput(raw);
+                }}
+                onBlur={(e) => {
+                  const num = parseFloat(e.target.value.replace(/,/g, ''));
+                  if (!isNaN(num) && num > 0) {
+                    setPrincipalInput(num.toLocaleString());
+                  } else {
+                    setPrincipalInput('0');
+                  }
+                }}
+                onFocus={(e) => {
+                  // 聚焦时去掉千分位逗号，方便编辑
+                  const raw = e.target.value.replace(/,/g, '');
+                  setPrincipalInput(raw);
+                  // 全选文字
+                  setTimeout(() => e.target.select(), 0);
+                }}
+                className="text-xl font-mono font-bold text-slate-900 bg-transparent border-b-2 border-indigo-300 focus:border-indigo-600 outline-none text-right w-36 transition-colors duration-150 placeholder:text-slate-300"
+                placeholder="100000"
+              />
+            </div>
           </div>
         </div>
 
@@ -78,7 +110,7 @@ const App = () => {
               <span className="text-xs font-medium text-slate-400">平均月到账</span>
             </div>
             <div className="mt-4">
-              <p className="text-3xl font-bold text-slate-900">${metrics.totalMonthly}</p>
+              <p className="text-3xl font-bold text-slate-900">${parseInt(metrics.totalMonthly).toLocaleString()}</p>
               <p className="text-slate-500 text-xs mt-1">预计年收息: ${(parseInt(metrics.totalMonthly) * 12).toLocaleString()}</p>
             </div>
           </div>
@@ -121,7 +153,7 @@ const App = () => {
                         return (
                           <div className="bg-slate-900 text-white p-3 rounded-xl shadow-xl border border-slate-700">
                             <p className="text-xs opacity-70">{payload[0].payload.week}</p>
-                            <p className="text-lg font-bold">${payload[0].value}</p>
+                            <p className="text-lg font-bold">${Number(payload[0].value).toLocaleString()}</p>
                             <p className="text-[10px] text-indigo-300 mt-1">{payload[0].payload.desc}</p>
                           </div>
                         );
@@ -206,8 +238,8 @@ const App = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 font-mono text-slate-600">
-                      {item.freq === 'Weekly' ? `$${metrics.nvdyWeekly}` : 
-                       item.freq === 'Monthly' ? `$${metrics.qqqiMonthly}` : '-'}
+                      {item.freq === 'Weekly' ? `$${parseInt(metrics.nvdyWeekly).toLocaleString()}` : 
+                       item.freq === 'Monthly' ? `$${parseInt(metrics.qqqiMonthly).toLocaleString()}` : '-'}
                     </td>
                   </tr>
                 ))}
