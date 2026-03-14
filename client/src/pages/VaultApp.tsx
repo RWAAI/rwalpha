@@ -266,8 +266,8 @@ export default function VaultApp() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
-                    {zh ? "底层：QQQI NAV 走势" : "Underlying: QQQI NAV Trend"}
-                    <span className="ml-2 text-slate-300">· Yahoo Finance</span>
+                    {zh ? "NAV 走势" : "NAV Trend"}
+
                   </p>
                   <div className="flex gap-1">
                     {(["7D", "1M", "6M", "1Y"] as ChartPeriod[]).map(p => (
