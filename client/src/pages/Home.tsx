@@ -341,7 +341,8 @@ const App = () => {
 
 
         {/* Top Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* 年度净派息率 */}
           <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-3xl shadow-lg text-white">
             <div className="flex justify-between items-start">
               <div className="p-2 bg-white/20 rounded-lg"><Wallet size={20} /></div>
@@ -354,6 +355,7 @@ const App = () => {
             </div>
           </div>
 
+          {/* 年化总回报 */}
           <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
             <div className="flex justify-between items-start">
               <div className={`p-2 ${dark ? 'bg-violet-900/40 text-violet-400' : 'bg-violet-50 text-violet-600'} rounded-lg`}><TrendingUp size={20} /></div>
@@ -364,6 +366,45 @@ const App = () => {
               <p className="text-green-500 text-sm font-bold mt-0.5">+${(principal * parseFloat(metrics.return) / 100).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
               <p className={`${t.sub} text-xs mt-1`}>{T.navNote}</p>
               <p className={`${t.muted} text-[10px] mt-0.5`}>{T.mgmtFeeNote}</p>
+            </div>
+          </div>
+
+          {/* 资产配比 (NAV) - 移到顶部第三列 */}
+          <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className={`font-bold ${t.title}`}>{T.allocationTitle}</h3>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? 'bg-violet-900/50 text-violet-400' : 'bg-violet-100 text-violet-700'}`}>{T.aiAdjustedLabel}</span>
+            </div>
+            <div className="h-36">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={38} outerRadius={55} paddingAngle={5} dataKey="weight">
+                    {portfolioData.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={dark ? { backgroundColor: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: '#fff' } : undefined} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="space-y-1.5 mt-1">
+              {portfolioData.map((item, index) => (
+                <div key={item.name} className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COLORS[index] }}></div>
+                  <span className={`text-xs font-bold ${t.title} w-10`}>{item.name}</span>
+                  <div className={`flex-1 h-1 rounded-full ${dark ? 'bg-white/8' : 'bg-slate-100'}`}>
+                    <div className="h-full rounded-full" style={{ width: `${item.weight * 100}%`, backgroundColor: COLORS[index] }}></div>
+                  </div>
+                  <span className={`text-xs ${t.muted} w-10 text-right`}>{(item.weight * 100).toFixed(2)}%</span>
+                  {item.aiAdjust === 0 ? (
+                    <span className={`text-[11px] font-mono w-14 text-right ${t.muted}`}>— 0.00%</span>
+                  ) : (
+                    <span className={`text-[11px] font-bold font-mono w-14 text-right ${item.aiAdjust > 0 ? 'text-green-500' : 'text-red-400'}`}>
+                      {item.aiAdjust > 0 ? '▲' : '▼'} {Math.abs(item.aiAdjust).toFixed(2)}%
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -418,92 +459,50 @@ const App = () => {
             </div>
           </div>
 
-          {/* 资产配比 (NAV) + 平均每周到账计算器 */}
-          <div className="flex flex-col gap-6">
-            {/* 平均每周到账计算器 - 移到上方 */}
-            <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
-              <div className="flex justify-between items-start">
-                <div className={`p-2 ${dark ? 'bg-green-900/40 text-green-400' : 'bg-green-50 text-green-600'} rounded-lg`}><DollarSign size={20} /></div>
-                <span className={`text-xs font-medium ${t.muted}`}>{T.weeklyIncome}</span>
-              </div>
-              <div className="mt-3">
-                <p className={`text-3xl font-bold ${t.title}`}>${parseInt(metrics.totalWeekly).toLocaleString()}</p>
-                <p className={`${t.sub} text-xs mt-1`}>{T.annualEst(parseInt(metrics.annualIncome).toLocaleString())}</p>
-              </div>
-              {/* 本金输入区 */}
-              <div className={`mt-4 pt-4 border-t ${t.divider}`}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className={`text-xs font-medium ${t.muted}`}>{T.principal}</span>
-                  <div className="flex items-center gap-1.5">
-                    {[50000, 100000, 500000].map((preset) => (
-                      <button
-                        key={preset}
-                        onClick={() => setPrincipalInput(preset.toLocaleString())}
-                        className={`px-2 py-0.5 rounded-md text-xs font-bold border transition-colors duration-150 ${
-                          principal === preset
-                            ? 'bg-indigo-600 text-white border-indigo-600'
-                            : dark
-                              ? 'bg-white/5 text-slate-400 border-white/10 hover:border-indigo-400 hover:text-indigo-400'
-                              : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-400 hover:text-indigo-600'
-                        }`}
-                      >
-                        {T.presets(preset)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className={`text-lg font-mono font-bold ${t.muted}`}>$</span>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    value={principalInput}
-                    onChange={(e) => { const raw = e.target.value.replace(/[^0-9]/g, ''); setPrincipalInput(raw); }}
-                    onBlur={(e) => { const num = parseFloat(e.target.value.replace(/,/g, '')); if (!isNaN(num) && num > 0) setPrincipalInput(num.toLocaleString()); else setPrincipalInput('0'); }}
-                    onFocus={(e) => { setPrincipalInput(e.target.value.replace(/,/g, '')); setTimeout(() => e.target.select(), 0); }}
-                    className={`flex-1 text-lg font-mono font-bold bg-transparent border-b-2 border-indigo-300 focus:border-indigo-600 outline-none text-right transition-colors duration-150 ${t.title}`}
-                    placeholder="100000"
-                  />
-                </div>
-              </div>
+          {/* 平均每周到账计算器 - 移到下方右侧列 */}
+          <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+            <div className="flex justify-between items-start">
+              <div className={`p-2 ${dark ? 'bg-green-900/40 text-green-400' : 'bg-green-50 text-green-600'} rounded-lg`}><DollarSign size={20} /></div>
+              <span className={`text-xs font-medium ${t.muted}`}>{T.weeklyIncome}</span>
             </div>
-
-            {/* 资产配比 - 移到下方 */}
-            <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className={`font-bold ${t.title}`}>{T.allocationTitle}</h3>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? 'bg-violet-900/50 text-violet-400' : 'bg-violet-100 text-violet-700'}`}>{T.aiAdjustedLabel}</span>
+            <div className="mt-3">
+              <p className={`text-3xl font-bold ${t.title}`}>${parseInt(metrics.totalWeekly).toLocaleString()}</p>
+              <p className={`${t.sub} text-xs mt-1`}>{T.annualEst(parseInt(metrics.annualIncome).toLocaleString())}</p>
+            </div>
+            {/* 本金输入区 */}
+            <div className={`mt-4 pt-4 border-t ${t.divider}`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className={`text-xs font-medium ${t.muted}`}>{T.principal}</span>
+                <div className="flex items-center gap-1.5">
+                  {[50000, 100000, 500000].map((preset) => (
+                    <button
+                      key={preset}
+                      onClick={() => setPrincipalInput(preset.toLocaleString())}
+                      className={`px-2 py-0.5 rounded-md text-xs font-bold border transition-colors duration-150 ${
+                        principal === preset
+                          ? 'bg-indigo-600 text-white border-indigo-600'
+                          : dark
+                            ? 'bg-white/5 text-slate-400 border-white/10 hover:border-indigo-400 hover:text-indigo-400'
+                            : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-400 hover:text-indigo-600'
+                      }`}
+                    >
+                      {T.presets(preset)}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={5} dataKey="weight">
-                      {portfolioData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip contentStyle={dark ? { backgroundColor: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: '#fff' } : undefined} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="space-y-2 mt-2">
-                {portfolioData.map((item, index) => (
-                  <div key={item.name} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COLORS[index] }}></div>
-                    <span className={`text-xs font-bold ${t.title} w-10`}>{item.name}</span>
-                    <div className={`flex-1 h-1 rounded-full ${dark ? 'bg-white/8' : 'bg-slate-100'}`}>
-                      <div className="h-full rounded-full" style={{ width: `${item.weight * 100}%`, backgroundColor: COLORS[index] }}></div>
-                    </div>
-                    <span className={`text-xs ${t.muted} w-10 text-right`}>{(item.weight * 100).toFixed(2)}%</span>
-                    {item.aiAdjust === 0 ? (
-                      <span className={`text-[11px] font-mono w-14 text-right ${t.muted}`}>— 0.00%</span>
-                    ) : (
-                      <span className={`text-[11px] font-bold font-mono w-14 text-right ${item.aiAdjust > 0 ? 'text-green-500' : 'text-red-400'}`}>
-                        {item.aiAdjust > 0 ? '▲' : '▼'} {Math.abs(item.aiAdjust).toFixed(2)}%
-                      </span>
-                    )}
-                  </div>
-                ))}
+              <div className="flex items-center gap-1">
+                <span className={`text-lg font-mono font-bold ${t.muted}`}>$</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={principalInput}
+                  onChange={(e) => { const raw = e.target.value.replace(/[^0-9]/g, ''); setPrincipalInput(raw); }}
+                  onBlur={(e) => { const num = parseFloat(e.target.value.replace(/,/g, '')); if (!isNaN(num) && num > 0) setPrincipalInput(num.toLocaleString()); else setPrincipalInput('0'); }}
+                  onFocus={(e) => { setPrincipalInput(e.target.value.replace(/,/g, '')); setTimeout(() => e.target.select(), 0); }}
+                  className={`flex-1 text-lg font-mono font-bold bg-transparent border-b-2 border-indigo-300 focus:border-indigo-600 outline-none text-right transition-colors duration-150 ${t.title}`}
+                  placeholder="100000"
+                />
               </div>
             </div>
           </div>
