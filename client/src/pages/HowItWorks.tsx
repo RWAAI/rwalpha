@@ -1,10 +1,11 @@
 // HowItWorks.tsx
 // Design: White bg, indigo/violet accent, clean sans-serif
 // Sections: AI How It Works (3-step) + AI Market Signals + AI Rebalancing Log
+//           + Trust Three Pillars + Why Trust RWAlpha + Investment/Dividend Flow
 
 import { useEffect, useState } from 'react';
 import NavBar from '@/components/NavBar';
-import { Eye, BrainCircuit, CheckCircle2, Activity, Cpu, Zap } from 'lucide-react';
+import { Eye, BrainCircuit, CheckCircle2, Activity, Cpu, Zap, Diamond, Target, TrendingUp, Link2, Shield, Users, BookOpen, ArrowRight } from 'lucide-react';
 
 type Lang = 'zh' | 'en';
 
@@ -12,7 +13,6 @@ function getLang(): Lang {
   try { return (localStorage.getItem('rwa-lang') as Lang) || 'zh'; } catch { return 'zh'; }
 }
 
-// ── i18n ─────────────────────────────────────────────────────────
 const COPY = {
   zh: {
     pageTitle: '如何运作',
@@ -52,6 +52,69 @@ const COPY = {
       { date: '2026-03-03', icon: '📊', action: '期权溢价回升至历史均值 +1σ，NVDY 权重恢复至目标位 22%', tag: '调仓' },
       { date: '2026-02-24', icon: '🛡️', action: '市场波动加剧，临时将 VGT 权重上调 2%，增强防御', tag: '风控' },
     ],
+    // Trust pillars
+    trustHeader: 'RWAlpha — 机构级真实收益的可信中间层',
+    trustPillars: [
+      {
+        icon: 'diamond',
+        title: '可信团队',
+        items: ['丰富的持牌合规经验', '机构级风控体系', '透明链上治理', '专业资产管理背景'],
+      },
+      {
+        icon: 'target',
+        title: '可信 Token',
+        items: ['1:1 底层资产支撑', 'Fireblocks 机构托管', '链上实时可验证', 'T+3 赎回保障'],
+      },
+      {
+        icon: 'trending',
+        title: '可信资产',
+        items: ['严选指数级 ETF 标的', '龙头科技股期权策略', '10亿美金+规模保障', '年化总回报 20%+'],
+      },
+    ],
+    // Why trust
+    whyTrustHeader: '为何信任 RWALPHA',
+    whyTrustItems: [
+      {
+        icon: 'link',
+        title: '链上透明可验证',
+        desc: '每一笔代币铸造、销毁和收益分配均记录在链上，实时公开可查。',
+        link: '查看储备证明 →',
+      },
+      {
+        icon: 'shield',
+        title: 'Fireblocks 机构级托管',
+        desc: '底层资产通过 Fireblocks MPC 托管存放于独立账户，与顶级基金采用相同的基础设施。',
+        link: null,
+      },
+      {
+        icon: 'users',
+        title: '持牌团队 · 传统金融背景',
+        desc: 'RWAlpha 团队核心成员均来自头部传统金融机构，有着丰富的监管合规经验，将机构级风控与合规标准带入 RWA 链上产品。',
+        link: null,
+      },
+      {
+        icon: 'book',
+        title: '定期对账单公示',
+        desc: 'RWAlpha 实时将托管行对账单上链公示，确保本金金库里的代币与链下 ETF 份额完全对等，实现真实透明。',
+        link: '查看储备证明 →',
+      },
+    ],
+    // Flow
+    flowHeader: '资金流程',
+    investFlow: '投资流程',
+    dividendFlow: '周度 / 月度派息流程',
+    flowNodes: {
+      user: '用户', userSub: '存入稳定币',
+      rwalpha: 'RWAlpha', rwalphaSub: '协议',
+      rwalphaDist: 'RWAlpha', rwalphaDist2: '分发',
+      fomo: 'FOMO Pay', fomoSub: '法币兑换',
+      fomoRev: 'FOMO Pay', fomoRevSub: 'USD → 稳定币',
+      broker: 'Broker', brokerSub: '投行',
+      asset: '资产', assetSub: 'ETF / 股票 / 黄金',
+      wallet: '用户钱包', walletSub: '接收收益',
+      masBadge: 'MAS 持牌',
+      topBadge: '顶级投行',
+    },
     ctaBtn: '查看金库数据',
   },
   en: {
@@ -92,6 +155,66 @@ const COPY = {
       { date: '2026-03-03', icon: '📊', action: 'Options premium rebounded to hist. mean +1σ; NVDY weight restored to 22%', tag: 'Rebalance' },
       { date: '2026-02-24', icon: '🛡️', action: 'Market volatility surged; VGT weight raised 2% for defensive positioning', tag: 'Risk Ctrl' },
     ],
+    trustHeader: 'RWAlpha — The Trusted Intermediary for Institutional-Grade Real Yield',
+    trustPillars: [
+      {
+        icon: 'diamond',
+        title: 'Trusted Team',
+        items: ['Licensed & compliant expertise', 'Institutional risk framework', 'On-chain governance transparency', 'Professional asset management background'],
+      },
+      {
+        icon: 'target',
+        title: 'Trusted Token',
+        items: ['1:1 underlying asset backing', 'Fireblocks institutional custody', 'Real-time on-chain verifiable', 'T+3 redemption guarantee'],
+      },
+      {
+        icon: 'trending',
+        title: 'Trusted Assets',
+        items: ['Curated index-grade ETFs', 'Leading tech options strategy', '$1B+ AUM assurance', '20%+ annualized total return'],
+      },
+    ],
+    whyTrustHeader: 'WHY TRUST RWALPHA',
+    whyTrustItems: [
+      {
+        icon: 'link',
+        title: 'On-Chain Transparent & Verifiable',
+        desc: 'Every token mint, burn, and yield distribution is recorded on-chain, publicly verifiable in real time.',
+        link: 'View Proof of Reserves →',
+      },
+      {
+        icon: 'shield',
+        title: 'Fireblocks Institutional Custody',
+        desc: 'Underlying assets are held in segregated accounts via Fireblocks MPC custody — the same infrastructure used by top-tier funds.',
+        link: null,
+      },
+      {
+        icon: 'users',
+        title: 'Licensed Team · TradFi Background',
+        desc: 'RWAlpha\'s core team comes from leading traditional financial institutions, bringing institutional-grade risk management and compliance standards to on-chain RWA products.',
+        link: null,
+      },
+      {
+        icon: 'book',
+        title: 'Regular Statement Publication',
+        desc: 'RWAlpha publishes custodian statements on-chain in real time, ensuring the tokens in the vault are fully backed 1:1 by off-chain ETF shares.',
+        link: 'View Proof of Reserves →',
+      },
+    ],
+    flowHeader: 'Fund Flow',
+    investFlow: 'Investment Flow',
+    dividendFlow: 'Weekly / Monthly Dividend Flow',
+    flowNodes: {
+      user: 'User', userSub: 'Deposit Stablecoin',
+      rwalpha: 'RWAlpha', rwalphaSub: 'Protocol',
+      rwalphaDist: 'RWAlpha', rwalphaDist2: 'Distribute',
+      fomo: 'FOMO Pay', fomoSub: 'Fiat Exchange',
+      fomoRev: 'FOMO Pay', fomoRevSub: 'USD → Stablecoin',
+      broker: 'Broker', brokerSub: 'Prime Broker',
+      asset: 'Asset', assetSub: 'ETF / Stocks / Gold',
+      wallet: 'User Wallet', walletSub: 'Receive Yield',
+      masBadge: 'MAS Licensed',
+      topBadge: 'Top Prime Broker',
+    },
     ctaBtn: 'View Vault Data',
   },
 };
@@ -107,6 +230,45 @@ const logTagColors: Record<string, string> = {
   'Reinvest': 'bg-green-100 text-green-700',
   'Risk Ctrl': 'bg-red-100 text-red-700',
 };
+
+function PillarIcon({ type }: { type: string }) {
+  if (type === 'diamond') return <Diamond size={20} className="text-teal-500" />;
+  if (type === 'target') return <Target size={20} className="text-amber-500" />;
+  return <TrendingUp size={20} className="text-green-500" />;
+}
+
+function TrustIcon({ type }: { type: string }) {
+  if (type === 'link') return <Link2 size={18} className="text-indigo-500" />;
+  if (type === 'shield') return <Shield size={18} className="text-indigo-500" />;
+  if (type === 'users') return <Users size={18} className="text-indigo-500" />;
+  return <BookOpen size={18} className="text-indigo-500" />;
+}
+
+// Flow diagram node
+function FlowNode({ label, sub, badge }: { label: string; sub: string; badge?: string }) {
+  return (
+    <div className="flex flex-col items-center gap-1 min-w-[80px]">
+      <div className="w-16 h-16 rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col items-center justify-center gap-0.5">
+        <span className="text-xs font-bold text-slate-800 text-center leading-tight">{label}</span>
+        <span className="text-[9px] text-slate-400 text-center leading-tight">{sub}</span>
+      </div>
+      {badge && (
+        <span className="text-[9px] px-1.5 py-0.5 rounded font-bold bg-amber-400 text-slate-900">{badge}</span>
+      )}
+    </div>
+  );
+}
+
+function FlowArrow({ label, reverse }: { label: string; reverse?: boolean }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-0.5 px-1">
+      <span className="text-[9px] text-slate-400 whitespace-nowrap">{label}</span>
+      {reverse
+        ? <ArrowRight size={14} className="text-slate-300 rotate-180" />
+        : <ArrowRight size={14} className="text-slate-300" />}
+    </div>
+  );
+}
 
 export default function HowItWorks() {
   const [lang, setLang] = useState<Lang>(getLang);
@@ -202,8 +364,6 @@ export default function HowItWorks() {
 
         {/* AI 市场信号 + AI 调仓日志 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-          {/* AI 市场信号 */}
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
             <div className="flex items-center gap-2 mb-5">
               <div className="p-1.5 rounded-lg bg-violet-100">
@@ -229,7 +389,6 @@ export default function HowItWorks() {
             <p className="text-[10px] text-slate-400 mt-4">{T.signalUpdated}</p>
           </div>
 
-          {/* AI 调仓日志 */}
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
             <div className="flex items-center gap-2 mb-5">
               <div className="p-1.5 rounded-lg bg-violet-100">
@@ -252,6 +411,106 @@ export default function HowItWorks() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── 可信三列 ──────────────────────────────────────────── */}
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+          <div className="px-8 pt-8 pb-4 border-b border-slate-100">
+            <h2 className="text-lg font-bold text-slate-900 text-center">{T.trustHeader}</h2>
+          </div>
+          {/* 彩色分隔线 */}
+          <div className="flex h-0.5">
+            <div className="flex-1 bg-teal-400" />
+            <div className="flex-1 bg-amber-400" />
+            <div className="flex-1 bg-green-400" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+            {T.trustPillars.map((pillar) => (
+              <div key={pillar.title} className="px-8 py-8">
+                <PillarIcon type={pillar.icon} />
+                <h3 className="text-base font-bold text-slate-900 mt-4 mb-4">{pillar.title}</h3>
+                <ul className="space-y-2">
+                  {pillar.items.map(item => (
+                    <li key={item} className="flex items-start gap-2 text-sm text-slate-500">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── 为何信任 RWAlpha ──────────────────────────────────── */}
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
+          <div className="flex items-center gap-2 mb-8">
+            <div className="w-1 h-4 rounded-full bg-indigo-500" />
+            <span className="text-xs font-bold tracking-widest text-slate-400 uppercase">{T.whyTrustHeader}</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {T.whyTrustItems.map((item) => (
+              <div key={item.title} className="flex gap-4 p-5 rounded-2xl border border-slate-100 hover:border-indigo-100 hover:bg-indigo-50/30 transition-colors">
+                <div className="p-2 rounded-lg bg-indigo-50 shrink-0 h-fit">
+                  <TrustIcon type={item.icon} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 mb-2">{item.title}</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+                  {item.link && (
+                    <button className="mt-2 text-xs text-indigo-500 font-semibold hover:text-indigo-700 transition-colors">
+                      {item.link}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── 资金流程图 ──────────────────────────────────────────── */}
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8">
+          <h2 className="text-lg font-bold text-slate-900 mb-8 text-center">{T.flowHeader}</h2>
+
+          {/* 投资流程 */}
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold mb-6">
+              {T.investFlow}
+            </div>
+            <div className="overflow-x-auto">
+              <div className="flex items-center gap-1 min-w-[600px] p-6 rounded-2xl border border-slate-100 bg-slate-50/50">
+                <FlowNode label={T.flowNodes.user} sub={T.flowNodes.userSub} />
+                <FlowArrow label="USDT/USDC" />
+                <FlowNode label={T.flowNodes.rwalpha} sub={T.flowNodes.rwalphaSub} />
+                <FlowArrow label="Transfer" />
+                <FlowNode label={T.flowNodes.fomo} sub={T.flowNodes.fomoSub} badge={T.flowNodes.masBadge} />
+                <FlowArrow label="USD Fiat" />
+                <FlowNode label={T.flowNodes.broker} sub={T.flowNodes.brokerSub} badge={T.flowNodes.topBadge} />
+                <FlowArrow label="Purchase" />
+                <FlowNode label={T.flowNodes.asset} sub={T.flowNodes.assetSub} />
+              </div>
+            </div>
+          </div>
+
+          {/* 派息流程 */}
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-teal-50 border border-teal-100 text-teal-600 text-xs font-bold mb-6">
+              {T.dividendFlow}
+            </div>
+            <div className="overflow-x-auto">
+              <div className="flex items-center gap-1 min-w-[600px] p-6 rounded-2xl border border-slate-100 bg-slate-50/50">
+                <FlowNode label={T.flowNodes.wallet} sub={T.flowNodes.walletSub} />
+                <FlowArrow label="Stablecoin" reverse />
+                <FlowNode label={T.flowNodes.rwalphaDist} sub={T.flowNodes.rwalphaDist2} />
+                <FlowArrow label="Transfer" reverse />
+                <FlowNode label={T.flowNodes.fomoRev} sub={T.flowNodes.fomoRevSub} badge={T.flowNodes.masBadge} />
+                <FlowArrow label="USD Fiat" reverse />
+                <FlowNode label={T.flowNodes.broker} sub={T.flowNodes.brokerSub} badge={T.flowNodes.topBadge} />
+                <FlowArrow label="Dividend/Yield" reverse />
+                <FlowNode label={T.flowNodes.asset} sub={T.flowNodes.assetSub} />
+              </div>
             </div>
           </div>
         </div>
