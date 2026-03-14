@@ -359,7 +359,7 @@ export default function VaultApp() {
                     green: true,
                   },
                   {
-                    label: zh ? "年化总回报" : "Annual Total Return",
+                    label: zh ? "年化总回报（含股息）" : "Total Return (incl. Div)",
                     value: `+${v.annualTotalReturn.toFixed(2)}%`,
                     sub: null,
                     green: true,
