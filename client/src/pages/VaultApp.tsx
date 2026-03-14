@@ -279,13 +279,7 @@ export default function VaultApp() {
           <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">
             {zh ? "AI 赋能" : "AI Powered"}
           </span>
-          <Link href="/dashboard">
-            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
-              {zh ? "查看产品详情" : "View product details"}
-              <ChevronRight size={14} />
-            </button>
-          </Link>
-          {/* 语言切换 + 钱包按鈕—与查看产品详情同行 */}
+          {/* 语言切换 + 钱包按鈕 */}
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={() => setLang(zh ? 'en' : 'zh')}
@@ -306,11 +300,19 @@ export default function VaultApp() {
             </button>
           </div>
         </div>
-        <p className="text-slate-500 text-sm">
-          {zh
-            ? "AI 驱动调仓 · 每周现金派息 · 指数底仓增值"
-            : "AI-driven rebalancing · Weekly cash dividend · Index core appreciation"}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-slate-500 text-sm">
+            {zh
+              ? "AI 驱动调仓 · 每周现金派息 · 指数底仓增値"
+              : "AI-driven rebalancing · Weekly cash dividend · Index core appreciation"}
+          </p>
+          <Link href="/dashboard">
+            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
+              {zh ? "查看产品详情" : "View product details"}
+              <ChevronRight size={14} />
+            </button>
+          </Link>
+        </div>
       </div>
 
       {/* ── 双金库主体 ── */}
