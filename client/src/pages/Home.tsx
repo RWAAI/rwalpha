@@ -71,7 +71,7 @@ const i18n = {
     fn1: { strong: '提示：', text: '本测算基于历史派息水平。NVDY 属于备兑期权 ETF，其分红受英伟达股价波动影响较大，金额并非固定。建议将多出的现金流用于再投资以抵御潜在净值侵蚀。' },
     fn2: { strong: '风控：', text: '50% 底仓（QQQM+VGT）不参与期权卖出，保留了核心资产的上涨潜力，使组合更具韧性。' },
     sellingPoints: [
-      { title: '每周派息',     desc: 'NVDY 每周到账，现金流稳定不间断' },
+      { title: '每周派息',     desc: 'NVDY 每周到账，英伟达期权收益化为稳定现金流' },
       { title: '指数底仓',     desc: '纳指100底仓（50% QQQM+VGT）保留核心资产上涨潜力' },
       { title: 'AI 驱动调仓', desc: 'AI 实时监控市场，自动优化仓位与再分配' },
       { title: '稳健增长',     desc: '派息 + NAV 双轨驱动，复利加速资产增长' },
@@ -154,7 +154,7 @@ const i18n = {
     fn1: { strong: 'Disclaimer: ', text: 'Projections are based on historical dividend levels. NVDY is a covered-call ETF; dividends are subject to NVDA price volatility and are not guaranteed. Consider reinvesting excess cash flow to offset potential NAV erosion.' },
     fn2: { strong: 'Risk Control: ', text: 'The 50% core position (QQQM+VGT) does not participate in options writing, preserving upside potential and making the portfolio more resilient.' },
     sellingPoints: [
-      { title: 'Weekly Income',     desc: 'NVDY distributes every week — consistent, predictable cash flow' },
+      { title: 'Weekly Income',     desc: 'NVDY turns NVIDIA options premium into weekly cash flow, paid every week' },
       { title: 'Index Core',        desc: 'Nasdaq 100 core (50% QQQM+VGT) preserves long-term capital appreciation' },
       { title: 'AI Rebalancing',    desc: 'AI monitors markets in real-time and auto-optimizes allocations' },
       { title: 'Steady Growth',     desc: 'Dual-engine: dividends + NAV growth compound over time' },
