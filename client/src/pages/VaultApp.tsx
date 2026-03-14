@@ -155,8 +155,8 @@ export default function VaultApp() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
 
-      {/* ── 顶部导航 — 共用 NavBar，金库 Tab 高亮，钱包按鈕替换右侧 ── */}
-      <NavBar activeTab="vault" rightSlot={walletButton} />
+      {/* ── 顶部导航 — 共用 NavBar，金库 Tab 高亮 ── */}
+      <NavBar activeTab="vault" rightSlot={null} />
 
       {/* ── 钱包连接模拟弹层 ── */}
       {walletModal && (
@@ -210,7 +210,7 @@ export default function VaultApp() {
 
       {/* ── 页面标题 ── */}
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
-        <div className="flex items-center gap-3 mb-1">
+        <div className="flex items-center gap-3 mb-1 flex-wrap">
           <h1 className="text-2xl font-bold text-slate-900">
             {zh ? "RWAlpha 指数旗舰金库" : "RWAlpha Index Prime Vault"}
           </h1>
@@ -218,11 +218,25 @@ export default function VaultApp() {
             {zh ? "AI 赋能" : "AI Powered"}
           </span>
           <Link href="/dashboard">
-            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors ml-2">
+            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
               {zh ? "查看产品详情" : "View product details"}
               <ChevronRight size={14} />
             </button>
           </Link>
+          {/* 钱包按鈕—与查看产品详情同行 */}
+          <div className="ml-auto">
+            <button
+              onClick={() => connected ? setConnected(false) : setWalletModal(true)}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all duration-200 active:scale-95 ${
+                connected
+                  ? "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100"
+                  : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"
+              }`}
+            >
+              <Wallet size={14} />
+              {connected ? "0x3f...a8c2" : (zh ? "连接钱包" : "Connect Wallet")}
+            </button>
+          </div>
         </div>
         <p className="text-slate-500 text-sm">
           {zh
