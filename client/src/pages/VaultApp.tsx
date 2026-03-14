@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { Zap, Wallet, TrendingUp, Clock, RefreshCw, ChevronRight, ArrowUpRight, BarChart2 } from "lucide-react";
+import { Zap, Wallet, TrendingUp, Clock, RefreshCw, ChevronRight, ArrowUpRight, BarChart2, HelpCircle, X } from "lucide-react";
 import { Link } from "wouter";
 import NavBar from "@/components/NavBar";
 
@@ -142,6 +142,7 @@ export default function VaultApp() {
   const [historyModal, setHistoryModal] = useState(false);
   const [tradeMode, setTradeMode] = useState<"buy" | "sell">("buy");
   const [spendAmt, setSpendAmt] = useState("");
+  const [backedModal, setBackedModal] = useState(false);
   const zh = lang === "zh";
 
   const v = VAULT_DATA;
@@ -270,6 +271,31 @@ export default function VaultApp() {
         </div>
       )}
 
+      {/* ── 底层资产支撑说明弹层 ── */}
+      {backedModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setBackedModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-slate-900 text-base">{zh ? "底层资产支撑说明" : "Asset Backing"}</h3>
+              <button onClick={() => setBackedModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><X size={18} /></button>
+            </div>
+            <p className="text-slate-600 text-sm leading-relaxed mb-4">
+              {zh
+                ? "每 1 枚 rINDEX token 对应 1 单位底层一篮子ETF的份额，底层资产持仓数据链上实时可查。"
+                : "Each rINDEX token corresponds to 1 unit of the underlying ETF basket. On-chain reserve data is publicly verifiable in real time."}
+            </p>
+            <a
+              href="#"
+              className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
+              onClick={e => e.preventDefault()}
+            >
+              {zh ? "查看链上储备证明" : "View On-chain Reserve Proof"}
+              <ArrowUpRight size={14} />
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* ── 页面标题 ── */}
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
         <div className="flex items-center gap-3 mb-1 flex-wrap">
@@ -327,9 +353,17 @@ export default function VaultApp() {
                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                 <span className="font-bold text-slate-800 text-base">{zh ? "本金金库" : "Principal Vault"}</span>
               </div>
-              <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full">
-                {zh ? "底层资产完全支撑" : "Fully Asset Backed"}
-              </span>
+              <div className="flex items-center gap-1">
+                <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full">
+                  {zh ? "底层资产完全支撑" : "Fully Asset Backed"}
+                </span>
+                <button
+                  onClick={() => setBackedModal(true)}
+                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <HelpCircle size={14} />
+                </button>
+              </div>
             </div>
 
             <div className="px-6 py-5 space-y-5">
