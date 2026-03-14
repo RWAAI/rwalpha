@@ -317,49 +317,12 @@ const App = () => {
           </div>
 
         {/* Header */}
-        <div className={`flex flex-col md:flex-row justify-between items-start md:items-center ${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className={`text-2xl font-bold ${t.title}`}>{T.vaultTitle}</h1>
-              <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">{T.aiEnabled}</span>
-            </div>
-            <p className={`${t.sub} mt-1 tracking-wide`}>{T.vaultSub}</p>
+        <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className={`text-2xl font-bold ${t.title}`}>{T.vaultTitle}</h1>
+            <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">{T.aiEnabled}</span>
           </div>
-          <div className="mt-4 md:mt-0 flex items-center gap-6">
-            <div className="flex flex-col items-end gap-2">
-              <span className={`text-sm ${t.muted} font-medium`}>{T.principal}</span>
-              <div className="flex items-center gap-2 flex-wrap justify-end">
-                {[50000, 100000, 500000].map((preset) => (
-                  <button
-                    key={preset}
-                    onClick={() => setPrincipalInput(preset.toLocaleString())}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors duration-150 ${
-                      principal === preset
-                        ? 'bg-indigo-600 text-white border-indigo-600'
-                        : dark
-                          ? 'bg-white/5 text-slate-400 border-white/10 hover:border-indigo-400 hover:text-indigo-400'
-                          : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-400 hover:text-indigo-600'
-                    }`}
-                  >
-                    {T.presets(preset)}
-                  </button>
-                ))}
-              </div>
-              <div className="flex items-center gap-1">
-                <span className={`text-xl font-mono font-bold ${t.muted}`}>$</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={principalInput}
-                  onChange={(e) => { const raw = e.target.value.replace(/[^0-9]/g, ''); setPrincipalInput(raw); }}
-                  onBlur={(e) => { const num = parseFloat(e.target.value.replace(/,/g, '')); if (!isNaN(num) && num > 0) setPrincipalInput(num.toLocaleString()); else setPrincipalInput('0'); }}
-                  onFocus={(e) => { setPrincipalInput(e.target.value.replace(/,/g, '')); setTimeout(() => e.target.select(), 0); }}
-                  className={`text-xl font-mono font-bold bg-transparent border-b-2 border-indigo-300 focus:border-indigo-600 outline-none text-right w-36 transition-colors duration-150 ${t.title}`}
-                  placeholder="100000"
-                />
-              </div>
-            </div>
-          </div>
+          <p className={`${t.sub} mt-1 tracking-wide`}>{T.vaultSub}</p>
         </div>
         </div>{/* end Header outer div */}
 
@@ -439,9 +402,45 @@ const App = () => {
               <div className={`p-2 ${dark ? 'bg-green-900/40 text-green-400' : 'bg-green-50 text-green-600'} rounded-lg`}><DollarSign size={20} /></div>
               <span className={`text-xs font-medium ${t.muted}`}>{T.weeklyIncome}</span>
             </div>
-            <div className="mt-4">
+            <div className="mt-3">
               <p className={`text-3xl font-bold ${t.title}`}>${parseInt(metrics.totalWeekly).toLocaleString()}</p>
               <p className={`${t.sub} text-xs mt-1`}>{T.annualEst(parseInt(metrics.annualIncome).toLocaleString())}</p>
+            </div>
+            {/* 本金输入区 */}
+            <div className={`mt-4 pt-4 border-t ${t.divider}`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className={`text-xs font-medium ${t.muted}`}>{T.principal}</span>
+                <div className="flex items-center gap-1.5">
+                  {[50000, 100000, 500000].map((preset) => (
+                    <button
+                      key={preset}
+                      onClick={() => setPrincipalInput(preset.toLocaleString())}
+                      className={`px-2 py-0.5 rounded-md text-xs font-bold border transition-colors duration-150 ${
+                        principal === preset
+                          ? 'bg-indigo-600 text-white border-indigo-600'
+                          : dark
+                            ? 'bg-white/5 text-slate-400 border-white/10 hover:border-indigo-400 hover:text-indigo-400'
+                            : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-400 hover:text-indigo-600'
+                      }`}
+                    >
+                      {T.presets(preset)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className={`text-lg font-mono font-bold ${t.muted}`}>$</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={principalInput}
+                  onChange={(e) => { const raw = e.target.value.replace(/[^0-9]/g, ''); setPrincipalInput(raw); }}
+                  onBlur={(e) => { const num = parseFloat(e.target.value.replace(/,/g, '')); if (!isNaN(num) && num > 0) setPrincipalInput(num.toLocaleString()); else setPrincipalInput('0'); }}
+                  onFocus={(e) => { setPrincipalInput(e.target.value.replace(/,/g, '')); setTimeout(() => e.target.select(), 0); }}
+                  className={`flex-1 text-lg font-mono font-bold bg-transparent border-b-2 border-indigo-300 focus:border-indigo-600 outline-none text-right transition-colors duration-150 ${t.title}`}
+                  placeholder="100000"
+                />
+              </div>
             </div>
           </div>
 
