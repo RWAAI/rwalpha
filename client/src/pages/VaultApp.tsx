@@ -339,7 +339,7 @@ export default function VaultApp() {
                     </span>
                   </span>
                   <span>
-                    {zh ? "本月已派" : "This Month"}{" "}
+                    {zh ? "本周已派" : "This Week"}{" "}
                     <span className="text-emerald-600 font-semibold">+${v.pendingYield.toFixed(2)}</span>
                   </span>
                 </div>
