@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, Layers, Sun, Moon, BrainCircuit, Activity, Eye, Cpu, CheckCircle2 } from 'lucide-react';
+import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, Layers, Sun, Moon, BrainCircuit, Activity, Eye, Cpu, CheckCircle2, BarChart2 } from 'lucide-react';
 
 // ─── i18n ────────────────────────────────────────────────────────────────────
 const i18n = {
@@ -9,8 +9,18 @@ const i18n = {
     vaultSub: 'AI 驱动调仓 · 每周现金派息 · 指数底仓增值',
     aiEnabled: 'AI 赋能',
     principal: '模拟本金',
-    annualYield: '年度派息率',
+    annualYield: '年度净派息率',
     yieldTarget: (excess: string) => `目标: 18.00% | 超额: +${excess}%`,
+    mgmtFeeNote: '已扣除 0.80% 管理费',
+    navTitle: '金库 NAV',
+    navSince: '成立以来 · 基准 $100',
+    navReturn: (r: string) => `净回报 +${r}%`,
+    navFeeNote: '已扣除 0.80%/年管理费',
+    navDate: '截至 2026-03-14',
+    navExpenseLabel: '管理费率',
+    navExpenseValue: '0.80% / 年',
+    navEtfFeeLabel: '底层 ETF 加权费率',
+    navEtfFeeValue: '0.51% / 年（内含）',
     weeklyIncome: '平均每周到账',
     annualEst: (v: string) => `预计年收息: $${v}`,
     totalReturn: '年化总回报',
@@ -81,8 +91,18 @@ const i18n = {
     vaultSub: 'AI-Driven Rebalancing · Weekly Cash Distribution · Index Core Position',
     aiEnabled: 'AI Powered',
     principal: 'Simulated Principal',
-    annualYield: 'Annual Yield Rate',
+    annualYield: 'Net Annual Yield',
     yieldTarget: (excess: string) => `Target: 18.00% | Excess: +${excess}%`,
+    mgmtFeeNote: 'After 0.80% mgmt. fee',
+    navTitle: 'Vault NAV',
+    navSince: 'Since Inception · Base $100',
+    navReturn: (r: string) => `Net Return +${r}%`,
+    navFeeNote: '0.80%/yr mgmt. fee deducted',
+    navDate: 'As of 2026-03-14',
+    navExpenseLabel: 'Mgmt. Fee',
+    navExpenseValue: '0.80% / yr',
+    navEtfFeeLabel: 'Underlying ETF Wt. Fee',
+    navEtfFeeValue: '0.51% / yr (embedded)',
     weeklyIncome: 'Avg. Weekly Income',
     annualEst: (v: string) => `Est. Annual Income: $${v}`,
     totalReturn: 'Annualized Total Return',
@@ -158,11 +178,14 @@ const App = () => {
   const [lang, setLang] = useState<Lang>('zh');
   const T = i18n[lang];
 
+  // 数据来源: StockAnalysis.com 2026-03-13 收盘
+  // ETF 自身费率已内含于净值，管理费 0.80%/年由金库额外收取
+  const MGMT_FEE = 0.80; // RWAlpha 管理费 %
   const portfolioBase = [
-    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', aumEn: '$1.39B', yield: 73.1, totalReturn: 35.4, freq: 'Weekly',    aiAdjust: -2.3 },
-    { name: 'QQQI', weight: 0.3015, aum: '91.8亿', aumEn: '$9.18B', yield: 14.3, totalReturn: 17.8, freq: 'Monthly',   aiAdjust: +1.5 },
-    { name: 'QQQM', weight: 0.3108, aum: '712.5亿', aumEn: '$71.25B', yield: 0.5,  totalReturn: 25.2, freq: 'Quarterly', aiAdjust: +0.8 },
-    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', aumEn: '$110.52B', yield: 0.4,  totalReturn: 22.0, freq: 'Quarterly', aiAdjust: 0.0  },
+    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', aumEn: '$1.39B',   price: 13.52, expenseRatio: 1.27, yield: 73.84, totalReturn: 50.38, freq: 'Weekly',    aiAdjust: -2.3 },
+    { name: 'QQQI', weight: 0.3015, aum: '91.8亿', aumEn: '$9.18B',   price: 51.47, expenseRatio: 0.68, yield: 14.49, totalReturn: 21.86, freq: 'Monthly',   aiAdjust: +1.5 },
+    { name: 'QQQM', weight: 0.3108, aum: '712.5亿', aumEn: '$71.25B', price: 244.45, expenseRatio: 0.15, yield: 0.52,  totalReturn: 25.17, freq: 'Quarterly', aiAdjust: +0.8 },
+    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', aumEn: '$110.52B', price: 714.44, expenseRatio: 0.09, yield: 0.43,  totalReturn: 28.97, freq: 'Quarterly', aiAdjust: 0.0  },
   ];
 
   const portfolioData = portfolioBase.map((p, i) => ({
@@ -178,17 +201,32 @@ const App = () => {
   const principal = parseFloat(principalInput.replace(/,/g, '')) || 0;
 
   const metrics = useMemo(() => {
-    const totalYield = portfolioBase.reduce((acc, curr) => acc + (curr.weight * curr.yield), 0);
-    const totalReturn = portfolioBase.reduce((acc, curr) => acc + (curr.weight * curr.totalReturn), 0);
-    const nvdyWeekly = (principal * 0.20 * (73.1 / 100)) / 52;
-    const qqqiMonthly = (principal * 0.30 * (14.3 / 100)) / 12;
+    const grossYield = portfolioBase.reduce((acc, curr) => acc + (curr.weight * curr.yield), 0);
+    const grossReturn = portfolioBase.reduce((acc, curr) => acc + (curr.weight * curr.totalReturn), 0);
+    const netYield = grossYield - MGMT_FEE;
+    const netReturn = grossReturn - MGMT_FEE;
+    // NAV: 假设成立于1年前，基准$100，按净总回报计算
+    const navValue = (100 * (1 + netReturn / 100)).toFixed(2);
+    // 加权ETF费率
+    const weightedEtfFee = portfolioBase.reduce((acc, curr) => acc + (curr.weight * curr.expenseRatio), 0);
+    // 收入计算基于净派息率
+    const nvdyWeekly = (principal * portfolioBase[0].weight * (portfolioBase[0].yield / 100)) / 52;
+    const qqqiMonthly = (principal * portfolioBase[1].weight * (portfolioBase[1].yield / 100)) / 12;
+    const grossAnnualIncome = nvdyWeekly * 52 + qqqiMonthly * 12;
+    const netAnnualIncome = grossAnnualIncome * (1 - MGMT_FEE / 100);
+    const netWeekly = netAnnualIncome / 52;
     return {
-      yield: totalYield.toFixed(2),
-      return: totalReturn.toFixed(2),
+      grossYield: grossYield.toFixed(2),
+      yield: netYield.toFixed(2),
+      grossReturn: grossReturn.toFixed(2),
+      return: netReturn.toFixed(2),
+      navValue,
+      navReturn: netReturn.toFixed(2),
+      weightedEtfFee: weightedEtfFee.toFixed(2),
       nvdyWeekly: nvdyWeekly.toFixed(0),
       qqqiMonthly: qqqiMonthly.toFixed(0),
-      totalWeekly: ((nvdyWeekly * 4 + qqqiMonthly * 1) / 4).toFixed(0),
-      annualIncome: (nvdyWeekly * 52 + qqqiMonthly * 12).toFixed(0),
+      totalWeekly: netWeekly.toFixed(0),
+      annualIncome: netAnnualIncome.toFixed(0),
     };
   }, [principal]);
 
@@ -338,6 +376,50 @@ const App = () => {
           ))}
         </div>
 
+        {/* NAV Card */}
+        <div className={`${t.card} p-5 rounded-3xl shadow-sm border transition-colors duration-300`}>
+          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+            {/* NAV 主值 */}
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-2xl ${dark ? 'bg-emerald-900/40' : 'bg-emerald-50'}`}>
+                <BarChart2 size={22} className="text-emerald-500" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs font-bold uppercase tracking-wider ${t.muted}`}>{T.navTitle}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${dark ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-100 text-emerald-700'}`}>{T.navDate}</span>
+                </div>
+                <div className="flex items-baseline gap-2 mt-0.5">
+                  <span className={`text-3xl font-bold font-mono ${t.title}`}>${metrics.navValue}</span>
+                  <span className="text-emerald-500 text-sm font-bold">▲ {T.navReturn(metrics.navReturn)}</span>
+                </div>
+                <p className={`text-[11px] ${t.muted} mt-0.5`}>{T.navSince} · {T.navFeeNote}</p>
+              </div>
+            </div>
+            {/* 分隔线 */}
+            <div className={`hidden md:block w-px h-12 ${dark ? 'bg-white/10' : 'bg-slate-200'}`} />
+            {/* 费率明细 */}
+            <div className="flex gap-6 md:gap-8">
+              <div>
+                <p className={`text-[10px] font-bold uppercase tracking-wider ${t.muted}`}>{T.navExpenseLabel}</p>
+                <p className={`text-sm font-bold mt-0.5 ${dark ? 'text-rose-400' : 'text-rose-600'}`}>{T.navExpenseValue}</p>
+              </div>
+              <div>
+                <p className={`text-[10px] font-bold uppercase tracking-wider ${t.muted}`}>{T.navEtfFeeLabel}</p>
+                <p className={`text-sm font-bold mt-0.5 ${t.sub}`}>{T.navEtfFeeValue}</p>
+              </div>
+              <div>
+                <p className={`text-[10px] font-bold uppercase tracking-wider ${t.muted}`}>{lang === 'zh' ? '毛派息率' : 'Gross Yield'}</p>
+                <p className={`text-sm font-bold mt-0.5 ${dark ? 'text-indigo-400' : 'text-indigo-600'}`}>{metrics.grossYield}%</p>
+              </div>
+              <div>
+                <p className={`text-[10px] font-bold uppercase tracking-wider ${t.muted}`}>{lang === 'zh' ? '净派息率' : 'Net Yield'}</p>
+                <p className={`text-sm font-bold mt-0.5 text-emerald-500`}>{metrics.yield}%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Top Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-3xl shadow-lg text-white">
@@ -348,6 +430,7 @@ const App = () => {
             <div className="mt-4">
               <p className="text-3xl font-bold">{metrics.yield}%</p>
               <p className="text-blue-100 text-xs mt-1">{T.yieldTarget((parseFloat(metrics.yield)-18).toFixed(2))}</p>
+              <p className="text-blue-200/70 text-[10px] mt-1">{T.mgmtFeeNote}</p>
             </div>
           </div>
 
@@ -371,6 +454,7 @@ const App = () => {
               <p className={`text-3xl font-bold ${t.title}`}>{metrics.return}%</p>
               <p className="text-green-500 text-sm font-bold mt-0.5">+${(principal * parseFloat(metrics.return) / 100).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
               <p className={`${t.sub} text-xs mt-1`}>{T.navNote}</p>
+              <p className={`${t.muted} text-[10px] mt-0.5`}>{T.mgmtFeeNote}</p>
             </div>
           </div>
         </div>
