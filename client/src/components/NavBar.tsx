@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'wouter';
-import { Zap } from 'lucide-react';
+import { Zap, ChevronDown } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 // activeTab: 'home' | 'dashboard' | 'vault'
@@ -10,11 +10,70 @@ interface NavBarProps {
   rightSlot?: ReactNode;
 }
 
+// ── About dropdown ────────────────────────────────────────────────
+function AboutDropdown({ zh }: { zh: boolean }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const items = zh
+    ? [
+        { label: '文档', href: '#' },
+        { label: '安全与审计', href: '#' },
+        { label: '团队', href: '#' },
+      ]
+    : [
+        { label: 'Docs', href: '#' },
+        { label: 'Security & Audit', href: '#' },
+        { label: 'Team', href: '#' },
+      ];
+
+  const trigger = zh ? '关于' : 'About';
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className={`flex items-center gap-0.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 text-slate-500 hover:text-slate-800 hover:bg-slate-100 ${open ? 'bg-slate-100 text-slate-800' : ''}`}
+      >
+        {trigger}
+        <ChevronDown
+          size={14}
+          className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {open && (
+        <div className="absolute top-full left-0 mt-1.5 w-40 bg-white rounded-xl border border-slate-100 shadow-lg py-1 z-50">
+          {items.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors duration-100"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
   const [zh, setZh] = useState(true);
 
-  const tabsZh = ['首页', '金库', '如何运作', '洞察', '积分', '文档'];
-  const tabsEn = ['Home', 'Vault', 'How It Works', 'Insights', 'Points', 'Docs'];
+  // 前5个普通 tab（不含「关于」）
+  const tabsZh = ['首页', '金库', '如何运作', '洞察', '积分'];
+  const tabsEn = ['Home', 'Vault', 'How It Works', 'Insights', 'Points'];
   const tabs = zh ? tabsZh : tabsEn;
 
   const activeIdx = activeTab === 'home' ? 0 : 1;
@@ -50,6 +109,9 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
                 </button>
               );
             })}
+
+            {/* 关于 下拉 */}
+            <AboutDropdown zh={zh} />
           </nav>
         </div>
 
