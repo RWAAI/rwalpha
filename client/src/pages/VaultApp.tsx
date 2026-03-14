@@ -606,12 +606,7 @@ export default function VaultApp() {
 
         </div>
 
-        {/* ── 底部说明 ── */}
-        <p className="text-center text-xs text-slate-400 mt-8">
-          {zh
-            ? "* 收益数据基于历史派息水平，不构成投资承诺。管理费 0.80%/年已在 rINDEX NAV 中扣除。"
-            : "* Yield data is based on historical dividend levels and does not constitute an investment guarantee. 0.80% annual management fee is deducted from rINDEX NAV."}
-        </p>
+
       </div>
     </div>
   );
