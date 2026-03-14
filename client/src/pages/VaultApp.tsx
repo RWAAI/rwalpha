@@ -155,10 +155,6 @@ export default function VaultApp() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
 
-      {/* ── 顶部导航 — 共用 NavBar，金库 Tab 高亮 ── */}
-      {/* vault 页自带语言切换，隐藏 NavBar 右侧区域 */}
-      <NavBar activeTab="vault" rightSlot={<></>} />
-
       {/* ── 钱包连接模拟弹层 ── */}
       {walletModal && (
         <div
