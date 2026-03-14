@@ -13,6 +13,22 @@ import NavBar from "@/components/NavBar";
 
 // ─── 数据 ───────────────────────────────────────────────────────────────────
 
+// 派息历史数据
+const YIELD_HISTORY = [
+  { date: '2026-02-21', amount: 784.50, perToken: 0.627, status: 'paid' },
+  { date: '2026-02-14', amount: 752.20, perToken: 0.602, status: 'paid' },
+  { date: '2026-02-07', amount: 718.40, perToken: 0.575, status: 'paid' },
+  { date: '2026-01-31', amount: 695.80, perToken: 0.557, status: 'paid' },
+  { date: '2026-01-24', amount: 731.60, perToken: 0.585, status: 'paid' },
+  { date: '2026-01-17', amount: 688.30, perToken: 0.551, status: 'paid' },
+  { date: '2026-01-10', amount: 712.50, perToken: 0.570, status: 'paid' },
+  { date: '2026-01-03', amount: 656.70, perToken: 0.525, status: 'paid' },
+  { date: '2025-12-27', amount: 700.00, perToken: 0.560, status: 'paid' },
+  { date: '2025-12-20', amount: 680.50, perToken: 0.544, status: 'paid' },
+  { date: '2025-12-13', amount: 719.50, perToken: 0.576, status: 'paid' },
+  { date: '2025-12-06', amount: 560.00, perToken: 0.448, status: 'paid' },
+];
+
 const VAULT_DATA = {
   product: "rINDEX",
   nav: 129.72,
@@ -122,6 +138,7 @@ export default function VaultApp() {
   const [autoCompound, setAutoCompound] = useState(false);
   const [claimSuccess, setClaimSuccess] = useState(false);
   const [walletModal, setWalletModal] = useState(false);
+  const [historyModal, setHistoryModal] = useState(false);
   const zh = lang === "zh";
 
   const v = VAULT_DATA;
@@ -201,6 +218,51 @@ export default function VaultApp() {
             <p className="text-center text-xs text-slate-400 pb-4 px-6">
               {zh ? '连接即表示同意服务条款与隐私政策' : 'By connecting you agree to our Terms of Service and Privacy Policy'}
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── 派息历史弹层 ── */}
+      {historyModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+          onClick={() => setHistoryModal(false)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* 弹层头部 */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <div>
+                <h2 className="text-base font-bold text-slate-900">{zh ? '派息历史' : 'Yield History'}</h2>
+                <p className="text-xs text-slate-400 mt-0.5">{zh ? '累计已领 USDT' : 'Total Claimed USDT'} &nbsp;<span className="font-semibold text-slate-700">${v.totalClaimed.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></p>
+              </div>
+              <button onClick={() => setHistoryModal(false)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">×</button>
+            </div>
+
+            {/* 表头 */}
+            <div className="grid grid-cols-3 px-6 py-2 bg-slate-50 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <span>{zh ? '派息日期' : 'Date'}</span>
+              <span className="text-right">{zh ? '金额 (USDT)' : 'Amount (USDT)'}</span>
+              <span className="text-right">{zh ? '每份派息' : 'Per Token'}</span>
+            </div>
+
+            {/* 列表 */}
+            <div className="overflow-y-auto max-h-72 divide-y divide-slate-50">
+              {YIELD_HISTORY.map((row, i) => (
+                <div key={i} className="grid grid-cols-3 px-6 py-3 text-sm hover:bg-slate-50 transition-colors">
+                  <span className="text-slate-500">{row.date}</span>
+                  <span className="text-right font-semibold text-slate-800">+${row.amount.toFixed(2)}</span>
+                  <span className="text-right text-slate-500">${row.perToken.toFixed(3)}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="px-6 py-3 bg-slate-50 text-xs text-slate-400 text-center">
+              {zh ? '每周五派息，历史数据仅供参考' : 'Distributed every Friday. Historical data for reference only.'}
+            </div>
           </div>
         </div>
       )}
@@ -373,12 +435,15 @@ export default function VaultApp() {
                   ${v.pendingYield.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                 </p>
                 <div className="flex gap-4 text-xs text-slate-500">
-                  <span>
+                  <button
+                    onClick={() => setHistoryModal(true)}
+                    className="flex items-center gap-1 hover:text-sky-600 transition-colors group"
+                  >
                     {zh ? "累计已领" : "Total Claimed"}{" "}
-                    <span className="text-slate-700 font-semibold">
+                    <span className="text-slate-700 font-semibold group-hover:text-sky-600 underline underline-offset-2 decoration-dashed">
                       ${v.totalClaimed.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                     </span>
-                  </span>
+                  </button>
                   <span>
                     {zh ? "本周已派" : "This Week"}{" "}
                     <span className="text-emerald-600 font-semibold">+${v.pendingYield.toFixed(2)}</span>
