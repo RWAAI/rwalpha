@@ -215,7 +215,7 @@ export default function VaultApp() {
           <h1 className="text-2xl font-bold text-slate-900">
             {zh ? "rINDEX Vault" : "rINDEX Vault"}
           </h1>
-          <Link href="/vault">
+          <Link href="/dashboard">
             <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors ml-1">
               {zh ? "查看产品详情" : "View product details"}
               <ChevronRight size={14} />
