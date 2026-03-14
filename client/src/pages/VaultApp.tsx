@@ -202,8 +202,8 @@ export default function VaultApp() {
         </div>
         <p className="text-slate-500 text-sm">
           {zh
-            ? "纳指100指数底仓 · AI 驱动调仓 · 每月现金派息"
-            : "Nasdaq 100 core · AI-driven rebalancing · Monthly cash dividend"}
+            ? "纳指100指数底仓 · AI 驱动调仓 · 每周现金派息"
+            : "Nasdaq 100 core · AI-driven rebalancing · Weekly cash dividend"}
         </p>
       </div>
 
