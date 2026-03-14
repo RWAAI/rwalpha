@@ -331,7 +331,7 @@ const App = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <div className={`font-bold ${t.title}`}>{item.name}</div>
-                        <div className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${t.muted} ${dark ? 'bg-white/5' : 'bg-slate-100'}`}>{(item.weight * 100).toFixed(2)}%</div>
+                        <div className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${t.muted} ${dark ? 'bg-white/5' : 'bg-slate-100'}`}>占比 {(item.weight * 100).toFixed(2)}%</div>
                       </div>
                       <div className={`inline-block mt-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${
                         item.name === 'NVDY' ? (dark ? 'bg-amber-900/40 text-amber-300' : 'bg-amber-50 text-amber-700') :
