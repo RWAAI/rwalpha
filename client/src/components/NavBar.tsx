@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { Zap, ChevronDown } from 'lucide-react';
 import type { ReactNode } from 'react';
 
@@ -11,9 +11,9 @@ function setLangStorage(zh: boolean) {
   try { localStorage.setItem('rwa-lang', zh ? 'zh' : 'en'); } catch { /* noop */ }
 }
 
-// activeTab: 'home' | 'dashboard' | 'vault'
+// activeTab: optional override; defaults to auto-detect from current URL
 interface NavBarProps {
-  activeTab?: 'home' | 'dashboard' | 'vault';
+  activeTab?: 'home' | 'dashboard' | 'vault' | 'how-it-works' | 'insights';
   /** 替换右侧默认「进入应用」按钮区域；不传则显示默认 Launch App */
   rightSlot?: ReactNode;
 }
@@ -104,7 +104,21 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
   const tabsEn = ['Home', 'Vault', 'How It Works', 'Insights'];
   const tabs = zh ? tabsZh : tabsEn;
 
-  const activeIdx = activeTab === 'home' ? 0 : 1;
+  const [location] = useLocation();
+  // Auto-detect active index from current URL if activeTab not explicitly passed
+  const routeToIdx: Record<string, number> = {
+    '/': 0,
+    '/dashboard': 1,
+    '/vault': 1,
+    '/how-it-works': 2,
+  };
+  const autoIdx = routeToIdx[location] ?? -1;
+  const propIdx = activeTab === 'home' ? 0
+    : activeTab === 'dashboard' || activeTab === 'vault' ? 1
+    : activeTab === 'how-it-works' ? 2
+    : activeTab === 'insights' ? 3
+    : -1;
+  const activeIdx = propIdx !== -1 ? propIdx : autoIdx;
 
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
