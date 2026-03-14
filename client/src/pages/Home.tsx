@@ -31,7 +31,8 @@ const App = () => {
       return: totalReturn.toFixed(2),
       nvdyWeekly: nvdyWeekly.toFixed(0),
       qqqiMonthly: qqqiMonthly.toFixed(0),
-      totalMonthly: (nvdyWeekly * 4 + qqqiMonthly * 1).toFixed(0)
+      totalMonthly: (nvdyWeekly * 4 + qqqiMonthly * 1).toFixed(0),
+      totalWeekly: ((nvdyWeekly * 4 + qqqiMonthly * 1) / 4).toFixed(0)
     };
   }, [principal]);
 
@@ -184,11 +185,11 @@ const App = () => {
           <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
             <div className="flex justify-between items-start">
               <div className={`p-2 ${dark ? 'bg-green-900/40 text-green-400' : 'bg-green-50 text-green-600'} rounded-lg`}><DollarSign size={20} /></div>
-              <span className={`text-xs font-medium ${t.muted}`}>平均月到账</span>
+              <span className={`text-xs font-medium ${t.muted}`}>平均每周到账</span>
             </div>
             <div className="mt-4">
-              <p className={`text-3xl font-bold ${t.title}`}>${parseInt(metrics.totalMonthly).toLocaleString()}</p>
-              <p className={`${t.sub} text-xs mt-1`}>预计年收息: ${(parseInt(metrics.totalMonthly) * 12).toLocaleString()}</p>
+              <p className={`text-3xl font-bold ${t.title}`}>${parseInt(metrics.totalWeekly).toLocaleString()}</p>
+              <p className={`${t.sub} text-xs mt-1`}>预计年收息: ${(parseInt(metrics.totalWeekly) * 52).toLocaleString()}</p>
             </div>
           </div>
 
