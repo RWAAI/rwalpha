@@ -308,7 +308,7 @@ const App = () => {
                   : ['Home', 'Vault', 'How It Works', 'Insights', 'Points', 'Docs']
                 ).map((tab, i) => {
                   const cls = `px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                    i === 1
+                    i === 0
                       ? (dark ? 'bg-white/10 text-white' : 'bg-slate-900/10 text-slate-900 font-semibold')
                       : (dark ? 'text-slate-400 hover:text-white hover:bg-white/8' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100')
                   }`;
