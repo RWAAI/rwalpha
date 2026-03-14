@@ -287,15 +287,15 @@ const App = () => {
   const signalBars = [65, 48, 72, 100];
 
   return (
-    <div className={`min-h-screen ${t.page} p-4 md:p-8 font-sans transition-colors duration-300`}>
+    <div className={`min-h-screen ${t.page} font-sans transition-colors duration-300`}>
 
-      <div className="max-w-6xl mx-auto space-y-6">
+      {/* 顶部导航栏 — 使用共用 NavBar 组件，金库 Tab 高亮 */}
+      <NavBar activeTab="dashboard" />
 
-        {/* Header 外层：按钮组 + 卡片 */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 pt-8 pb-8 space-y-6">
+
+        {/* Header 外层：按鈕组 + 卡片 */}
         <div>
-
-          {/* 顶部导航栏 — 使用共用 NavBar 组件，金库 Tab 高亮 */}
-          <NavBar activeTab="dashboard" />
 
         {/* Header */}
         <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4`}>
