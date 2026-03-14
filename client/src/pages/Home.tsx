@@ -184,9 +184,9 @@ const App = () => {
   // ETF 自身费率已内含于净值，管理费 0.80%/年由金库额外收取
   const MGMT_FEE = 0.80; // RWAlpha 管理费 %
   const portfolioBase = [
-    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', aumEn: '$1.39B',   price: 13.52, expenseRatio: 1.27, yield: 73.84, totalReturn: 50.38, freq: 'Weekly',    aiAdjust: -2.3 },
-    { name: 'QQQI', weight: 0.3015, aum: '91.8亿', aumEn: '$9.18B',   price: 51.47, expenseRatio: 0.68, yield: 14.49, totalReturn: 21.86, freq: 'Monthly',   aiAdjust: +1.5 },
-    { name: 'QQQM', weight: 0.3108, aum: '712.5亿', aumEn: '$71.25B', price: 244.45, expenseRatio: 0.15, yield: 0.52,  totalReturn: 25.17, freq: 'Quarterly', aiAdjust: +0.8 },
+    { name: 'NVDY', weight: 0.22,   aum: '13.9亿', aumEn: '$1.39B',   price: 13.52, expenseRatio: 1.27, yield: 73.84, totalReturn: 50.38, freq: 'Weekly',    aiAdjust: +3.2 },
+    { name: 'QQQI', weight: 0.29,   aum: '91.8亿', aumEn: '$9.18B',   price: 51.47, expenseRatio: 0.68, yield: 14.49, totalReturn: 21.86, freq: 'Monthly',   aiAdjust: +1.5 },
+    { name: 'QQQM', weight: 0.29,  aum: '712.5亿', aumEn: '$71.25B', price: 244.45, expenseRatio: 0.15, yield: 0.52,  totalReturn: 25.17, freq: 'Quarterly', aiAdjust: +0.8 },
     { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', aumEn: '$110.52B', price: 714.44, expenseRatio: 0.09, yield: 0.43,  totalReturn: 28.97, freq: 'Quarterly', aiAdjust: 0.0  },
   ];
 
