@@ -142,6 +142,8 @@ export default function VaultApp() {
   const [historyModal, setHistoryModal] = useState(false);
   const [tradeMode, setTradeMode] = useState<"buy" | "sell">("buy");
   const [spendAmt, setSpendAmt] = useState("");
+  const [payToken, setPayToken] = useState<"USDC" | "USDT">("USDC");
+  const [showPayDrop, setShowPayDrop] = useState(false);
   const [backedModal, setBackedModal] = useState(false);
   const [weeklyDivModal, setWeeklyDivModal] = useState(false);
   const zh = lang === "zh";
@@ -486,9 +488,31 @@ export default function VaultApp() {
                     />
                     <div className="flex flex-col items-end gap-0.5 shrink-0">
                       {tradeMode === "buy" ? (
-                        <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl px-2.5 py-1">
-                          <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[9px] text-white font-bold">$</div>
-                          <span className="text-sm font-bold text-slate-700">USDC</span>
+                        <div className="relative">
+                          <button
+                            onClick={() => setShowPayDrop(p => !p)}
+                            className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl px-2.5 py-1 transition-colors"
+                          >
+                            <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[9px] text-white font-bold">$</div>
+                            <span className="text-sm font-bold text-slate-700">{payToken}</span>
+                            <svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                          </button>
+                          {showPayDrop && (
+                            <div className="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 overflow-hidden min-w-[90px]">
+                              {(["USDC", "USDT"] as const).map(tok => (
+                                <button
+                                  key={tok}
+                                  onClick={() => { setPayToken(tok); setShowPayDrop(false); }}
+                                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm font-semibold hover:bg-slate-50 transition-colors ${
+                                    payToken === tok ? "text-blue-600" : "text-slate-700"
+                                  }`}
+                                >
+                                  <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center text-[8px] text-white font-bold">$</div>
+                                  {tok}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-xl px-2.5 py-1">
@@ -532,7 +556,7 @@ export default function VaultApp() {
                       ) : (
                         <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl px-2.5 py-1">
                           <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[9px] text-white font-bold">$</div>
-                          <span className="text-sm font-bold text-slate-700">USDC</span>
+                          <span className="text-sm font-bold text-slate-700">{payToken}</span>
                         </div>
                       )}
                       <div className="text-[10px] text-slate-400">
