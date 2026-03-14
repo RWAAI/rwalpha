@@ -205,6 +205,23 @@ export default function VaultApp() {
         </div>
       )}
 
+      {/* ── 轻量导航条 ── */}
+      <div className="bg-white border-b border-slate-100">
+        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+          <Link href="/">
+            <span className="text-lg font-extrabold tracking-tight cursor-pointer" style={{ color: '#38bdf8', letterSpacing: '-0.02em' }}>
+              RWAlpha.io
+            </span>
+          </Link>
+          <Link href="/dashboard">
+            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-700 transition-colors">
+              <ChevronRight size={14} className="rotate-180" />
+              {zh ? 'Dashboard' : 'Dashboard'}
+            </button>
+          </Link>
+        </div>
+      </div>
+
       {/* ── 页面标题 ── */}
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
         <div className="flex items-center gap-3 mb-1 flex-wrap">
