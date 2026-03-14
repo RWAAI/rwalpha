@@ -316,7 +316,7 @@ export default function HowItWorks() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans">
-      <NavBar activeTab="home" />
+      <NavBar activeTab="how-it-works" />
 
       {/* ── Page Header ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-white pt-16 pb-10 px-6 border-b border-slate-100">
