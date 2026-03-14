@@ -8,10 +8,10 @@ const App = () => {
 
   // 模拟数据源 (截至2026年3月14日市场参考)
   const portfolioData = [
-    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3, aiReason: 'NVDY 隐含波动率上升至历史高位，AI 触发减仓以降低尾部风险', tagline: '山定浮盈，每周自动到账 — 让强势股的浮盈变现金流' },
-    { name: 'QQQI', weight: 0.3015, aum: '91.8亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5, aiReason: 'QQQI 期权溢价扩大，AI 增配以捕获更高的权利金收益', tagline: '科技巨头全仓底，收益增长一个不少 — 指数级稳健派息机器' },
-    { name: 'QQQM', weight: 0.3108, aum: '712.5亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8, aiReason: '纳指动量信号转强，AI 小幅增配底仓以跟踪上涨弹性', tagline: '纳指纯底仓，吃尽科技十年红利 — 费率极致，长期复利最强引擎' },
-    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0,  aiReason: '科技板块走势平稳，AI 维持当前配比不作调整', tagline: '全美科技巨头一网打尽，跨周期底仓不动如山 — 投的是时代红利' },
+    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3, aiReason: 'NVDY 隐含波动率上升至历史高位，AI 触发减仓以降低尾部风险', tagline: '年化 73% 派息率，NVDA 期权收益每周直接落袋' },
+    { name: 'QQQI', weight: 0.3015, aum: '91.8亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5, aiReason: 'QQQI 期权溢价扩大，AI 增配以捕获更高的权利金收益', tagline: '纳指底仓 + 月度派息，91.8 亿 AUM 背书稳健增收' },
+    { name: 'QQQM', weight: 0.3108, aum: '712.5亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8, aiReason: '纳指动量信号转强，AI 小幅增配底仓以跟踪上涨弹性', tagline: '低费率纳指 ETF，712 亿规模底仓，25% 年化稳健增长' },
+    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0,  aiReason: '科技板块走势平稳，AI 维持当前配比不作调整', tagline: '全美科技一键持有，1100 亿规模穿越周期的压舱底仓' },
   ];
 
   const COLORS = ['#F59E0B', '#3B82F6', '#10B981', '#6366F1'];
