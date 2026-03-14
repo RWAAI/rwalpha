@@ -7,7 +7,7 @@ const i18n = {
   zh: {
     vaultTitle: 'RWAlpha 指数旗舰金库',
     vaultSub: 'AI 驱动调仓 · 每周现金派息 · 指数底仓增值',
-    aiEnabled: 'AI 已启用',
+    aiEnabled: 'AI 赋能',
     principal: '模拟本金',
     annualYield: '年度派息率',
     yieldTarget: (excess: string) => `目标: 18.00% | 超额: +${excess}%`,
@@ -79,7 +79,7 @@ const i18n = {
   en: {
     vaultTitle: 'RWAlpha Index Prime Vault',
     vaultSub: 'AI-Driven Rebalancing · Weekly Cash Distribution · Index Core Position',
-    aiEnabled: 'AI Enabled',
+    aiEnabled: 'AI Powered',
     principal: 'Simulated Principal',
     annualYield: 'Annual Yield Rate',
     yieldTarget: (excess: string) => `Target: 18.00% | Excess: +${excess}%`,
