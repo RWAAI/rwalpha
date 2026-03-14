@@ -1,6 +1,6 @@
 // AuthModal.tsx
-// Dark-theme login/register modal matching the reference design:
-// Deep navy background, dark input fields, white text, teal CTA button
+// White-theme login/register modal matching the reference design:
+// White background, light gray input fields, teal CTA button
 
 import { useState, useEffect } from 'react';
 import { Eye, EyeOff, X } from 'lucide-react';
@@ -79,6 +79,13 @@ const GoogleIcon = () => (
 
 export default function AuthModal({ open, initialMode = 'login', onClose, zh = true }: AuthModalProps) {
   const [mode, setMode] = useState<Mode>(initialMode);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Sync mode when parent changes initialMode (e.g. clicking Login vs Register button)
   useEffect(() => {
@@ -92,14 +99,6 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
       setShowConfirm(false);
     }
   }, [open, initialMode]);
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [agreed, setAgreed] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const T = zh ? COPY.zh : COPY.en;
 
@@ -128,57 +127,38 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
     setShowConfirm(false);
   };
 
-  // Dark navy color palette matching the reference design
-  const bg = '#0f172a';          // outer overlay / page bg
-  const cardBg = '#1e293b';      // card background
-  const inputBg = '#162032';     // input field background
-  const inputBorder = '#2d3f55'; // input border
-  const labelColor = '#94a3b8';  // label text
-  const placeholderColor = '#4a6080'; // placeholder
-
   return (
     <div
       className="fixed inset-0 z-[200] flex items-center justify-center"
-      style={{ background: 'rgba(10, 15, 30, 0.80)', backdropFilter: 'blur(6px)' }}
+      style={{ background: 'rgba(15, 23, 42, 0.55)', backdropFilter: 'blur(4px)' }}
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md mx-4 rounded-2xl shadow-2xl overflow-hidden"
-        style={{ background: bg }}
+        className="relative w-full max-w-md mx-4 rounded-2xl shadow-2xl overflow-hidden bg-white"
         onClick={e => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 transition-colors"
-          style={{ color: '#4a6080' }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
-          onMouseLeave={e => (e.currentTarget.style.color = '#4a6080')}
+          className="absolute top-4 right-4 z-10 text-slate-300 hover:text-slate-500 transition-colors"
         >
           <X size={18} />
         </button>
 
-        {/* Title — spaced letters, small, muted */}
+        {/* Title — spaced letters, small, muted, centered above card */}
         <div className="pt-8 pb-2 px-8 text-center">
-          <p className="text-sm tracking-[0.25em] font-light" style={{ color: '#64748b' }}>
+          <p className="text-sm tracking-[0.22em] font-light text-slate-400">
             {mode === 'login' ? T.loginTitle : T.registerTitle}
           </p>
         </div>
 
         {/* Card inner */}
-        <div className="mx-6 mb-6 mt-4 rounded-xl p-6" style={{ background: cardBg }}>
+        <div className="mx-6 mb-6 mt-4 rounded-xl p-6 bg-white border border-slate-100 shadow-sm">
 
           {/* Google Button */}
           <button
             onClick={handleGoogleAuth}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl font-medium text-sm transition-all duration-200 mb-5"
-            style={{
-              background: '#1e2d42',
-              border: '1px solid #2d3f55',
-              color: '#e2e8f0',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#253348')}
-            onMouseLeave={e => (e.currentTarget.style.background = '#1e2d42')}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all duration-200 text-slate-700 font-medium text-sm mb-5 shadow-sm"
           >
             <GoogleIcon />
             {mode === 'login' ? T.googleLogin : T.googleRegister}
@@ -186,9 +166,9 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
 
           {/* Divider */}
           <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px" style={{ background: '#2d3f55' }} />
-            <span className="text-xs" style={{ color: '#4a6080' }}>{T.or}</span>
-            <div className="flex-1 h-px" style={{ background: '#2d3f55' }} />
+            <div className="flex-1 h-px bg-slate-200" />
+            <span className="text-xs text-slate-400">{T.or}</span>
+            <div className="flex-1 h-px bg-slate-200" />
           </div>
 
           {/* Form */}
@@ -196,7 +176,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
 
             {/* Email */}
             <div>
-              <label className="block text-sm mb-1.5 font-normal" style={{ color: labelColor }}>
+              <label className="block text-sm mb-1.5 font-normal text-slate-500">
                 {T.email}
               </label>
               <input
@@ -205,21 +185,13 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
                 onChange={e => setEmail(e.target.value)}
                 placeholder={T.emailPlaceholder}
                 required
-                className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
-                style={{
-                  background: inputBg,
-                  border: `1px solid ${inputBorder}`,
-                  color: '#e2e8f0',
-                  caretColor: '#2dd4bf',
-                }}
-                onFocus={e => (e.currentTarget.style.borderColor = '#2dd4bf')}
-                onBlur={e => (e.currentTarget.style.borderColor = inputBorder)}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm mb-1.5 font-normal" style={{ color: labelColor }}>
+              <label className="block text-sm mb-1.5 font-normal text-slate-500">
                 {T.password}
               </label>
               <div className="relative">
@@ -230,23 +202,12 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
                   placeholder={mode === 'register' ? T.passwordHint : T.passwordPlaceholder}
                   required
                   minLength={mode === 'register' ? 8 : undefined}
-                  className="w-full px-4 py-3 pr-11 rounded-xl text-sm outline-none transition-all"
-                  style={{
-                    background: inputBg,
-                    border: `1px solid ${inputBorder}`,
-                    color: '#e2e8f0',
-                    caretColor: '#2dd4bf',
-                  }}
-                  onFocus={e => (e.currentTarget.style.borderColor = '#2dd4bf')}
-                  onBlur={e => (e.currentTarget.style.borderColor = inputBorder)}
+                  className="w-full px-4 py-3 pr-11 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: '#4a6080' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#4a6080')}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -256,7 +217,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
             {/* Confirm Password (register only) */}
             {mode === 'register' && (
               <div>
-                <label className="block text-sm mb-1.5 font-normal" style={{ color: labelColor }}>
+                <label className="block text-sm mb-1.5 font-normal text-slate-500">
                   {T.confirmPassword}
                 </label>
                 <div className="relative">
@@ -266,23 +227,12 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
                     onChange={e => setConfirmPassword(e.target.value)}
                     placeholder={T.confirmPlaceholder}
                     required
-                    className="w-full px-4 py-3 pr-11 rounded-xl text-sm outline-none transition-all"
-                    style={{
-                      background: inputBg,
-                      border: `1px solid ${inputBorder}`,
-                      color: '#e2e8f0',
-                      caretColor: '#2dd4bf',
-                    }}
-                    onFocus={e => (e.currentTarget.style.borderColor = '#2dd4bf')}
-                    onBlur={e => (e.currentTarget.style.borderColor = inputBorder)}
+                    className="w-full px-4 py-3 pr-11 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirm(!showConfirm)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
-                    style={{ color: '#4a6080' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#94a3b8')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#4a6080')}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                   >
                     {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -296,10 +246,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
                 <button
                   type="button"
                   onClick={() => alert(zh ? '密码重置功能即将上线' : 'Password reset coming soon')}
-                  className="text-sm font-medium transition-colors"
-                  style={{ color: '#2dd4bf' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#5eead4')}
-                  onMouseLeave={e => (e.currentTarget.style.color = '#2dd4bf')}
+                  className="text-sm font-medium text-teal-500 hover:text-teal-600 transition-colors"
                 >
                   {T.forgotPassword}
                 </button>
@@ -310,39 +257,29 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
             {mode === 'register' && (
               <div className="flex items-start gap-3 pt-1">
                 <div className="relative mt-0.5 shrink-0">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    checked={agreed}
-                    onChange={e => setAgreed(e.target.checked)}
-                    className="sr-only"
-                  />
                   <div
                     onClick={() => setAgreed(!agreed)}
-                    className="w-5 h-5 rounded cursor-pointer flex items-center justify-center transition-all"
+                    className="w-5 h-5 rounded cursor-pointer flex items-center justify-center transition-all border-2"
                     style={{
-                      background: agreed ? '#2dd4bf' : 'transparent',
-                      border: `2px solid ${agreed ? '#2dd4bf' : '#4a6080'}`,
+                      background: agreed ? '#2dd4bf' : 'white',
+                      borderColor: agreed ? '#2dd4bf' : '#cbd5e1',
                     }}
                   >
                     {agreed && (
                       <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                        <path d="M1 4L3.5 6.5L9 1" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     )}
                   </div>
                 </div>
                 <label
-                  htmlFor="terms"
-                  className="text-sm leading-relaxed cursor-pointer"
-                  style={{ color: '#64748b' }}
+                  className="text-sm leading-relaxed cursor-pointer text-slate-500"
                   onClick={() => setAgreed(!agreed)}
                 >
                   {T.terms}{' '}
                   <button
                     type="button"
-                    className="font-semibold transition-colors"
-                    style={{ color: '#2dd4bf' }}
+                    className="font-semibold text-teal-500 hover:text-teal-600 transition-colors"
                     onClick={e => e.stopPropagation()}
                   >
                     {T.termsLink}
@@ -350,8 +287,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
                   {' '}{T.and}{' '}
                   <button
                     type="button"
-                    className="font-semibold transition-colors"
-                    style={{ color: '#2dd4bf' }}
+                    className="font-semibold text-teal-500 hover:text-teal-600 transition-colors"
                     onClick={e => e.stopPropagation()}
                   >
                     {T.privacyLink}
@@ -366,19 +302,9 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
               disabled={loading || (mode === 'register' && !agreed)}
               className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-[0.98] mt-2"
               style={{
-                background: loading || (mode === 'register' && !agreed) ? '#1a3a38' : '#2dd4bf',
-                color: loading || (mode === 'register' && !agreed) ? '#4a7a76' : '#0f172a',
+                background: loading || (mode === 'register' && !agreed) ? '#99f6e4' : '#2dd4bf',
+                color: 'white',
                 cursor: loading || (mode === 'register' && !agreed) ? 'not-allowed' : 'pointer',
-              }}
-              onMouseEnter={e => {
-                if (!loading && !(mode === 'register' && !agreed)) {
-                  e.currentTarget.style.background = '#5eead4';
-                }
-              }}
-              onMouseLeave={e => {
-                if (!loading && !(mode === 'register' && !agreed)) {
-                  e.currentTarget.style.background = '#2dd4bf';
-                }
               }}
             >
               {loading ? (
@@ -396,14 +322,11 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
           </form>
 
           {/* Switch mode */}
-          <p className="text-center text-sm mt-5" style={{ color: '#64748b' }}>
+          <p className="text-center text-sm text-slate-400 mt-5">
             {mode === 'login' ? T.noAccount : T.hasAccount}{' '}
             <button
               onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
-              className="font-semibold transition-colors"
-              style={{ color: '#2dd4bf' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#5eead4')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#2dd4bf')}
+              className="font-semibold text-teal-500 hover:text-teal-600 transition-colors"
             >
               {mode === 'login' ? T.registerNow : T.loginNow}
             </button>
