@@ -394,7 +394,7 @@ export default function VaultApp() {
                   </select>
                 </div>
 
-                {/* Spend 输入框 */}
+                {/* Spend 输入框 — 认购时上 USDC 下 rINDEX，赎回时上 rINDEX 下 USDC */}
                 <div className="mx-3 mb-0 bg-white rounded-2xl border border-slate-100 px-4 py-3">
                   <p className="text-xs text-slate-400 mb-1">{zh ? "支付" : "Spend"}</p>
                   <div className="flex items-center gap-2">
@@ -407,12 +407,20 @@ export default function VaultApp() {
                       className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0"
                     />
                     <div className="flex flex-col items-end gap-0.5 shrink-0">
-                      <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl px-2.5 py-1">
-                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[9px] text-white font-bold">$</div>
-                        <span className="text-sm font-bold text-slate-700">USDC</span>
-                      </div>
+                      {tradeMode === "buy" ? (
+                        <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl px-2.5 py-1">
+                          <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[9px] text-white font-bold">$</div>
+                          <span className="text-sm font-bold text-slate-700">USDC</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-xl px-2.5 py-1">
+                          <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[9px] text-white font-bold">R</div>
+                          <span className="text-sm font-bold text-emerald-700">rINDEX</span>
+                        </div>
+                      )}
                       <div className="flex items-center gap-1 text-[10px] text-slate-400">
-                        {zh ? "余额：" : "Balance: "}<span>0</span>
+                        {zh ? "余额：" : "Balance: "}
+                        <span>{tradeMode === "sell" && connected ? "1,250.00" : "0"}</span>
                         <button className="text-emerald-600 font-bold hover:underline ml-1">Max</button>
                       </div>
                     </div>
@@ -431,14 +439,28 @@ export default function VaultApp() {
                   <p className="text-xs text-slate-400 mb-1">{zh ? "最少获得" : "Receive at least"}</p>
                   <div className="flex items-center gap-2">
                     <span className="flex-1 text-2xl font-semibold text-slate-400">
-                      {spendAmt && v.nav > 0 ? (parseFloat(spendAmt) / v.nav).toFixed(4) : "0"}
+                      {spendAmt && v.nav > 0
+                        ? tradeMode === "buy"
+                          ? (parseFloat(spendAmt) / v.nav).toFixed(4)
+                          : (parseFloat(spendAmt) * v.nav).toFixed(2)
+                        : "0"}
                     </span>
                     <div className="flex flex-col items-end gap-0.5 shrink-0">
-                      <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-xl px-2.5 py-1">
-                        <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[9px] text-white font-bold">R</div>
-                        <span className="text-sm font-bold text-emerald-700">rINDEX</span>
+                      {tradeMode === "buy" ? (
+                        <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-xl px-2.5 py-1">
+                          <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[9px] text-white font-bold">R</div>
+                          <span className="text-sm font-bold text-emerald-700">rINDEX</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl px-2.5 py-1">
+                          <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[9px] text-white font-bold">$</div>
+                          <span className="text-sm font-bold text-slate-700">USDC</span>
+                        </div>
+                      )}
+                      <div className="text-[10px] text-slate-400">
+                        {zh ? "余额：" : "Balance: "}
+                        <span>{tradeMode === "buy" && connected ? "1,250.00" : "0"}</span>
                       </div>
-                      <div className="text-[10px] text-slate-400">{zh ? "余额：" : "Balance: "}<span>{connected ? "1,250.00" : "0"}</span></div>
                     </div>
                   </div>
                 </div>
@@ -459,7 +481,7 @@ export default function VaultApp() {
                         ? (zh ? "输入金额" : "Enter Amount")
                         : tradeMode === "buy"
                           ? (zh ? `认购 ${(parseFloat(spendAmt)/v.nav).toFixed(4)} rINDEX` : `Buy ${(parseFloat(spendAmt)/v.nav).toFixed(4)} rINDEX`)
-                          : (zh ? `赎回 ${(parseFloat(spendAmt)/v.nav).toFixed(4)} rINDEX` : `Redeem ${(parseFloat(spendAmt)/v.nav).toFixed(4)} rINDEX`)
+                          : (zh ? `赎回 获得 ${(parseFloat(spendAmt)*v.nav).toFixed(2)} USDC` : `Redeem → ${(parseFloat(spendAmt)*v.nav).toFixed(2)} USDC`)
                     }
                   </button>
                 </div>
