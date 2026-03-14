@@ -125,7 +125,7 @@ function Countdown({ days, hours }: { days: number; hours: number }) {
   const s = secs % 60;
   return (
     <span className="font-mono text-amber-500 font-bold text-sm">
-      {d}d {String(h).padStart(2, "0")}h {String(m).padStart(2, "0")}m {String(s).padStart(2, "0")}s
+      {d}d {String(h).padStart(2, "0")}h
     </span>
   );
 }
