@@ -148,18 +148,18 @@ export default function VaultApp() {
               </span>
             </Link>
             <nav className="hidden md:flex items-center gap-1">
-              {navTabs.map((tab, i) => (
-                <button
-                  key={tab}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                    i === 1
-                      ? "bg-emerald-50 text-emerald-700 font-semibold"
-                      : "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
+              {navTabs.map((tab, i) => {
+                const isVault = i === 1;
+                const isHome = i === 0;
+                const cls = `px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+                  isVault
+                    ? "bg-emerald-50 text-emerald-700 font-semibold"
+                    : "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+                }`;
+                if (isHome) return <Link key={tab} href="/"><button className={cls}>{tab}</button></Link>;
+                if (isVault) return <Link key={tab} href="/vault"><button className={cls}>{tab}</button></Link>;
+                return <button key={tab} className={cls} onClick={() => alert(zh ? "即将上线" : "Coming soon")}>{tab}</button>;
+              })}
             </nav>
           </div>
 
@@ -193,10 +193,12 @@ export default function VaultApp() {
           <h1 className="text-2xl font-bold text-slate-900">
             {zh ? "rINDEX Vault" : "rINDEX Vault"}
           </h1>
-          <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors ml-1">
-            {zh ? "查看产品详情" : "View product details"}
-            <ChevronRight size={14} />
-          </button>
+          <Link href="/vault">
+            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors ml-1">
+              {zh ? "查看产品详情" : "View product details"}
+              <ChevronRight size={14} />
+            </button>
+          </Link>
         </div>
         <p className="text-slate-500 text-sm">
           {zh
