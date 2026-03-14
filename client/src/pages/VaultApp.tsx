@@ -139,6 +139,8 @@ export default function VaultApp() {
   const [claimSuccess, setClaimSuccess] = useState(false);
   const [walletModal, setWalletModal] = useState(false);
   const [historyModal, setHistoryModal] = useState(false);
+  const [tradeMode, setTradeMode] = useState<"buy" | "sell">("buy");
+  const [spendAmt, setSpendAmt] = useState("");
   const zh = lang === "zh";
 
   const v = VAULT_DATA;
@@ -393,15 +395,100 @@ export default function VaultApp() {
                 </div>
               </div>
 
-              {/* 操作按钮 */}
-              <div className="grid grid-cols-2 gap-3 pt-1">
-                <button className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-50 transition-all active:scale-95">
-                  {zh ? "− 赎回（T+3）" : "− Redeem (T+3)"}
-                </button>
-                <button className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-100 transition-all active:scale-95">
-                  <Zap size={15} />
-                  {zh ? "+ 认购" : "+ Subscribe"}
-                </button>
+              {/* ── 交易框 ── */}
+              <div className="rounded-2xl bg-slate-50 border border-slate-200 overflow-hidden">
+                {/* Buy / Sell + 网络选择 */}
+                <div className="flex items-center justify-between px-4 pt-3 pb-2">
+                  <div className="flex gap-1 bg-white rounded-xl p-0.5 border border-slate-200 shadow-sm">
+                    <button
+                      onClick={() => setTradeMode("buy")}
+                      className={`px-4 py-1 rounded-lg text-sm font-bold transition-all ${
+                        tradeMode === "buy" ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-700"
+                      }`}
+                    >{zh ? "认购" : "Buy"}</button>
+                    <button
+                      onClick={() => setTradeMode("sell")}
+                      className={`px-4 py-1 rounded-lg text-sm font-bold transition-all ${
+                        tradeMode === "sell" ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-700"
+                      }`}
+                    >{zh ? "赎回" : "Sell"}</button>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm">
+                    <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-[8px] text-white font-bold">E</div>
+                    Ethereum
+                    <svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </div>
+                </div>
+
+                {/* Spend 输入框 */}
+                <div className="mx-3 mb-0 bg-white rounded-2xl border border-slate-100 px-4 py-3">
+                  <p className="text-xs text-slate-400 mb-1">{zh ? "支付" : "Spend"}</p>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={spendAmt}
+                      onChange={e => setSpendAmt(e.target.value)}
+                      className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0"
+                    />
+                    <div className="flex flex-col items-end gap-0.5 shrink-0">
+                      <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl px-2.5 py-1">
+                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[9px] text-white font-bold">$</div>
+                        <span className="text-sm font-bold text-slate-700">USDC</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-[10px] text-slate-400">
+                        {zh ? "余额：" : "Balance: "}<span>0</span>
+                        <button className="text-emerald-600 font-bold hover:underline ml-1">Max</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 箭头分隔 */}
+                <div className="flex justify-center -my-1 relative z-10">
+                  <div className="w-8 h-8 rounded-full bg-slate-50 border-2 border-slate-200 flex items-center justify-center shadow-sm">
+                    <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </div>
+                </div>
+
+                {/* Receive 输入框 */}
+                <div className="mx-3 mt-0 mb-3 bg-white rounded-2xl border border-slate-100 px-4 py-3">
+                  <p className="text-xs text-slate-400 mb-1">{zh ? "最少获得" : "Receive at least"}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="flex-1 text-2xl font-semibold text-slate-400">
+                      {spendAmt && v.nav > 0 ? (parseFloat(spendAmt) / v.nav).toFixed(4) : "0"}
+                    </span>
+                    <div className="flex flex-col items-end gap-0.5 shrink-0">
+                      <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-xl px-2.5 py-1">
+                        <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[9px] text-white font-bold">R</div>
+                        <span className="text-sm font-bold text-emerald-700">rINDEX</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400">{zh ? "余额：" : "Balance: "}<span>{connected ? "1,250.00" : "0"}</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 确认按钮 */}
+                <div className="px-3 pb-3">
+                  <button
+                    className={`w-full py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 ${
+                      spendAmt && parseFloat(spendAmt) > 0
+                        ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-100"
+                        : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                    }`}
+                    disabled={!spendAmt || parseFloat(spendAmt) <= 0}
+                  >
+                    {!connected
+                      ? (zh ? "请先连接钱包" : "Connect Wallet First")
+                      : !spendAmt || parseFloat(spendAmt) <= 0
+                        ? (zh ? "输入金额" : "Enter Amount")
+                        : tradeMode === "buy"
+                          ? (zh ? `认购 ${(parseFloat(spendAmt)/v.nav).toFixed(4)} rINDEX` : `Buy ${(parseFloat(spendAmt)/v.nav).toFixed(4)} rINDEX`)
+                          : (zh ? `赎回 ${(parseFloat(spendAmt)/v.nav).toFixed(4)} rINDEX` : `Redeem ${(parseFloat(spendAmt)/v.nav).toFixed(4)} rINDEX`)
+                    }
+                  </button>
+                </div>
               </div>
             </div>
           </div>
