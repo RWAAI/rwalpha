@@ -424,63 +424,6 @@ const App = () => {
           </div>
         </div>
 
-        {/* Row 2: AI vs 手动对比图 */}
-        <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <div className={`p-1.5 rounded-lg ${dark ? 'bg-violet-900/50' : 'bg-violet-100'}`}>
-                <TrendingUp size={16} className="text-violet-500" />
-              </div>
-              <h3 className={`font-bold ${t.title}`}>AI 调仓 vs 固定持有 — 模拟收益对比</h3>
-            </div>
-            <div className="flex gap-4 text-[11px] font-bold">
-              <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-violet-500 rounded"></div><span className={t.sub}>AI 动态调仓</span></div>
-              <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-slate-400 rounded" style={{borderTop:'2px dashed'}}></div><span className={t.sub}>固定持有</span></div>
-            </div>
-          </div>
-          <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={[
-                { month: 'Mar 25', ai: 100000, manual: 100000 },
-                { month: 'May 25', ai: 104200, manual: 103100 },
-                { month: 'Jul 25', ai: 109800, manual: 107400 },
-                { month: 'Sep 25', ai: 115600, manual: 111200 },
-                { month: 'Nov 25', ai: 121300, manual: 114800 },
-                { month: 'Jan 26', ai: 118900, manual: 112100 },
-                { month: 'Mar 26', ai: 124380, manual: 117200 },
-              ]} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={t.gridStroke} />
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: t.axisColor, fontSize: 11 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: t.axisColor, fontSize: 11 }} tickFormatter={(v) => `$${(v/1000).toFixed(0)}K`} />
-                <Tooltip
-                  content={({ active, payload, label }) => {
-                    if (active && payload && payload.length) {
-                      const aiVal = payload.find(p => p.dataKey === 'ai')?.value as number;
-                      const manualVal = payload.find(p => p.dataKey === 'manual')?.value as number;
-                      const diff = aiVal - manualVal;
-                      return (
-                        <div className={`${t.tooltipBg} text-white p-3 rounded-xl shadow-xl border`}>
-                          <p className="text-xs opacity-60 mb-1">{label}</p>
-                          <p className="text-sm font-bold text-violet-400">AI 调仓: ${aiVal?.toLocaleString()}</p>
-                          <p className="text-sm font-bold text-slate-400">固定持有: ${manualVal?.toLocaleString()}</p>
-                          <p className="text-xs text-green-400 mt-1 font-bold">AI 超额: +${diff?.toLocaleString()}</p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Line type="monotone" dataKey="ai" stroke="#8b5cf6" strokeWidth={2.5} dot={{ fill: '#8b5cf6', r: 3 }} activeDot={{ r: 5 }} />
-                <Line type="monotone" dataKey="manual" stroke={dark ? '#475569' : '#94a3b8'} strokeWidth={2} strokeDasharray="5 4" dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className={`mt-3 px-4 py-2.5 rounded-xl ${dark ? 'bg-violet-900/20 border border-violet-800/30' : 'bg-violet-50 border border-violet-100'} flex items-center justify-between`}>
-            <span className={`text-xs ${dark ? 'text-violet-300' : 'text-violet-700'}`}>过去 12 个月，AI 动态调仓策略相比固定持有额外贡献</span>
-            <span className={`text-sm font-bold ${dark ? 'text-violet-300' : 'text-violet-700'}`}>+$7,180 超额收益</span>
-          </div>
-        </div>
-
         {/* Row 3: AI 工作流程 */}
         <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
           <div className="flex items-center gap-2 mb-6">
