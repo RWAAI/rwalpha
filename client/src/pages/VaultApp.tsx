@@ -158,6 +158,7 @@ export default function VaultApp() {
                 }`;
                 if (isHome) return <Link key={tab} href="/"><button className={cls}>{tab}</button></Link>;
                 if (isVault) return <Link key={tab} href="/vault"><button className={cls}>{tab}</button></Link>;
+                // 「金库」Tab 高亮，首页 Tab 链接到 /
                 return <button key={tab} className={cls} onClick={() => alert(zh ? "即将上线" : "Coming soon")}>{tab}</button>;
               })}
             </nav>

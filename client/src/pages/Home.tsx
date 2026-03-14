@@ -308,11 +308,11 @@ const App = () => {
                   : ['Home', 'Vault', 'How It Works', 'Insights', 'Points', 'Docs']
                 ).map((tab, i) => {
                   const cls = `px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                    i === 0
+                    i === 1
                       ? (dark ? 'bg-white/10 text-white' : 'bg-slate-900/10 text-slate-900 font-semibold')
                       : (dark ? 'text-slate-400 hover:text-white hover:bg-white/8' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100')
                   }`;
-                  if (i === 1) return <Link key={tab} href="/vault"><button className={cls}>{tab}</button></Link>;
+                  if (i === 1) return <Link key={tab} href="/dashboard"><button className={cls}>{tab}</button></Link>;
                   if (i === 0) return <Link key={tab} href="/"><button className={cls}>{tab}</button></Link>;
                   return <button key={tab} className={cls} onClick={() => alert(lang === 'zh' ? '即将上线' : 'Coming soon')}>{tab}</button>;
                 })}
