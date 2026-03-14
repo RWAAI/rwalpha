@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import NavBar from '@/components/NavBar';
 import { Link } from 'wouter';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, Layers, Sun, Moon, BrainCircuit, Activity, Eye, Cpu, CheckCircle2, BarChart2 } from 'lucide-react';
@@ -293,51 +294,8 @@ const App = () => {
         {/* Header 外层：按钮组 + 卡片 */}
         <div>
 
-          {/* 顶部导航栏 */}
-          <div className="flex items-center justify-between gap-4 mb-3 px-1 py-2">
-            {/* 左侧：Logo + 导航 Tab */}
-            <div className="flex items-center gap-6">
-              {/* Logo */}
-              <span className={`text-xl font-extrabold tracking-tight`} style={{ color: '#38bdf8', fontFamily: 'sans-serif', letterSpacing: '-0.02em' }}>
-                RWAlpha.io
-              </span>
-              {/* Nav Tabs */}
-              <nav className="hidden md:flex items-center gap-1">
-                {(lang === 'zh'
-                  ? ['首页', '金库', '如何运作', '洞察', '积分', '文档']
-                  : ['Home', 'Vault', 'How It Works', 'Insights', 'Points', 'Docs']
-                ).map((tab, i) => {
-                  const cls = `px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                    i === 1
-                      ? (dark ? 'bg-white/10 text-white' : 'bg-slate-900/10 text-slate-900 font-semibold')
-                      : (dark ? 'text-slate-400 hover:text-white hover:bg-white/8' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100')
-                  }`;
-                  if (i === 1) return <Link key={tab} href="/dashboard"><button className={cls}>{tab}</button></Link>;
-                  if (i === 0) return <Link key={tab} href="/"><button className={cls}>{tab}</button></Link>;
-                  return <button key={tab} className={cls} onClick={() => alert(lang === 'zh' ? '即将上线' : 'Coming soon')}>{tab}</button>;
-                })}
-              </nav>
-            </div>
-            {/* 右侧：语言切换 + Launch App */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all duration-200 ${
-                  dark
-                    ? 'border-white/15 text-slate-300 hover:bg-white/10'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                🌐 {T.langBtn}
-              </button>
-              <Link href="/vault">
-                <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#0d1117] shadow-md transition-all duration-200 active:scale-95">
-                  <Zap size={14} />
-                  Launch App
-                </button>
-              </Link>
-            </div>
-          </div>
+          {/* 顶部导航栏 — 使用共用 NavBar 组件，金库 Tab 高亮 */}
+          <NavBar activeTab="dashboard" />
 
         {/* Header */}
         <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4`}>

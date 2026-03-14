@@ -9,6 +9,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Zap, Wallet, TrendingUp, Clock, RefreshCw, ChevronRight, ArrowUpRight, BarChart2 } from "lucide-react";
 import { Link } from "wouter";
+import NavBar from "@/components/NavBar";
 
 // ─── 数据 ───────────────────────────────────────────────────────────────────
 
@@ -137,55 +138,25 @@ export default function VaultApp() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
 
-      {/* ── 顶部导航 ── */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
-          {/* Logo + Nav */}
-          <div className="flex items-center gap-6">
-            <Link href="/">
-              <span className="text-xl font-extrabold tracking-tight cursor-pointer" style={{ color: "#38bdf8" }}>
-                RWAlpha.io
-              </span>
-            </Link>
-            <nav className="hidden md:flex items-center gap-1">
-              {navTabs.map((tab, i) => {
-                const isVault = i === 1;
-                const isHome = i === 0;
-                const cls = `px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                  isVault
-                    ? "bg-emerald-50 text-emerald-700 font-semibold"
-                    : "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-                }`;
-                if (isHome) return <Link key={tab} href="/"><button className={cls}>{tab}</button></Link>;
-                if (isVault) return <Link key={tab} href="/vault"><button className={cls}>{tab}</button></Link>;
-                // 「金库」Tab 高亮，首页 Tab 链接到 /
-                return <button key={tab} className={cls} onClick={() => alert(zh ? "即将上线" : "Coming soon")}>{tab}</button>;
-              })}
-            </nav>
-          </div>
+      {/* ── 顶部导航 — 共用 NavBar，金库 Tab 高亮 ── */}
+      <NavBar activeTab="vault" />
 
-          {/* Right: Lang + Connect Wallet */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLang(lang === "zh" ? "en" : "zh")}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-all"
-            >
-              🌐 {zh ? "EN" : "中文"}
-            </button>
-            <button
-              onClick={() => setConnected(!connected)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95 shadow-sm ${
-                connected
-                  ? "bg-emerald-50 border border-emerald-200 text-emerald-700"
-                  : "bg-slate-900 hover:bg-slate-700 text-white"
-              }`}
-            >
-              <Wallet size={15} />
-              {connected ? "0x3f...a8c2" : (zh ? "连接钱包" : "Connect Wallet")}
-            </button>
-          </div>
+      {/* ── 钱包连接栏 ── */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto px-6 py-2 flex justify-end">
+          <button
+            onClick={() => setConnected(!connected)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95 shadow-sm ${
+              connected
+                ? "bg-emerald-50 border border-emerald-200 text-emerald-700"
+                : "bg-slate-900 hover:bg-slate-700 text-white"
+            }`}
+          >
+            <Wallet size={15} />
+            {connected ? "0x3f...a8c2" : (zh ? "连接钉包" : "Connect Wallet")}
+          </button>
         </div>
-      </header>
+      </div>
 
       {/* ── 页面标题 ── */}
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
