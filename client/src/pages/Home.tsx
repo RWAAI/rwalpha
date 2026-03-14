@@ -375,6 +375,19 @@ const App = () => {
 
           <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
             <div className="flex justify-between items-start">
+              <div className={`p-2 ${dark ? 'bg-violet-900/40 text-violet-400' : 'bg-violet-50 text-violet-600'} rounded-lg`}><TrendingUp size={20} /></div>
+              <span className={`text-xs font-medium ${t.muted}`}>{T.totalReturn}</span>
+            </div>
+            <div className="mt-4">
+              <p className={`text-3xl font-bold ${t.title}`}>{metrics.return}%</p>
+              <p className="text-green-500 text-sm font-bold mt-0.5">+${(principal * parseFloat(metrics.return) / 100).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+              <p className={`${t.sub} text-xs mt-1`}>{T.navNote}</p>
+              <p className={`${t.muted} text-[10px] mt-0.5`}>{T.mgmtFeeNote}</p>
+            </div>
+          </div>
+
+          <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
+            <div className="flex justify-between items-start">
               <div className={`p-2 ${dark ? 'bg-green-900/40 text-green-400' : 'bg-green-50 text-green-600'} rounded-lg`}><DollarSign size={20} /></div>
               <span className={`text-xs font-medium ${t.muted}`}>{T.weeklyIncome}</span>
             </div>
@@ -417,19 +430,6 @@ const App = () => {
                   placeholder="100000"
                 />
               </div>
-            </div>
-          </div>
-
-          <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
-            <div className="flex justify-between items-start">
-              <div className={`p-2 ${dark ? 'bg-violet-900/40 text-violet-400' : 'bg-violet-50 text-violet-600'} rounded-lg`}><TrendingUp size={20} /></div>
-              <span className={`text-xs font-medium ${t.muted}`}>{T.totalReturn}</span>
-            </div>
-            <div className="mt-4">
-              <p className={`text-3xl font-bold ${t.title}`}>{metrics.return}%</p>
-              <p className="text-green-500 text-sm font-bold mt-0.5">+${(principal * parseFloat(metrics.return) / 100).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
-              <p className={`${t.sub} text-xs mt-1`}>{T.navNote}</p>
-              <p className={`${t.muted} text-[10px] mt-0.5`}>{T.mgmtFeeNote}</p>
             </div>
           </div>
         </div>
