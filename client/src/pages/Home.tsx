@@ -8,10 +8,10 @@ const App = () => {
 
   // 模拟数据源 (截至2026年3月14日市场参考)
   const portfolioData = [
-    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3 },
-    { name: 'QQQI', weight: 0.3015, aum: '91.8亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5 },
-    { name: 'QQQM', weight: 0.3108, aum: '712.5亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8 },
-    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0 },
+    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3, aiReason: 'NVDY 隐含波动率上升至历史高位，AI 触发减仓以降低尾部风险' },
+    { name: 'QQQI', weight: 0.3015, aum: '91.8亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5, aiReason: 'QQQI 期权溢价扩大，AI 增配以捕获更高的权利金收益' },
+    { name: 'QQQM', weight: 0.3108, aum: '712.5亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8, aiReason: '纳指动量信号转强，AI 小幅增配底仓以跟踪上涨弹性' },
+    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0,  aiReason: '科技板块走势平稳，AI 维持当前配比不作调整' },
   ];
 
   const COLORS = ['#F59E0B', '#3B82F6', '#10B981', '#6366F1'];
@@ -304,7 +304,12 @@ const App = () => {
         <div className={`${t.card} rounded-3xl shadow-sm border overflow-hidden transition-colors duration-300`}>
           <div className={`px-6 py-4 border-b ${t.divider} flex justify-between items-center`}>
             <h2 className={`font-bold ${t.title}`}>资产清单与派息频率</h2>
-            <span className={`text-xs ${t.muted}`}>数据最后更新: 2026-03-14</span>
+            <span className={`text-xs ${t.muted}`}>
+              数据最后更新: 2026-03-14
+              <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] font-medium ${dark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-600'}`}>
+                AUM 来源: TradingView
+              </span>
+            </span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
@@ -345,16 +350,26 @@ const App = () => {
                        item.freq === 'Monthly' ? `$${parseInt(metrics.qqqiMonthly).toLocaleString()}` : '-'}
                     </td>
                     <td className="px-6 py-4">
-                      {item.aiAdjust === 0 ? (
-                        <span className={`text-xs font-mono ${t.muted}`}>— 0.00%</span>
-                      ) : (
-                        <span className={`text-xs font-bold font-mono flex items-center gap-0.5 ${
-                          item.aiAdjust > 0 ? 'text-green-500' : 'text-red-400'
+                      <div className="relative group inline-block">
+                        {item.aiAdjust === 0 ? (
+                          <span className={`text-xs font-mono cursor-help ${t.muted}`}>— 0.00%</span>
+                        ) : (
+                          <span className={`text-xs font-bold font-mono flex items-center gap-0.5 cursor-help ${
+                            item.aiAdjust > 0 ? 'text-green-500' : 'text-red-400'
+                          }`}>
+                            {item.aiAdjust > 0 ? '▲' : '▼'}
+                            {Math.abs(item.aiAdjust).toFixed(2)}%
+                          </span>
+                        )}
+                        <div className={`absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 px-3 py-2 rounded-lg text-[11px] leading-relaxed shadow-lg pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+                          dark ? 'bg-[#1e1e2e] text-slate-200 border border-white/10' : 'bg-slate-900 text-white'
                         }`}>
-                          {item.aiAdjust > 0 ? '▲' : '▼'}
-                          {Math.abs(item.aiAdjust).toFixed(2)}%
-                        </span>
-                      )}
+                          {item.aiReason}
+                          <div className={`absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent ${
+                            dark ? 'border-t-[#1e1e2e]' : 'border-t-slate-900'
+                          }`} />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))}
