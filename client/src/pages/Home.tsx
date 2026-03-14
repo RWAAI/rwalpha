@@ -247,8 +247,8 @@ const App = () => {
   return (
     <div className={`min-h-screen ${t.page} p-4 md:p-8 font-sans transition-colors duration-300`}>
 
-      {/* 右下角悬浮按钮组 */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2">
+      {/* 右上角悬浮按钮组 */}
+      <div className="fixed top-4 right-6 z-50 flex items-center gap-2">
         {/* 语言切换 */}
         <button
           onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
