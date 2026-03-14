@@ -62,7 +62,7 @@ const COPY = {
     trust: ['On-chain Verifiable', 'Institutional Custody', 'T+3 Redemption', 'Weekly Auto-Dividend'],
     dualVaultLabel: 'Industry First',
     dualVaultTitle: 'Innovative Dual-Vault Design',
-    dualVaultSub: 'Principal grows steadily. Yield arrives every week.',
+    dualVaultSub: 'Principal grows steadily, Yield paid weekly.',
     featuresLabel: 'Four Core Advantages',
     features: [
       { title: 'Weekly Dividend', desc: 'Options income distributed mechanically every week — stable cash flow, not market-dependent.' },

@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   InsertUser, users,
@@ -97,6 +97,21 @@ export async function getNavHistory(limit = 90) {
   return db.select().from(navHistory).orderBy(desc(navHistory.date)).limit(limit);
 }
 
+export async function bulkInsertNavHistory(records: InsertNavHistory[]) {
+  const db = await getDb();
+  if (!db) return 0;
+  if (records.length === 0) return 0;
+  // Insert in batches of 100
+  const batchSize = 100;
+  let inserted = 0;
+  for (let i = 0; i < records.length; i += batchSize) {
+    const batch = records.slice(i, i + batchSize);
+    await db.insert(navHistory).values(batch).onDuplicateKeyUpdate({ set: { navValue: sql`VALUES(navValue)` } });
+    inserted += batch.length;
+  }
+  return inserted;
+}
+
 // ─── Dividend Record helpers ──────────────────────────────────────────────────
 
 export async function insertDividendRecord(record: InsertDividendRecord) {
@@ -109,6 +124,20 @@ export async function getDividendRecords(limit = 52) {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(dividendRecords).orderBy(desc(dividendRecords.date)).limit(limit);
+}
+
+export async function bulkInsertDividendRecords(records: InsertDividendRecord[]) {
+  const db = await getDb();
+  if (!db) return 0;
+  if (records.length === 0) return 0;
+  const batchSize = 100;
+  let inserted = 0;
+  for (let i = 0; i < records.length; i += batchSize) {
+    const batch = records.slice(i, i + batchSize);
+    await db.insert(dividendRecords).values(batch).onDuplicateKeyUpdate({ set: { amountPerUnit: sql`VALUES(amountPerUnit)` } });
+    inserted += batch.length;
+  }
+  return inserted;
 }
 
 // ─── AI Signal helpers ────────────────────────────────────────────────────────
