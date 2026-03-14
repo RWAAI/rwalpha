@@ -9,8 +9,8 @@ import LandingPage from "./pages/LandingPage";
 import VaultApp from './pages/VaultApp';
 import HowItWorks from './pages/HowItWorks';
 
-
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={LandingPage} />

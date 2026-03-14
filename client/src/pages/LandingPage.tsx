@@ -15,19 +15,22 @@ const COPY = {
     badge: 'AI × RWA · 下一代资产管理',
     heroTitle1: '当 AI 遇上',
     heroTitle2: '真实世界资产',
-    heroSub1: '机构级策略严选底层资产 · AI 实时优化仓位 · 收益每周分配到账',
-    heroSub2: '链上可查，透明可信。',
+    heroSub1: '指数型ETF · AI 驱动管理 · 每周派息',
+    heroSub2: '',
     cta1: '立即查看金库',
     cta2: '进入应用',
     trust: ['链上可验证', '机构级托管', 'T+3 赎回保障', '每周自动派息'],
+    dualVaultLabel: '行业首创',
+    dualVaultTitle: '行业首个创新双金库设计',
+    dualVaultSub: '本金稳健成长，收益每周到账',
     featuresLabel: '四大核心优势',
     features: [
       { title: '每周派息', desc: '期权收益机制化分配，稳定现金流按周到账。' },
       { title: '指数底仓', desc: '纳指 ETF 完全支撑，本金随市场长期增值。' },
-      { title: 'AI 驱动调仓', desc: 'AI 实时监测，驱动优化仓位。' },
+      { title: 'AI 驱动管理', desc: 'AI 引擎持续监测，驱动调整仓位与复投策略。' },
       { title: '稳健增长', desc: '派息与净值双轨驱动，复利持续滚动增值。' },
     ],
-    statsLabel: '实时数据',
+    statsLabel: '底层表现数据',
     stats: [
       { label: '年化派息率', suffix: '%' },
       { label: '年化总回报', suffix: '%' },
@@ -52,19 +55,22 @@ const COPY = {
     badge: 'AI × RWA · Next-Gen Asset Management',
     heroTitle1: 'When AI Meets',
     heroTitle2: 'Real World Assets',
-    heroSub1: 'Institutional-grade strategy · AI-driven rebalancing · Weekly dividend',
-    heroSub2: 'On-chain, transparent, verifiable.',
+    heroSub1: 'Index ETF · AI-Driven Management · Weekly Dividend',
+    heroSub2: '',
     cta1: 'View Vault',
     cta2: 'Launch App',
     trust: ['On-chain Verifiable', 'Institutional Custody', 'T+3 Redemption', 'Weekly Auto-Dividend'],
+    dualVaultLabel: 'Industry First',
+    dualVaultTitle: 'Innovative Dual-Vault Design',
+    dualVaultSub: 'Principal grows steadily. Yield arrives every week.',
     featuresLabel: 'Four Core Advantages',
     features: [
       { title: 'Weekly Dividend', desc: 'Options income distributed mechanically every week — stable cash flow, not market-dependent.' },
       { title: 'Index Collateral', desc: 'Fully backed by Nasdaq ETFs. Principal grows with the market over the long term.' },
-      { title: 'AI-Driven Rebalancing', desc: 'AI monitors signals in real time and automatically optimizes position allocation.' },
+      { title: 'AI-Driven Management', desc: 'AI engine continuously monitors and drives position adjustment and reinvestment strategy.' },
       { title: 'Steady Growth', desc: 'Dividend + NAV appreciation on dual tracks. Compounding drives continuous asset growth.' },
     ],
-    statsLabel: 'Live Metrics',
+    statsLabel: 'Underlying Performance',
     stats: [
       { label: 'Annual Dividend Rate', suffix: '%' },
       { label: 'Annual Total Return', suffix: '%' },
@@ -233,10 +239,34 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── Dual Vault ────────────────────────────────────────── */}
+      <section className="bg-white py-16 px-6 border-t border-slate-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="inline-block text-xs font-bold tracking-widest text-indigo-500 uppercase bg-indigo-50 px-3 py-1 rounded-full mb-3">{T.dualVaultLabel}</span>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">{T.dualVaultTitle}</h2>
+            <p className="text-slate-500 text-base">{T.dualVaultSub}</p>
+          </div>
+          <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-slate-100">
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/dual-vault-preview_a104fb88.png"
+              alt="Dual Vault Design"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* ── Four Features ─────────────────────────────────────── */}
       <section className="bg-slate-50 py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-center text-xs font-bold tracking-widest text-slate-400 uppercase mb-10">{T.featuresLabel}</p>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-1 flex items-center justify-center gap-3 flex-wrap">
+              {lang === 'zh' ? 'RWAlpha 指数旗舰金库' : 'RWAlpha Index Prime Vault'}
+              <span className="inline-flex items-center px-3 py-1 rounded-md bg-emerald-600 text-white text-sm font-bold tracking-wide">{lang === 'zh' ? 'AI 赋能' : 'AI Powered'}</span>
+            </h2>
+            <p className="text-center text-xs font-bold tracking-widest text-slate-400 uppercase mt-3">{T.featuresLabel}</p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {T.features.map((f, i) => (
               <FeatureCard
@@ -273,23 +303,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── How It Works ──────────────────────────────────────── */}
-      <section className="bg-slate-50 py-16 px-6 border-t border-slate-100">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-xs font-bold tracking-widest text-slate-400 uppercase mb-3">{T.howLabel}</p>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-4">{T.howTitle}</h2>
-          <p className="text-slate-500 text-sm mb-12">{T.howSub}</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            {T.steps.map((item) => (
-              <div key={item.step} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-                <span className="text-3xl font-black text-slate-100 select-none">{item.step}</span>
-                <h3 className="font-bold text-slate-900 mt-2 mb-1.5">{item.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── Bottom CTA ────────────────────────────────────────── */}
       <section className="bg-white py-20 px-6 border-t border-slate-100">
@@ -314,18 +327,39 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Footer ────────────────────────────────────────────── */}
-      <footer className="bg-slate-50 border-t border-slate-100 py-8 px-6">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <span className="font-extrabold text-slate-700 text-sm tracking-tight">RWAlpha.io</span>
-          <div className="flex items-center gap-4">
-            <span>rINDEX</span>
-            <span>·</span>
-            <span>rINDEX-YIELD</span>
-            <span>·</span>
-            <span>AI × RWA</span>
+      {/* ── Footer ────────────────────────────────────────── */}
+      <footer className="bg-white border-t border-slate-100 py-6 px-6">
+        <div className="max-w-5xl mx-auto">
+          {/* Top row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div className="flex flex-col gap-0.5">
+              <span className="font-extrabold text-indigo-600 text-lg tracking-tight" style={{letterSpacing:'-0.02em'}}>RWAlpha.ai</span>
+              <span className="text-slate-400 text-xs">a AI first company</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-slate-200 text-slate-500 text-xs hover:border-slate-400 hover:text-slate-800 transition-colors">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                Twitter / X
+              </a>
+              <a href="mailto:contact@rwalpha.ai" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-slate-200 text-slate-500 text-xs hover:border-slate-400 hover:text-slate-800 transition-colors">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                Contact
+              </a>
+              <a href="#" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-slate-200 text-slate-500 text-xs hover:border-slate-400 hover:text-slate-800 transition-colors">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                Docs
+              </a>
+            </div>
           </div>
-          <span>{T.footerRight}</span>
+          {/* Bottom row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-xs text-slate-500">
+            <span>{T.footerRight}</span>
+            <div className="flex items-center gap-4">
+              <a href="#" className="hover:text-slate-300 transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-slate-300 transition-colors">Terms of Use</a>
+              <a href="#" className="hover:text-slate-300 transition-colors">Risk Disclosure</a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
