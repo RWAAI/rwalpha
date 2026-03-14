@@ -15,7 +15,7 @@ import NavBar from "@/components/NavBar";
 
 const VAULT_DATA = {
   product: "rINDEX",
-  nav: 52.74,
+  nav: 129.72,
   nav24hChange: 0.38,
   holdings: 1250.0,
   annualYield: 14.30,
@@ -27,12 +27,12 @@ const VAULT_DATA = {
   nextDistDays: 2,
   nextDistHours: 14,
   navTrend: [
-    { date: "Jan 20", value: 52.10 },
-    { date: "Jan 27", value: 51.40 },
-    { date: "Feb 03", value: 51.80 },
-    { date: "Feb 10", value: 52.20 },
-    { date: "Feb 17", value: 52.60 },
-    { date: "Feb 24", value: 50.30 },
+    { date: "Jan 20", value: 126.50 },
+    { date: "Jan 27", value: 125.80 },
+    { date: "Feb 03", value: 127.20 },
+    { date: "Feb 10", value: 128.40 },
+    { date: "Feb 17", value: 129.10 },
+    { date: "Feb 24", value: 129.72 },
   ],
 };
 
@@ -211,12 +211,14 @@ export default function VaultApp() {
       {/* ── 页面标题 ── */}
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
         <div className="flex items-center gap-3 mb-1">
-          <BarChart2 size={22} className="text-emerald-600" />
           <h1 className="text-2xl font-bold text-slate-900">
-            {zh ? "rINDEX Vault" : "rINDEX Vault"}
+            {zh ? "RWAlpha 指数旗舰金库" : "RWAlpha Index Prime Vault"}
           </h1>
+          <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">
+            {zh ? "AI 赋能" : "AI Powered"}
+          </span>
           <Link href="/dashboard">
-            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors ml-1">
+            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors ml-2">
               {zh ? "查看产品详情" : "View product details"}
               <ChevronRight size={14} />
             </button>
@@ -224,8 +226,8 @@ export default function VaultApp() {
         </div>
         <p className="text-slate-500 text-sm">
           {zh
-            ? "纳指100指数底仓 · AI 驱动调仓 · 每周现金派息"
-            : "Nasdaq 100 core · AI-driven rebalancing · Weekly cash dividend"}
+            ? "AI 驱动调仓 · 每周现金派息 · 指数底仓增值"
+            : "AI-driven rebalancing · Weekly cash dividend · Index core appreciation"}
         </p>
       </div>
 
