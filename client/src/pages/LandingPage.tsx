@@ -230,14 +230,6 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          <div className="mt-12 flex items-center justify-center gap-6 text-xs text-slate-400 flex-wrap">
-            {T.trust.map((t) => (
-              <span key={t} className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-green-400 inline-block" />
-                {t}
-              </span>
-            ))}
-          </div>
         </div>
       </section>
 

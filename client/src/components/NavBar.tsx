@@ -117,7 +117,7 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
               className="text-xl font-extrabold tracking-tight cursor-pointer bg-gradient-to-r from-indigo-600 to-sky-400 bg-clip-text text-transparent"
               style={{ letterSpacing: '-0.02em' }}
             >
-              RWAlpha.io
+              RWAlpha.ai
             </span>
           </Link>
 

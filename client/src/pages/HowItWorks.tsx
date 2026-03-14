@@ -20,19 +20,19 @@ const COPY = {
     aiHowTitle: 'AI 如何工作',
     aiSteps: [
       {
-        step: '01', title: '实时监控',
-        desc: '持续追踪 NVDY/QQQI 隐含波动率与期权溢价，同步监控 QQQM/VGT 动量信号及全组合相关性变化',
-        items: ['NVDY & QQQI IV 波动率', 'QQQM/VGT 动量指数', '全组合相关性矩阵'],
+        step: '01', title: 'AI 智能路由',
+        desc: '算法根据波动率和权利金自动匹配最优池。',
+        items: ['实时波动率分析', '权利金收益优化', '自动最优池匹配'],
       },
       {
-        step: '02', title: '智能判断',
-        desc: '当任一持仓指标偏离阈值时触发调仓信号，综合四个资产的历史数据评估最优配比',
-        items: ['NVDY 波动率超阈值触发', 'QQQI 溢价偏离均值', 'QQQM/VGT 动量反转检测'],
+        step: '02', title: '智能价格补偿',
+        desc: 'AI 结合期货数据，补全周末 48 小时定价真空。',
+        items: ['期货数据实时接入', '周末定价真空填补', '价格连续性保障'],
       },
       {
-        step: '03', title: '自动执行',
-        desc: '在风控框架内自动调整 NVDY/QQQI/QQQM/VGT 四个资产权重，并将派息收益按策略再分配',
-        items: ['四资产仓位自动再平衡', '派息智能再投资', '风控边界强制执行'],
+        step: '03', title: '24/7 AI 审计',
+        desc: 'AI 实时扫描券商头寸与链上供应，穿透式透明。',
+        items: ['券商头寸实时扫描', '链上供应持续监控', '穿透式透明披露'],
       },
     ],
     aiSignalTitle: 'AI 市场信号',
@@ -123,19 +123,19 @@ const COPY = {
     aiHowTitle: 'How AI Works',
     aiSteps: [
       {
-        step: '01', title: 'Real-Time Monitoring',
-        desc: 'Continuously tracks implied volatility and options premium for NVDY/QQQI, while monitoring QQQM/VGT momentum signals and portfolio correlations.',
-        items: ['NVDY & QQQI IV Volatility', 'QQQM/VGT Momentum Index', 'Full Portfolio Correlation Matrix'],
+        step: '01', title: 'AI Smart Routing',
+        desc: 'Algorithm auto-matches the optimal pool based on volatility and premium.',
+        items: ['Real-time volatility analysis', 'Premium yield optimization', 'Auto optimal pool matching'],
       },
       {
-        step: '02', title: 'Intelligent Judgment',
-        desc: 'Triggers rebalancing signals when any position metric deviates from threshold; evaluates optimal allocation using historical data across all four assets.',
-        items: ['NVDY Vol. Threshold Trigger', 'QQQI Premium Mean Deviation', 'QQQM/VGT Momentum Reversal'],
+        step: '02', title: 'Smart Price Compensation',
+        desc: 'AI uses futures data to fill the 48-hour weekend pricing gap.',
+        items: ['Futures data live feed', 'Weekend pricing gap fill', 'Price continuity assurance'],
       },
       {
-        step: '03', title: 'Auto Execution',
-        desc: 'Automatically adjusts NVDY/QQQI/QQQM/VGT weights within risk control framework and redistributes dividend income per strategy.',
-        items: ['4-Asset Auto Rebalancing', 'Smart Dividend Reinvestment', 'Risk Boundary Enforcement'],
+        step: '03', title: '24/7 AI Audit',
+        desc: 'AI continuously scans broker positions and on-chain supply for full transparency.',
+        items: ['Broker position live scan', 'On-chain supply monitoring', 'Full penetrating transparency'],
       },
     ],
     aiSignalTitle: 'AI Market Signals',
@@ -543,16 +543,6 @@ export default function HowItWorks() {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="text-center pt-4 pb-8">
-          <a
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-all duration-200 active:scale-95"
-          >
-            <Zap size={15} />
-            {T.ctaBtn}
-          </a>
-        </div>
 
       </main>
     </div>
