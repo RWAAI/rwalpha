@@ -11,6 +11,7 @@ import { Zap, Wallet, Clock, ChevronRight, ArrowUpRight, HelpCircle, X, Loader2,
 import { Link } from "wouter";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import AuthModal from "@/components/AuthModal";
 import { trpc } from "@/lib/trpc";
 
 // ─── 静态 fallback 数据 ─────────────────────────────────────────────────────
@@ -296,6 +297,7 @@ export default function VaultApp() {
   const [showPayDrop, setShowPayDrop] = useState(false);
   const [backedModal, setBackedModal] = useState(false);
   const [weeklyDivModal, setWeeklyDivModal] = useState(false);
+  const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
   const zh = lang === "zh";
 
   // ── 从数据库获取数据 ──
@@ -513,13 +515,13 @@ export default function VaultApp() {
             </button>
             {/* 登录 / 注册 */}
             <button
-              onClick={() => alert(zh ? '登录功能即将上线' : 'Login coming soon')}
+              onClick={() => setAuthModal({ open: true, mode: 'login' })}
               className="px-4 py-1.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
             >
               {zh ? '登录' : 'Login'}
             </button>
             <button
-              onClick={() => alert(zh ? '注册功能即将上线' : 'Register coming soon')}
+              onClick={() => setAuthModal({ open: true, mode: 'register' })}
               className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-sm font-semibold text-white transition-all duration-200 active:scale-95"
             >
               {zh ? '注册' : 'Register'}
@@ -848,6 +850,13 @@ export default function VaultApp() {
 
       </div>
       <Footer />
+      {/* Auth Modal */}
+      <AuthModal
+        open={authModal.open}
+        initialMode={authModal.mode}
+        onClose={() => setAuthModal(prev => ({ ...prev, open: false }))}
+        zh={zh}
+      />
     </div>
   );
 }
