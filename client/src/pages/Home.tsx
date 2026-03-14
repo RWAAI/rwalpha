@@ -310,6 +310,7 @@ const App = () => {
               <thead>
                 <tr className={`text-[10px] ${t.thead} font-bold uppercase tracking-wider border-b ${t.divider}`}>
                   <th className="px-6 py-4">代码</th>
+                  <th className="px-6 py-4">AUM</th>
                   <th className="px-6 py-4">派息率</th>
                   <th className="px-6 py-4">总回报</th>
                   <th className="px-6 py-4">频率</th>
@@ -324,6 +325,7 @@ const App = () => {
                       <div className={`font-bold ${t.title}`}>{item.name}</div>
                       <div className={`text-[10px] ${t.muted}`}>{item.weight * 100}% 权重</div>
                     </td>
+                    <td className={`px-6 py-4 text-xs font-mono ${t.sub}`}>{item.aum}</td>
                     <td className="px-6 py-4 text-indigo-400 font-bold">{item.yield}%</td>
                     <td className="px-6 py-4 text-green-500 font-medium">+{item.totalReturn}%</td>
                     <td className="px-6 py-4">
