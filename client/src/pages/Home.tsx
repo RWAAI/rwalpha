@@ -8,10 +8,10 @@ const App = () => {
 
   // 模拟数据源 (截至2026年3月14日市场参考)
   const portfolioData = [
-    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3, aiReason: 'NVDY 隐含波动率上升至历史高位，AI 触发减仓以降低尾部风险', tagline: '每周到账，高收益期权策略将 NVDA 浮盈转化为稳定现金流' },
-    { name: 'QQQI', weight: 0.3015, aum: '91.8亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5, aiReason: 'QQQI 期权溢价扩大，AI 增配以捕获更高的权利金收益', tagline: '纳指 100 成分股底仓，每月派息兼顾指数增长与收益双目标' },
-    { name: 'QQQM', weight: 0.3108, aum: '712.5亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8, aiReason: '纳指动量信号转强，AI 小幅增配底仓以跟踪上涨弹性', tagline: '低费率纳指 ETF，长期持有科技成长红利，组合的压舱底仓' },
-    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0,  aiReason: '科技板块走势平稳，AI 维持当前配比不作调整', tagline: '覆盖全美科技巨头，长期跨周期投资的核心压舱仓位' },
+    { name: 'NVDY', weight: 0.1877, aum: '13.9亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3, aiReason: 'NVDY 隐含波动率上升至历史高位，AI 触发减仓以降低尾部风险', tagline: '山定浮盈，每周自动到账 — 让强势股的浮盈变现金流' },
+    { name: 'QQQI', weight: 0.3015, aum: '91.8亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5, aiReason: 'QQQI 期权溢价扩大，AI 增配以捕获更高的权利金收益', tagline: '科技巨头全仓底，收益增长一个不少 — 指数级稳健派息机器' },
+    { name: 'QQQM', weight: 0.3108, aum: '712.5亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8, aiReason: '纳指动量信号转强，AI 小幅增配底仓以跟踪上涨弹性', tagline: '纳指纯底仓，吃尽科技十年红利 — 费率极致，长期复利最强引擎' },
+    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0,  aiReason: '科技板块走势平稳，AI 维持当前配比不作调整', tagline: '全美科技巨头一网打尽，跨周期底仓不动如山 — 投的是时代红利' },
   ];
 
   const COLORS = ['#F59E0B', '#3B82F6', '#10B981', '#6366F1'];
@@ -329,7 +329,12 @@ const App = () => {
                   <tr key={item.name} className={`${t.cardHover} transition-colors`}>
                     <td className="px-6 py-4">
                       <div className={`font-bold ${t.title}`}>{item.name}</div>
-                      <div className={`text-[10px] mt-0.5 ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{item.tagline}</div>
+                      <div className={`inline-block mt-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                        item.name === 'NVDY' ? (dark ? 'bg-amber-900/40 text-amber-300' : 'bg-amber-50 text-amber-700') :
+                        item.name === 'QQQI' ? (dark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-700') :
+                        item.name === 'QQQM' ? (dark ? 'bg-emerald-900/40 text-emerald-300' : 'bg-emerald-50 text-emerald-700') :
+                        (dark ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-50 text-indigo-700')
+                      }`}>{item.tagline}</div>
                       <div className={`text-[10px] mt-1 ${t.muted}`}>{(item.weight * 100).toFixed(2)}% 权重</div>
                     </td>
                     <td className={`px-6 py-4 text-xs font-mono ${t.sub}`}>{item.aum}</td>
