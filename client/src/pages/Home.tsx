@@ -56,8 +56,23 @@ const App = () => {
             </div>
             <p className="text-slate-500 mt-1">20% NVDY + 30% QQQI + 50% 指数增强底仓</p>
           </div>
-          <div className="mt-4 md:mt-0 flex flex-col items-end gap-1">
+          <div className="mt-4 md:mt-0 flex flex-col items-end gap-2">
             <span className="text-sm text-slate-400 font-medium">模拟本金 (Principal)</span>
+            <div className="flex items-center gap-2 flex-wrap justify-end">
+              {[50000, 100000, 500000].map((preset) => (
+                <button
+                  key={preset}
+                  onClick={() => setPrincipalInput(preset.toLocaleString())}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors duration-150 ${
+                    principal === preset
+                      ? 'bg-indigo-600 text-white border-indigo-600'
+                      : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-400 hover:text-indigo-600'
+                  }`}
+                >
+                  {preset >= 10000 ? `${preset / 10000}万` : preset.toLocaleString()}
+                </button>
+              ))}
+            </div>
             <div className="flex items-center gap-1">
               <span className="text-xl font-mono font-bold text-slate-400">$</span>
               <input
@@ -122,6 +137,7 @@ const App = () => {
             </div>
             <div className="mt-4">
               <p className="text-3xl font-bold text-slate-900">{metrics.return}%</p>
+              <p className="text-green-600 text-sm font-bold mt-0.5">+${(principal * parseFloat(metrics.return) / 100).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
               <p className="text-slate-500 text-xs mt-1">包含 NAV 增长 + 现金派息</p>
             </div>
           </div>
