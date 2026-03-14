@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import NavBar from '@/components/NavBar';
+import Footer from '@/components/Footer';
 import { Eye, BrainCircuit, CheckCircle2, Activity, Cpu, Zap, Diamond, Target, TrendingUp, Link2, Shield, Users, BookOpen, Wallet, Layers, RefreshCw, Building2, BarChart3, ChevronRight } from 'lucide-react';
 
 type Lang = 'zh' | 'en';
@@ -545,6 +546,7 @@ export default function HowItWorks() {
 
 
       </main>
+      <Footer />
     </div>
   );
 }

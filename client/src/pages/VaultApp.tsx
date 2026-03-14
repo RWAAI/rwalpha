@@ -10,6 +10,7 @@ import { useState, useEffect, useRef } from "react";
 import { Zap, Wallet, Clock, ChevronRight, ArrowUpRight, HelpCircle, X, Loader2, RefreshCw } from "lucide-react";
 import { Link } from "wouter";
 import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 import { trpc } from "@/lib/trpc";
 
 // ─── 静态 fallback 数据 ─────────────────────────────────────────────────────
@@ -833,6 +834,7 @@ export default function VaultApp() {
 
 
       </div>
+      <Footer />
     </div>
   );
 }
