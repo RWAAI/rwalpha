@@ -153,7 +153,7 @@ export default function VaultApp() {
             }`}
           >
             <Wallet size={15} />
-            {connected ? "0x3f...a8c2" : (zh ? "连接钉包" : "Connect Wallet")}
+            {connected ? "0x3f...a8c2" : (zh ? "连接钱包" : "Connect Wallet")}
           </button>
         </div>
       </div>
