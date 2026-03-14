@@ -45,12 +45,12 @@ const App = () => {
   // 主题 token
   const t = {
     page:       dark ? 'bg-[#0a0a0f]'          : 'bg-slate-50',
-    card:       dark ? 'bg-[#13131a] border-white/8' : 'bg-white border-slate-200',
+     card:       dark ? 'bg-[#13131a] border-white/20' : 'bg-white border-slate-200',
     cardHover:  dark ? 'hover:bg-white/5'        : 'hover:bg-slate-50/50',
     title:      dark ? 'text-white'              : 'text-slate-900',
     sub:        dark ? 'text-slate-400'          : 'text-slate-500',
     muted:      dark ? 'text-slate-500'          : 'text-slate-400',
-    divider:    dark ? 'border-white/8'          : 'border-slate-100',
+    divider:    dark ? 'border-white/15'         : 'border-slate-100',
     infoRow:    dark ? 'bg-white/5'              : 'bg-slate-50',
     gridStroke: dark ? '#1e1e2e'                 : '#f1f5f9',
     axisColor:  dark ? '#555'                    : '#94a3b8',
@@ -264,7 +264,7 @@ const App = () => {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={dark ? { background: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: '#fff' } : undefined}
+                    contentStyle={dark ? { backgroundColor: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: '#fff' } : undefined}
                   />
                   <Legend
                     verticalAlign="bottom"
