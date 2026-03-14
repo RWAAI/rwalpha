@@ -81,6 +81,20 @@ const App = () => {
 
   return (
     <div className={`min-h-screen ${t.page} p-4 md:p-8 font-sans transition-colors duration-300`}>
+      {/* 右下角悬浮主题切换按钮 */}
+      <button
+        onClick={() => setDark(!dark)}
+        title={dark ? '切换到浅色模式' : '切换到深色模式'}
+        className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg border text-sm font-bold transition-all duration-200 active:scale-95 ${
+          dark
+            ? 'bg-[#1e1e2e] border-white/15 text-slate-200 hover:bg-white/10 shadow-black/40'
+            : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-slate-200'
+        }`}
+      >
+        {dark ? <Sun size={15} /> : <Moon size={15} />}
+        {dark ? '浅色模式' : '深色模式'}
+      </button>
+
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* Header */}
@@ -93,19 +107,6 @@ const App = () => {
             <p className={`${t.sub} mt-1`}>20% NVDY + 30% QQQI + 50% 指数增强底仓</p>
           </div>
           <div className="mt-4 md:mt-0 flex items-center gap-6">
-            {/* Theme Toggle */}
-            <button
-              onClick={() => setDark(!dark)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all duration-200 ${
-                dark
-                  ? 'bg-white/10 border-white/15 text-slate-300 hover:bg-white/15'
-                  : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              {dark ? <Sun size={13} /> : <Moon size={13} />}
-              {dark ? '浅色' : '深色'}
-            </button>
-
             <div className="flex flex-col items-end gap-2">
               <span className={`text-sm ${t.muted} font-medium`}>模拟本金 (Principal)</span>
               <div className="flex items-center gap-2 flex-wrap justify-end">
