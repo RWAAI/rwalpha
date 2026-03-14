@@ -38,11 +38,11 @@ const COPY = {
     howTitle: '三步，让资产替你工作',
     howSub: '从认购到每周收息，全程链上透明，无需信任中间人。',
     steps: [
-      { step: '01', title: '认购 rINDEX', desc: '以 USDT 认购，1:1 映射底层 ETF 净值，链上即时确认。' },
-      { step: '02', title: 'AI 实时管理', desc: 'AI 引擎持续监测市场信号，自动调整仓位比例与期权策略。' },
-      { step: '03', title: '每周收益到账', desc: '期权收益每周自动分配至你的钱包，或选择自动复利再投入。' },
+      { step: '01', title: '认购 rINDEX', desc: '以 USDT/USDC 认购，1:1 映射底层 Fund（挂钩一篮子 ETF）净值，链上即时确认。' },
+      { step: '02', title: 'AI 实时管理', desc: 'AI 引擎持续监测市场信号，驱动调整仓位比例与复投策略。' },
+      { step: '03', title: '每周收益到账', desc: '收益每周自动分配至收益金库，T+0 提取到錢包。' },
     ],
-    ctaTitle: '准备好让 AI 替你管仓了吗？',
+    ctaTitle: '准备好进入 AI × RWA 的世界了吗？',
     ctaSub: '机构级策略，链上透明，每周派息。现在就开始。',
     ctaBtn1: '立即进入金库',
     ctaBtn2: '查看数据 Dashboard',
@@ -79,7 +79,7 @@ const COPY = {
       { step: '02', title: 'AI Manages Positions', desc: 'AI engine continuously monitors market signals and auto-adjusts allocation and options strategy.' },
       { step: '03', title: 'Receive Weekly Dividend', desc: 'Options income auto-distributed to your wallet weekly, or reinvested for compounding.' },
     ],
-    ctaTitle: 'Ready to Let AI Manage Your Portfolio?',
+    ctaTitle: 'Ready to Enter the World of AI × RWA?',
     ctaSub: 'Institutional strategy. On-chain transparency. Weekly dividends. Start now.',
     ctaBtn1: 'Enter Vault',
     ctaBtn2: 'View Dashboard',
@@ -128,10 +128,27 @@ export default function LandingPage() {
     try { return (localStorage.getItem('rwa-lang') as Lang) || 'zh'; } catch { return 'zh'; }
   });
 
+  // 监听 NavBar 或其他组件触发的语言变化
+  useEffect(() => {
+    const handler = () => {
+      try {
+        const stored = (localStorage.getItem('rwa-lang') as Lang) || 'zh';
+        setLang(stored);
+      } catch { /* noop */ }
+    };
+    window.addEventListener('rwa-lang-change', handler);
+    window.addEventListener('storage', handler);
+    return () => {
+      window.removeEventListener('rwa-lang-change', handler);
+      window.removeEventListener('storage', handler);
+    };
+  }, []);
+
   const toggleLang = () => {
     const next: Lang = lang === 'zh' ? 'en' : 'zh';
     setLang(next);
     try { localStorage.setItem('rwa-lang', next); } catch { /* noop */ }
+    window.dispatchEvent(new Event('rwa-lang-change'));
   };
 
   const T = COPY[lang];

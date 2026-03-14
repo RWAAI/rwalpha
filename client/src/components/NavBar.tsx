@@ -3,6 +3,14 @@ import { Link } from 'wouter';
 import { Zap, ChevronDown } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+// ── Language helpers ──────────────────────────────────────────────
+function getLang(): boolean {
+  try { return localStorage.getItem('rwa-lang') !== 'en'; } catch { return true; }
+}
+function setLangStorage(zh: boolean) {
+  try { localStorage.setItem('rwa-lang', zh ? 'zh' : 'en'); } catch { /* noop */ }
+}
+
 // activeTab: 'home' | 'dashboard' | 'vault'
 interface NavBarProps {
   activeTab?: 'home' | 'dashboard' | 'vault';
@@ -69,11 +77,31 @@ function AboutDropdown({ zh }: { zh: boolean }) {
 }
 
 export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
-  const [zh, setZh] = useState(true);
+  const [zh, setZhState] = useState(getLang);
 
-  // 前5个普通 tab（不含「关于」）
-  const tabsZh = ['首页', '金库', '如何运作', '洞察', '积分'];
-  const tabsEn = ['Home', 'Vault', 'How It Works', 'Insights', 'Points'];
+  // 监听 localStorage 变化（同页面内其他组件触发）
+  useEffect(() => {
+    const handler = () => setZhState(getLang());
+    window.addEventListener('storage', handler);
+    // 同页面内用自定义事件同步
+    window.addEventListener('rwa-lang-change', handler);
+    return () => {
+      window.removeEventListener('storage', handler);
+      window.removeEventListener('rwa-lang-change', handler);
+    };
+  }, []);
+
+  const toggleZh = () => {
+    const next = !zh;
+    setZhState(next);
+    setLangStorage(next);
+    // 通知同页面其他组件
+    window.dispatchEvent(new Event('rwa-lang-change'));
+  };
+
+  // tabs（不含「积分」）
+  const tabsZh = ['首页', '金库', '如何运作', '洞察'];
+  const tabsEn = ['Home', 'Vault', 'How It Works', 'Insights'];
   const tabs = zh ? tabsZh : tabsEn;
 
   const activeIdx = activeTab === 'home' ? 0 : 1;
@@ -86,8 +114,8 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
         <div className="flex items-center gap-6">
           <Link href="/">
             <span
-              className="text-xl font-extrabold tracking-tight cursor-pointer"
-              style={{ color: '#38bdf8', letterSpacing: '-0.02em' }}
+              className="text-xl font-extrabold tracking-tight cursor-pointer bg-gradient-to-r from-indigo-600 to-sky-400 bg-clip-text text-transparent"
+              style={{ letterSpacing: '-0.02em' }}
             >
               RWAlpha.io
             </span>
@@ -118,11 +146,12 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
         {/* 右侧：语言切换 + 自定义插槽或默认 Launch App */}
         <div className="flex items-center gap-2">
           {rightSlot !== undefined ? (
+            // 首页传入 rightSlot 时，仍保留语言切换按钮（由首页自己控制），NavBar 不重复渲染
             rightSlot
           ) : (
             <>
               <button
-                onClick={() => setZh(!zh)}
+                onClick={toggleZh}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all duration-200"
               >
                 🌐 {zh ? 'EN' : '中文'}
