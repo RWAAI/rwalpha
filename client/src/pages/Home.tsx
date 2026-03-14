@@ -310,7 +310,7 @@ const App = () => {
               <thead>
                 <tr className={`text-[10px] ${t.thead} font-bold uppercase tracking-wider border-b ${t.divider}`}>
                   <th className="px-6 py-4">代码</th>
-                  <th className="px-6 py-4">AUM</th>
+                  <th className="px-6 py-4">AUM（美元）</th>
                   <th className="px-6 py-4">派息率</th>
                   <th className="px-6 py-4">总回报</th>
                   <th className="px-6 py-4">频率</th>
