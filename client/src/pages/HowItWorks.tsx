@@ -16,7 +16,7 @@ function getLang(): Lang {
 const COPY = {
   zh: {
     pageTitle: '如何运作',
-    pageSub: '从认购到每周收益，全程 AI 驱动，链上透明，无需信任中间人。',
+    pageSub: 'AI × 可信RWA中间层',
     aiHowTitle: 'AI 如何工作',
     aiSteps: [
       {
@@ -119,7 +119,7 @@ const COPY = {
   },
   en: {
     pageTitle: 'How It Works',
-    pageSub: 'From subscription to weekly income — fully AI-driven, on-chain transparent, no intermediaries needed.',
+    pageSub: 'AI × Trusted RWA Middle Layer',
     aiHowTitle: 'How AI Works',
     aiSteps: [
       {
