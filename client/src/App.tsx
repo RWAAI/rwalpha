@@ -6,7 +6,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import LandingPage from "./pages/LandingPage";
-import VaultApp from "./pages/VaultApp";
+import VaultApp from './pages/VaultApp';
+import HowItWorks from './pages/HowItWorks';
 
 
 function Router() {
@@ -15,6 +16,7 @@ function Router() {
       <Route path={"/"} component={LandingPage} />
       <Route path={"/dashboard"} component={Home} />
       <Route path={"/vault"} component={VaultApp} />
+      <Route path={"/how-it-works"} component={HowItWorks} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

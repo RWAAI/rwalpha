@@ -131,6 +131,7 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
               }`;
               if (i === 0) return <Link key={tab} href="/"><button className={cls}>{tab}</button></Link>;
               if (i === 1) return <Link key={tab} href="/dashboard"><button className={cls}>{tab}</button></Link>;
+              if (i === 2) return <Link key={tab} href="/how-it-works"><button className={cls}>{tab}</button></Link>;
               return (
                 <button key={tab} className={cls} onClick={() => alert(zh ? '即将上线' : 'Coming soon')}>
                   {tab}
