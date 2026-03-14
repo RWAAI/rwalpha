@@ -831,17 +831,6 @@ export default function VaultApp() {
 
         </div>
 
-        {/* ── AI 信号 + 调仓日志 ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          <AiSignalSection
-            zh={zh}
-            signal={summary?.aiSignal ?? null}
-          />
-          <RebalanceLogSection
-            zh={zh}
-            logs={summary?.rebalanceLogs ?? []}
-          />
-        </div>
 
       </div>
     </div>
