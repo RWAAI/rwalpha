@@ -328,14 +328,17 @@ const App = () => {
                 {portfolioData.map((item) => (
                   <tr key={item.name} className={`${t.cardHover} transition-colors`}>
                     <td className="px-6 py-4">
-                      <div className={`font-bold ${t.title}`}>{item.name}</div>
+                      <div className="flex items-center gap-2">
+                        <div className={`font-bold ${t.title}`}>{item.name}</div>
+                        <div className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${t.muted} ${dark ? 'bg-white/5' : 'bg-slate-100'}`}>{(item.weight * 100).toFixed(2)}%</div>
+                      </div>
                       <div className={`inline-block mt-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${
                         item.name === 'NVDY' ? (dark ? 'bg-amber-900/40 text-amber-300' : 'bg-amber-50 text-amber-700') :
                         item.name === 'QQQI' ? (dark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-700') :
                         item.name === 'QQQM' ? (dark ? 'bg-emerald-900/40 text-emerald-300' : 'bg-emerald-50 text-emerald-700') :
                         (dark ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-50 text-indigo-700')
                       }`}>{item.tagline}</div>
-                      <div className={`text-[10px] mt-1 ${t.muted}`}>{(item.weight * 100).toFixed(2)}% 权重</div>
+
                     </td>
                     <td className={`px-6 py-4 text-xs font-mono ${t.sub}`}>{item.aum}</td>
                     <td className="px-6 py-4 text-indigo-400 font-bold">{item.yield}%</td>
