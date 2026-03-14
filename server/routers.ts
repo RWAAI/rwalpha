@@ -6,12 +6,15 @@ import { z } from "zod";
 import {
   getNavHistory,
   insertNavHistory,
+  deleteNavHistory,
   getDividendRecords,
   insertDividendRecord,
+  deleteDividendRecord,
   getLatestAiSignal,
   insertAiSignal,
   getRebalanceLogs,
   insertRebalanceLog,
+  deleteRebalanceLog,
 } from "./db";
 
 export const appRouter = router({
@@ -29,9 +32,7 @@ export const appRouter = router({
     // ── NAV History ──────────────────────────────────────────────
     getNavHistory: publicProcedure
       .input(z.object({ limit: z.number().min(1).max(365).optional() }).optional())
-      .query(async ({ input }) => {
-        return getNavHistory(input?.limit ?? 90);
-      }),
+      .query(async ({ input }) => getNavHistory(input?.limit ?? 90)),
 
     addNavHistory: protectedProcedure
       .input(z.object({
@@ -44,12 +45,17 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    deleteNavHistory: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteNavHistory(input.id);
+        return { success: true };
+      }),
+
     // ── Dividend Records ─────────────────────────────────────────
     getDividendRecords: publicProcedure
       .input(z.object({ limit: z.number().min(1).max(200).optional() }).optional())
-      .query(async ({ input }) => {
-        return getDividendRecords(input?.limit ?? 52);
-      }),
+      .query(async ({ input }) => getDividendRecords(input?.limit ?? 52)),
 
     addDividendRecord: protectedProcedure
       .input(z.object({
@@ -64,10 +70,15 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    deleteDividendRecord: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteDividendRecord(input.id);
+        return { success: true };
+      }),
+
     // ── AI Signals ───────────────────────────────────────────────
-    getLatestAiSignal: publicProcedure.query(async () => {
-      return getLatestAiSignal();
-    }),
+    getLatestAiSignal: publicProcedure.query(async () => getLatestAiSignal()),
 
     addAiSignal: protectedProcedure
       .input(z.object({
@@ -87,9 +98,7 @@ export const appRouter = router({
     // ── Rebalance Logs ───────────────────────────────────────────
     getRebalanceLogs: publicProcedure
       .input(z.object({ limit: z.number().min(1).max(100).optional() }).optional())
-      .query(async ({ input }) => {
-        return getRebalanceLogs(input?.limit ?? 20);
-      }),
+      .query(async ({ input }) => getRebalanceLogs(input?.limit ?? 20)),
 
     addRebalanceLog: protectedProcedure
       .input(z.object({
@@ -102,6 +111,13 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         await insertRebalanceLog(input);
+        return { success: true };
+      }),
+
+    deleteRebalanceLog: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        await deleteRebalanceLog(input.id);
         return { success: true };
       }),
   }),

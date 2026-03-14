@@ -139,3 +139,23 @@ export async function getRebalanceLogs(limit = 20) {
   if (!db) return [];
   return db.select().from(rebalanceLogs).orderBy(desc(rebalanceLogs.actionDate)).limit(limit);
 }
+
+// ─── Delete helpers ───────────────────────────────────────────────────────────
+
+export async function deleteNavHistory(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(navHistory).where(eq(navHistory.id, id));
+}
+
+export async function deleteDividendRecord(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(dividendRecords).where(eq(dividendRecords.id, id));
+}
+
+export async function deleteRebalanceLog(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(rebalanceLogs).where(eq(rebalanceLogs.id, id));
+}
