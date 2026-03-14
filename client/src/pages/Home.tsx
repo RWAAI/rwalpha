@@ -256,11 +256,14 @@ const App = () => {
           </div>
 
           <div className={`${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
-            <h3 className={`font-bold ${t.title} mb-4`}>资产配比 (NAV)</h3>
-            <div className="h-64">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className={`font-bold ${t.title}`}>资产配比 (NAV)</h3>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${dark ? 'bg-violet-900/50 text-violet-400' : 'bg-violet-100 text-violet-700'}`}>AI 调仓后</span>
+            </div>
+            <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="weight">
+                  <Pie data={portfolioData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={5} dataKey="weight">
                     {portfolioData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
@@ -268,13 +271,30 @@ const App = () => {
                   <Tooltip
                     contentStyle={dark ? { backgroundColor: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: '#fff' } : undefined}
                   />
-                  <Legend
-                    verticalAlign="bottom"
-                    height={36}
-                    formatter={(value) => <span style={{ color: dark ? '#94a3b8' : '#64748b', fontSize: 12 }}>{value}</span>}
-                  />
                 </PieChart>
               </ResponsiveContainer>
+            </div>
+            {/* AI 调仓列表 */}
+            <div className="space-y-2 mt-2">
+              {portfolioData.map((item, index) => (
+                <div key={item.name} className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: COLORS[index] }}></div>
+                  <span className={`text-xs font-bold ${t.title} w-10`}>{item.name}</span>
+                  <div className={`flex-1 h-1 rounded-full ${dark ? 'bg-white/8' : 'bg-slate-100'}`}>
+                    <div className="h-full rounded-full" style={{ width: `${item.weight * 100}%`, backgroundColor: COLORS[index] }}></div>
+                  </div>
+                  <span className={`text-xs ${t.muted} w-8 text-right`}>{(item.weight * 100).toFixed(0)}%</span>
+                  {item.aiAdjust === 0 ? (
+                    <span className={`text-[11px] font-mono w-14 text-right ${t.muted}`}>— 0.00%</span>
+                  ) : (
+                    <span className={`text-[11px] font-bold font-mono w-14 text-right ${
+                      item.aiAdjust > 0 ? 'text-green-500' : 'text-red-400'
+                    }`}>
+                      {item.aiAdjust > 0 ? '▲' : '▼'} {Math.abs(item.aiAdjust).toFixed(2)}%
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
