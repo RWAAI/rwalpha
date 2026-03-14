@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Link } from 'wouter';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, Layers, Sun, Moon, BrainCircuit, Activity, Eye, Cpu, CheckCircle2, BarChart2 } from 'lucide-react';
 
@@ -332,10 +333,12 @@ const App = () => {
               >
                 🌐 {T.langBtn}
               </button>
-              <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#0d1117] shadow-md transition-all duration-200 active:scale-95">
-                <Zap size={14} />
-                Launch App
-              </button>
+              <Link href="/vault">
+                <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#0d1117] shadow-md transition-all duration-200 active:scale-95">
+                  <Zap size={14} />
+                  Launch App
+                </button>
+              </Link>
             </div>
           </div>
 
