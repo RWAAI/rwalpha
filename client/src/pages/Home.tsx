@@ -247,34 +247,36 @@ const App = () => {
   return (
     <div className={`min-h-screen ${t.page} p-4 md:p-8 font-sans transition-colors duration-300`}>
 
-      {/* 右上角悬浮按钮组 */}
-      <div className="fixed top-4 right-6 z-50 flex items-center gap-2">
-        {/* 语言切换 */}
-        <button
-          onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
-          className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-full shadow-lg border text-sm font-bold transition-all duration-200 active:scale-95 ${
-            dark
-              ? 'bg-[#1e1e2e] border-white/15 text-slate-200 hover:bg-white/10 shadow-black/40'
-              : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-slate-200'
-          }`}
-        >
-          🌐 {T.langBtn}
-        </button>
-        {/* 深色切换 */}
-        <button
-          onClick={() => setDark(!dark)}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg border text-sm font-bold transition-all duration-200 active:scale-95 ${
-            dark
-              ? 'bg-[#1e1e2e] border-white/15 text-slate-200 hover:bg-white/10 shadow-black/40'
-              : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-slate-200'
-          }`}
-        >
-          {dark ? <Sun size={15} /> : <Moon size={15} />}
-          {dark ? T.lightBtn : T.darkBtn}
-        </button>
-      </div>
-
       <div className="max-w-6xl mx-auto space-y-6">
+
+        {/* Header 外层：按钮组 + 卡片 */}
+        <div>
+          {/* 按钮组：在 Header 卡片正上方右对齐 */}
+          <div className="flex justify-end items-center gap-2 mb-2">
+            {/* 语言切换 */}
+            <button
+              onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-sm font-bold transition-all duration-200 active:scale-95 ${
+                dark
+                  ? 'bg-[#1e1e2e] border-white/15 text-slate-200 hover:bg-white/10'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              🌐 {T.langBtn}
+            </button>
+            {/* 深色切换 */}
+            <button
+              onClick={() => setDark(!dark)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold transition-all duration-200 active:scale-95 ${
+                dark
+                  ? 'bg-[#1e1e2e] border-white/15 text-slate-200 hover:bg-white/10'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              {dark ? <Sun size={15} /> : <Moon size={15} />}
+              {dark ? T.lightBtn : T.darkBtn}
+            </button>
+          </div>
 
         {/* Header */}
         <div className={`flex flex-col md:flex-row justify-between items-start md:items-center ${t.card} p-6 rounded-3xl shadow-sm border transition-colors duration-300`}>
@@ -321,6 +323,7 @@ const App = () => {
             </div>
           </div>
         </div>
+        </div>{/* end Header outer div */}
 
         {/* Selling Points */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
