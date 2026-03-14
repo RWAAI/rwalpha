@@ -107,7 +107,7 @@ const App = () => {
               <h1 className={`text-2xl font-bold ${t.title}`}>RA 指数+卫星周盈计划</h1>
               <span className="px-2 py-0.5 bg-indigo-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">Active</span>
             </div>
-            <p className={`${t.sub} mt-1`}>20% NVDY + 30% QQQI + 50% 指数增强底仓</p>
+            <p className={`${t.sub} mt-1 tracking-wide`}>AI 驱动调仓 &middot; 每周现金派息 &middot; 指数底仓增値</p>
           </div>
           <div className="mt-4 md:mt-0 flex items-center gap-6">
             <div className="flex flex-col items-end gap-2">
