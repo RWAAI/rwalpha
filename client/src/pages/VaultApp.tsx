@@ -218,7 +218,7 @@ export default function VaultApp() {
                 <span className="font-bold text-slate-800 text-base">{zh ? "本金金库" : "Principal Vault"}</span>
               </div>
               <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full">
-                {zh ? "1:1 底层资产支撑" : "1:1 Asset Backed"}
+                {zh ? "底层资产完全支撑" : "Fully Asset Backed"}
               </span>
             </div>
 
@@ -310,7 +310,7 @@ export default function VaultApp() {
                 <span className="font-bold text-slate-800 text-base">{zh ? "收益金库" : "Yield Vault"}</span>
               </div>
               <span className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-100">
-                {zh ? "每月派息" : "Monthly Dividend"}
+                {zh ? "每周派息" : "Weekly Dividend"}
               </span>
             </div>
 
@@ -389,19 +389,19 @@ export default function VaultApp() {
               <div className="space-y-0 border-t border-slate-50 pt-2">
                 {[
                   {
-                    label: zh ? "上次派息" : "Last Dividend",
+                    label: zh ? "上周派息" : "Last Week Dividend",
                     value: `+$${v.lastYield.toFixed(2)}`,
                     sub: v.lastYieldDate,
                     valueClass: "text-emerald-600 font-mono font-bold",
                   },
                   {
-                    label: zh ? `每 rINDEX 派息（月度）` : "rINDEX Monthly Yield",
+                    label: zh ? `每 rINDEX 派息（周度）` : "rINDEX Weekly Yield",
                     value: `$${v.lastYieldPerToken.toFixed(3)} USDT`,
                     sub: `+${((v.lastYieldPerToken / v.nav) * 100).toFixed(2)}%`,
                     valueClass: "text-amber-500 font-mono font-bold",
                   },
                   {
-                    label: zh ? "下次分配" : "Next Distribution",
+                    label: zh ? "下周分配" : "Next Week Distribution",
                     value: null,
                     countdown: true,
                     valueClass: "",
