@@ -8,10 +8,10 @@ const App = () => {
 
   // 模拟数据源 (截至2026年3月14日市场参考)
   const portfolioData = [
-    { name: 'NVDY', weight: 0.20, aum: '14.2亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3 },
-    { name: 'QQQI', weight: 0.30, aum: '9.5亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5 },
-    { name: 'QQQM', weight: 0.30, aum: '710亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8 },
-    { name: 'VGT',  weight: 0.20, aum: '1300亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0 },
+    { name: 'NVDY', weight: 0.1877, aum: '14.2亿', yield: 73.1, totalReturn: 35.4, volume: '7,800万', type: 'High Yield', freq: 'Weekly',    aiAdjust: -2.3 },
+    { name: 'QQQI', weight: 0.3015, aum: '9.5亿',  yield: 14.3, totalReturn: 17.8, volume: '1,200万', type: 'Balanced',  freq: 'Monthly',   aiAdjust: +1.5 },
+    { name: 'QQQM', weight: 0.3108, aum: '710亿',  yield: 0.5,  totalReturn: 25.2, volume: '12.7亿', type: 'Growth',    freq: 'Quarterly', aiAdjust: +0.8 },
+    { name: 'VGT',  weight: 0.2000, aum: '1300亿', yield: 0.4,  totalReturn: 22.0, volume: '3.7亿',  type: 'Growth',    freq: 'Quarterly', aiAdjust: 0.0 },
   ];
 
   const COLORS = ['#F59E0B', '#3B82F6', '#10B981', '#6366F1'];
@@ -283,7 +283,7 @@ const App = () => {
                   <div className={`flex-1 h-1 rounded-full ${dark ? 'bg-white/8' : 'bg-slate-100'}`}>
                     <div className="h-full rounded-full" style={{ width: `${item.weight * 100}%`, backgroundColor: COLORS[index] }}></div>
                   </div>
-                  <span className={`text-xs ${t.muted} w-8 text-right`}>{(item.weight * 100).toFixed(0)}%</span>
+                  <span className={`text-xs ${t.muted} w-10 text-right`}>{(item.weight * 100).toFixed(2)}%</span>
                   {item.aiAdjust === 0 ? (
                     <span className={`text-[11px] font-mono w-14 text-right ${t.muted}`}>— 0.00%</span>
                   ) : (
@@ -323,7 +323,7 @@ const App = () => {
                   <tr key={item.name} className={`${t.cardHover} transition-colors`}>
                     <td className="px-6 py-4">
                       <div className={`font-bold ${t.title}`}>{item.name}</div>
-                      <div className={`text-[10px] ${t.muted}`}>{item.weight * 100}% 权重</div>
+                      <div className={`text-[10px] ${t.muted}`}>{(item.weight * 100).toFixed(2)}% 权重</div>
                     </td>
                     <td className={`px-6 py-4 text-xs font-mono ${t.sub}`}>{item.aum}</td>
                     <td className="px-6 py-4 text-indigo-400 font-bold">{item.yield}%</td>
