@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import NavBar from '@/components/NavBar';
+import Footer from '@/components/Footer';
 import { Link } from 'wouter';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, ArrowRight, Zap, Layers, Sun, Moon, BrainCircuit, Activity, Eye, Cpu, CheckCircle2, BarChart2 } from 'lucide-react';
@@ -607,9 +608,9 @@ const App = () => {
           </div>
         </div>
 
-      </div>
+       </div>
+      <Footer />
     </div>
   );
 };
-
 export default App;
