@@ -512,6 +512,96 @@ export const appRouter = router({
 
   // ─── AI Advisor Router ───────────────────────────────────────────────────────
   aiAdvisor: router({
+    // AI 自动分配权重（根据目标派息率和目标年化回报）
+    autoAllocate: publicProcedure
+      .input(z.object({
+        tickers: z.array(z.string().min(1).max(16)).min(1).max(10),
+        targetYield: z.number().min(0).max(200).optional(),
+        targetReturn: z.number().min(-100).max(500).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { tickers, targetYield, targetReturn } = input;
+
+        // Fetch market data for the tickers
+        const yfinanceData = fetchYfinanceInfo(tickers);
+
+        // Build context for LLM
+        const tickerContext = tickers.map(ticker => {
+          const d = yfinanceData[ticker.toUpperCase()];
+          return d
+            ? `${ticker}: yield=${d.oneYearReturn !== null ? '' : 'N/A'}${d.oneYearReturn ?? 'N/A'}%, dividendYield=N/A, 1y-return=${d.oneYearReturn ?? 'N/A'}%, volatility=${d.annualVolatility ?? 'N/A'}%`
+            : `${ticker}: no data`;
+        }).join('\n');
+
+        const targetDesc = [
+          targetYield !== undefined ? `目标派息率: ${targetYield}%` : null,
+          targetReturn !== undefined ? `目标年化回报: ${targetReturn}%` : null,
+        ].filter(Boolean).join('，') || '请根据风险收益平衡原则分配';
+
+        const systemPrompt = `你是一位专业的 ETF 投资组合优化顾问。用户提供了一组 ETF 代码和目标参数，请你计算最优权重分配。
+
+规则：
+1. 所有权重之和必须等于 100%
+2. 每个 ETF 权重在 5% 到 60% 之间
+3. 尽量接近用户的目标参数
+4. 高派息 ETF（如 NVDY、QQQI）适合提升派息率，指数 ETF（如 QQQM、VGT）适合提升年化回报
+5. 只返回 JSON，不要任何解释文字`;
+
+        const userPrompt = `请为以下 ETF 分配权重：
+
+${tickerContext}
+
+${targetDesc}
+
+请返回如下格式的 JSON（权重为小数，合计=1）：
+{"allocations": [{"ticker": "NVDY", "weight": 0.25}, ...]}`;
+
+        const llmResult = await invokeLLM({
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          response_format: {
+            type: 'json_schema',
+            json_schema: {
+              name: 'weight_allocation',
+              strict: true,
+              schema: {
+                type: 'object',
+                properties: {
+                  allocations: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        ticker: { type: 'string' },
+                        weight: { type: 'number' },
+                      },
+                      required: ['ticker', 'weight'],
+                      additionalProperties: false,
+                    },
+                  },
+                },
+                required: ['allocations'],
+                additionalProperties: false,
+              },
+            },
+          },
+        });
+
+        const content = llmResult.choices?.[0]?.message?.content ?? '{}';
+        const parsed = typeof content === 'string' ? JSON.parse(content) : content;
+        const allocations: { ticker: string; weight: number }[] = parsed.allocations ?? [];
+
+        // Normalize weights to sum to 1
+        const total = allocations.reduce((s: number, a: { ticker: string; weight: number }) => s + a.weight, 0);
+        const normalized = total > 0
+          ? allocations.map((a: { ticker: string; weight: number }) => ({ ticker: a.ticker.toUpperCase(), weight: parseFloat((a.weight / total).toFixed(4)) }))
+          : tickers.map(t => ({ ticker: t.toUpperCase(), weight: parseFloat((1 / tickers.length).toFixed(4)) }));
+
+        return { allocations: normalized };
+      }),
+
     // 生成 AI 调仓建议
     getRebalanceSuggestion: publicProcedure
       .input(z.object({

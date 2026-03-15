@@ -249,6 +249,10 @@ function PortfolioCard({ portfolio, onDeleted }: {
   const [editing, setEditing] = useState(false);
   const [editTickers, setEditTickers] = useState<TickerInput[]>([]);
   const [editError, setEditError] = useState('');
+  // AI 自动分配目标
+  const [targetYield, setTargetYield] = useState('');
+  const [targetReturn, setTargetReturn] = useState('');
+  const [aiAllocLoading, setAiAllocLoading] = useState(false);
 
   const utils = trpc.useUtils();
 
@@ -274,6 +278,22 @@ function PortfolioCard({ portfolio, onDeleted }: {
       });
     },
     onError: (e) => setEditError(e.message),
+  });
+
+  const autoAllocateMutation = trpc.aiAdvisor.autoAllocate.useMutation({
+    onSuccess: (data) => {
+      // Apply AI-suggested weights to editTickers
+      const alloc = data.allocations;
+      setEditTickers(prev => prev.map(t => {
+        const found = alloc.find((a: { ticker: string; weight: number }) => a.ticker === t.ticker.toUpperCase());
+        return found ? { ...t, weight: found.weight } : t;
+      }));
+      setAiAllocLoading(false);
+    },
+    onError: (e) => {
+      setEditError(e.message);
+      setAiAllocLoading(false);
+    },
   });
 
   const aiMutation = trpc.aiAdvisor.getRebalanceSuggestion.useMutation({
@@ -511,6 +531,65 @@ function PortfolioCard({ portfolio, onDeleted }: {
                   <PlusCircle size={14} /> 添加 Ticker
                 </button>
               )}
+
+              {/* AI 目标分配 */}
+              <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 space-y-2.5">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-indigo-700">
+                  <BrainCircuit size={13} />
+                  AI 自动分配
+                </div>
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <label className="block text-[10px] text-slate-500 mb-1">目标派息率 (%)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="200"
+                      step="0.5"
+                      placeholder="如 20"
+                      value={targetYield}
+                      onChange={e => setTargetYield(e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-indigo-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-[10px] text-slate-500 mb-1">目标年化回报 (%)</label>
+                    <input
+                      type="number"
+                      min="-100"
+                      max="500"
+                      step="0.5"
+                      placeholder="如 25"
+                      value={targetReturn}
+                      onChange={e => setTargetReturn(e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-indigo-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    />
+                  </div>
+                  <div className="pt-4">
+                    <button
+                      onClick={() => {
+                        const validTickers = editTickers.map(t => t.ticker.trim().toUpperCase()).filter(t => t.length > 0);
+                        if (validTickers.length === 0) return;
+                        setAiAllocLoading(true);
+                        setEditError('');
+                        autoAllocateMutation.mutate({
+                          tickers: validTickers,
+                          targetYield: targetYield ? parseFloat(targetYield) : undefined,
+                          targetReturn: targetReturn ? parseFloat(targetReturn) : undefined,
+                        });
+                      }}
+                      disabled={aiAllocLoading || editTickers.filter(t => t.ticker.trim()).length === 0}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 whitespace-nowrap"
+                    >
+                      {aiAllocLoading ? <Loader2 size={12} className="animate-spin" /> : <Zap size={12} />}
+                      {aiAllocLoading ? '分配中...' : 'AI 分配'}
+                    </button>
+                  </div>
+                </div>
+                <p className="text-[10px] text-indigo-500 leading-relaxed">
+                  以派息率 <span className="font-semibold">{targetYield || '___'}%</span>、年化回报 <span className="font-semibold">{targetReturn || '___'}%</span> 为目标，AI 自动分配权重
+                </p>
+              </div>
 
               {editError && (
                 <div className="flex items-center gap-2 p-3 bg-red-50 rounded-xl text-red-600 text-sm">
