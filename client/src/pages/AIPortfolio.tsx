@@ -435,15 +435,15 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
       {/* Card Header */}
-      <div
-        className="flex items-center justify-between p-5 cursor-pointer select-none"
-        onClick={handleExpand}
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
+      <div className="flex items-center justify-between p-5">
+        <div
+          className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer select-none"
+          onClick={(e) => { if (editingName) return; handleExpand(); }}
+        >
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center flex-shrink-0">
             <Layers size={18} className="text-indigo-600" />
           </div>
-          <div>
+          <div className="min-w-0">
             {editingName ? (
               <input
                 ref={nameInputRef}
@@ -454,11 +454,12 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                 onClick={e => e.stopPropagation()}
                 className="font-semibold text-slate-900 text-base bg-transparent border-b-2 border-indigo-500 outline-none w-full max-w-[220px]"
                 maxLength={64}
+                autoFocus
               />
             ) : (
               <h3
                 className="font-semibold text-slate-900 text-base cursor-text hover:text-indigo-600 transition-colors group flex items-center gap-1"
-                onClick={startNameEdit}
+                onClick={(e) => { e.stopPropagation(); startNameEdit(e); }}
                 title="点击修改名称"
               >
                 {portfolio.name}
@@ -518,7 +519,12 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
           >
             <Trash2 size={14} />
           </button>
-          {expanded ? <ChevronUp size={16} className="text-slate-400" /> : <ChevronDown size={16} className="text-slate-400" />}
+          <button
+            onClick={handleExpand}
+            className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
         </div>
       </div>
 
