@@ -752,41 +752,91 @@ function PortfolioCard({ portfolio, onDeleted }: {
                       ))}
                     </div>
                   </div>
-                  {/* Weekly bars: 4 weeks */}
+                  {/* Weekly bars: 4 weeks — linked to principal */}
                   {(() => {
                     const weeklyHoldings = pd.holdings.filter(h => h.marketData?.frequency === 'Weekly');
                     const monthlyHoldings = pd.holdings.filter(h => h.marketData?.frequency === 'Monthly');
                     const weeks = [1, 2, 3, 4].map(w => {
                       let amount = 0;
+                      // 基于本金计算实际到账金额
                       weeklyHoldings.forEach(h => {
-                        if (h.marketData) amount += (h.marketData.ttmDividendPerShare / 52) * 1000;
+                        if (h.marketData) {
+                          amount += principal * h.weight * (h.marketData.dividendYield / 100) / 52;
+                        }
                       });
                       if (w === 4) {
                         monthlyHoldings.forEach(h => {
-                          if (h.marketData) amount += (h.marketData.ttmDividendPerShare / 12) * 1000;
+                          if (h.marketData) {
+                            amount += principal * h.weight * (h.marketData.dividendYield / 100) / 12;
+                          }
                         });
                       }
-                      return { week: `第 ${w} 周`, amount: Math.round(amount) };
+                      // 按 ticker 拆分，用于 tooltip
+                      const breakdown: { ticker: string; amount: number; color: string }[] = [];
+                      weeklyHoldings.forEach(h => {
+                        if (h.marketData) {
+                          const idx = pd.holdings.indexOf(h);
+                          breakdown.push({
+                            ticker: h.ticker,
+                            amount: principal * h.weight * (h.marketData.dividendYield / 100) / 52,
+                            color: COLORS[idx % COLORS.length],
+                          });
+                        }
+                      });
+                      if (w === 4) {
+                        monthlyHoldings.forEach(h => {
+                          if (h.marketData) {
+                            const idx = pd.holdings.indexOf(h);
+                            breakdown.push({
+                              ticker: h.ticker,
+                              amount: principal * h.weight * (h.marketData.dividendYield / 100) / 12,
+                              color: COLORS[idx % COLORS.length],
+                            });
+                          }
+                        });
+                      }
+                      return { week: `第 ${w} 周`, amount: Math.round(amount), breakdown };
                     });
                     const maxAmt = Math.max(...weeks.map(w => w.amount), 1);
                     return (
                       <>
-                        <div className="flex items-end gap-3 h-28 px-2">
+                        <div className="flex items-end gap-3 h-36 px-2">
                           {weeks.map((w, wi) => (
-                            <div key={wi} className="flex-1 flex flex-col items-center gap-1">
+                            <div key={wi} className="flex-1 flex flex-col items-center gap-1 group relative">
+                              {/* 金额标签 */}
+                              <span className="text-[10px] font-semibold text-slate-600 mb-0.5">
+                                {w.amount > 0 ? `$${w.amount.toLocaleString()}` : ''}
+                              </span>
                               <div
-                                className="w-full rounded-t-md"
+                                className="w-full rounded-t-md transition-all duration-300"
                                 style={{
-                                  height: `${Math.max((w.amount / maxAmt) * 100, 8)}%`,
+                                  height: `${Math.max((w.amount / maxAmt) * 100, w.amount > 0 ? 8 : 0)}%`,
                                   backgroundColor: wi === 3 ? '#4F46E5' : '#A5B4FC',
                                 }}
                               />
                               <span className="text-[10px] text-slate-400">{w.week}</span>
+                              {/* Hover tooltip: per-ticker breakdown */}
+                              {w.breakdown.length > 0 && (
+                                <div className="pointer-events-none absolute bottom-full mb-8 left-1/2 -translate-x-1/2 w-36 bg-slate-800 rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg">
+                                  <p className="text-[10px] text-slate-300 font-semibold mb-1">{w.week} 到账明细</p>
+                                  {w.breakdown.map(b => (
+                                    <div key={b.ticker} className="flex items-center justify-between gap-2">
+                                      <span className="text-[10px] font-mono font-bold" style={{ color: b.color }}>{b.ticker}</span>
+                                      <span className="text-[10px] text-white">${Math.round(b.amount).toLocaleString()}</span>
+                                    </div>
+                                  ))}
+                                  <div className="border-t border-slate-600 mt-1 pt-1 flex justify-between">
+                                    <span className="text-[10px] text-slate-400">合计</span>
+                                    <span className="text-[10px] text-white font-semibold">${w.amount.toLocaleString()}</span>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>
-                        <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-50">
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-50">
                           <p className="text-[11px] text-slate-400">
+                            本金 <span className="font-semibold text-slate-600">${principal.toLocaleString()}</span>，
                             {weeklyHoldings.length > 0 ? `前三周仅 ${weeklyHoldings.map(h => h.ticker).join('/')}` : ''}
                             {weeklyHoldings.length > 0 && monthlyHoldings.length > 0 ? '，' : ''}
                             {monthlyHoldings.length > 0 ? `第四周叠加 ${monthlyHoldings.map(h => h.ticker).join('/')}` : ''}
