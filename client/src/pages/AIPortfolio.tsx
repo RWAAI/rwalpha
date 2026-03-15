@@ -489,8 +489,8 @@ function PortfolioCard({ portfolio, onDeleted }: {
                       type="number"
                       min="0"
                       max="100"
-                      step="1"
-                      value={(t.weight * 100).toFixed(1)}
+                      step="0.01"
+                      value={(t.weight * 100).toFixed(2)}
                       onChange={(e) => updateEditTicker(idx, 'weight', parseFloat(e.target.value) / 100)}
                       className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
                     />
@@ -512,7 +512,7 @@ function PortfolioCard({ portfolio, onDeleted }: {
                   权重合计: <span className={`font-semibold ${
                     Math.abs(editTickers.reduce((s, t) => s + t.weight, 0) - 1) <= 0.01
                       ? 'text-emerald-600' : 'text-red-500'
-                  }`}>{(editTickers.reduce((s, t) => s + t.weight, 0) * 100).toFixed(1)}%</span>
+                  }`}>{(editTickers.reduce((s, t) => s + t.weight, 0) * 100).toFixed(2)}%</span>
                 </span>
                 <button
                   onClick={rebalanceWeights}
