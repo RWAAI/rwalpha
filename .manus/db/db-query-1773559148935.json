@@ -1,0 +1,15 @@
+{
+  "query": "SELECT JSON_EXTRACT(cachedData, '$.holdings[0].marketData.frequency') as freq, JSON_EXTRACT(cachedData, '$.holdings[0].marketData.ttmDividendPerShare') as ttmDiv, JSON_EXTRACT(cachedData, '$.holdings[0].ticker') as ticker FROM portfolios LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT JSON_EXTRACT(cachedData, '$.holdings[0].marketData.frequency') as freq, JSON_EXTRACT(cachedData, '$.holdings[0].marketData.ttmDividendPerShare') as ttmDiv, JSON_EXTRACT(cachedData, '$.holdings[0].ticker') as ticker FROM portfolios LIMIT 1;",
+  "rows": [
+    {
+      "freq": "\"Monthly\"",
+      "ttmDiv": "9.984",
+      "ticker": "\"NVDY\""
+    }
+  ],
+  "messages": [],
+  "stdout": "freq\tttmDiv\tticker\n\"Monthly\"\t9.984\t\"NVDY\"\n",
+  "stderr": "",
+  "execution_time_ms": 1601
+}

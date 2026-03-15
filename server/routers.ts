@@ -80,9 +80,11 @@ async function fetchTickerData(ticker: string) {
     const dividendYield = price > 0 ? (ttmTotal / price) * 100 : 0;
 
     // Determine dividend frequency from number of dividends
+    // Note: Yahoo Finance may not return all weekly dividends (e.g. NVDY returns ~30 in 1y range)
+    // Use lower thresholds: >=26 = Weekly (bi-weekly+), >=9 = Monthly, >=3 = Quarterly
     let frequency = "None";
-    if (ttmDivs.length >= 48) frequency = "Weekly";
-    else if (ttmDivs.length >= 11) frequency = "Monthly";
+    if (ttmDivs.length >= 26) frequency = "Weekly";
+    else if (ttmDivs.length >= 9) frequency = "Monthly";
     else if (ttmDivs.length >= 3) frequency = "Quarterly";
     else if (ttmDivs.length >= 1) frequency = "Annual";
 

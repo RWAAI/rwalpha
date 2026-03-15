@@ -918,14 +918,7 @@ function PortfolioCard({ portfolio, onDeleted }: {
                                 </span>
                                 <span className="text-xs text-slate-400">占比 {(h.weight * 100).toFixed(2)}%</span>
                               </div>
-                              {tagline && (
-                                <div className="mt-0.5">
-                                  <span className="text-xs px-2 py-0.5 rounded-full"
-                                    style={{ backgroundColor: COLORS[i % COLORS.length] + '18', color: COLORS[i % COLORS.length] }}>
-                                    {tagline}
-                                  </span>
-                                </div>
-                              )}
+
                             </td>
                             <td className="px-4 py-3 text-right text-slate-500 text-sm">
                               {md?.aumDisplay ?? '—'}
