@@ -28,8 +28,8 @@ import { invokeLLM } from "./_core/llm";
 import { execSync } from "child_process";
 import path from "path";
 
-// ─── yfinance AUM + Description Helper ───────────────────────────────────────
-function fetchYfinanceInfo(tickers: string[]): Record<string, { aum: number | null; aumDisplay: string; description: string }> {
+// ─── yfinance AUM + Description + Returns Helper ────────────────────────────
+function fetchYfinanceInfo(tickers: string[]): Record<string, { aum: number | null; aumDisplay: string; description: string; oneYearReturn: number | null; annualVolatility: number | null }> {
   try {
     const scriptPath = path.join(process.cwd(), "server", "get_ticker_info.py");
     // Clear PYTHONPATH/PYTHONHOME to avoid Python 3.13 vs 3.11 version conflicts
@@ -86,40 +86,36 @@ async function fetchTickerData(ticker: string) {
     else if (ttmDivs.length >= 3) frequency = "Quarterly";
     else if (ttmDivs.length >= 1) frequency = "Annual";
 
-    // 1-year price return
-    const quotes = chartResult.indicators?.quote?.[0] ?? {};
-    const closes = (quotes.close ?? []).filter((c: number | null) => c !== null) as number[];
-    const oneYearReturn = closes.length >= 2
-      ? ((closes[closes.length - 1] - closes[0]) / closes[0]) * 100
-      : 0;
-
-    // Annualized volatility
-    let annualVolatility = 0;
-    if (closes.length > 20) {
-      const dailyReturns = closes.slice(1).map((c, i) => (c - closes[i]) / closes[i]);
-      const mean = dailyReturns.reduce((a, b) => a + b, 0) / dailyReturns.length;
-      const variance = dailyReturns.reduce((a, b) => a + (b - mean) ** 2, 0) / dailyReturns.length;
-      annualVolatility = Math.sqrt(variance) * Math.sqrt(252) * 100;
-    }
-
-    // AUM from meta (totalAssets if available) - fallback to yfinance
-    const totalAssets = meta.totalAssets ?? null;
+    // Always call yfinance for: AUM, description, AND dividend-adjusted 1-year total return
+    // This is critical for high-yield ETFs like NVDY/QQQI where raw price return is misleading
+    // (e.g. NVDY price -22% but total return +45% after including 73% dividend yield)
     let aumDisplay = "N/A";
     let description = "";
-    if (totalAssets) {
-      if (totalAssets >= 1e9) aumDisplay = `$${(totalAssets / 1e9).toFixed(2)}B`;
-      else if (totalAssets >= 1e6) aumDisplay = `$${(totalAssets / 1e6).toFixed(0)}M`;
-      else aumDisplay = `$${totalAssets.toLocaleString()}`;
-    } else {
-      // Fallback: call yfinance Python script for AUM + description
-      try {
-        const yInfo = fetchYfinanceInfo([ticker]);
-        const info = yInfo[ticker.toUpperCase()] || yInfo[ticker];
-        if (info) {
-          aumDisplay = info.aumDisplay || "N/A";
-          description = info.description || "";
-        }
-      } catch (_) {}
+    let oneYearReturn = 0;
+    let annualVolatility = 0;
+    try {
+      const yInfo = fetchYfinanceInfo([ticker]);
+      const info = yInfo[ticker.toUpperCase()] || yInfo[ticker];
+      if (info) {
+        aumDisplay = info.aumDisplay || "N/A";
+        description = info.description || "";
+        // Use dividend-adjusted total return from yfinance (auto_adjust=True)
+        if (info.oneYearReturn != null) oneYearReturn = info.oneYearReturn;
+        if (info.annualVolatility != null) annualVolatility = info.annualVolatility;
+      }
+    } catch (_) {
+      // Fallback to raw price return from chart data if yfinance fails
+      const quotes = chartResult.indicators?.quote?.[0] ?? {};
+      const closes = (quotes.close ?? []).filter((c: number | null) => c !== null) as number[];
+      oneYearReturn = closes.length >= 2
+        ? ((closes[closes.length - 1] - closes[0]) / closes[0]) * 100
+        : 0;
+      if (closes.length > 20) {
+        const dailyReturns = closes.slice(1).map((c: number, i: number) => (c - closes[i]) / closes[i]);
+        const mean = dailyReturns.reduce((a: number, b: number) => a + b, 0) / dailyReturns.length;
+        const variance = dailyReturns.reduce((a: number, b: number) => a + (b - mean) ** 2, 0) / dailyReturns.length;
+        annualVolatility = Math.sqrt(variance) * Math.sqrt(252) * 100;
+      }
     }
 
     // Recent dividends for monthly schedule
