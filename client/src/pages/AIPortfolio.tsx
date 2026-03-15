@@ -261,13 +261,17 @@ function PortfolioCard({ portfolio, onDeleted }: {
   });
 
   const updateMutation = trpc.portfolio.update.useMutation({
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       utils.portfolio.list.invalidate();
       setEditing(false);
       setPortfolioData(null); // clear cached data
-      // Auto-refresh with new tickers after saving
+      // Pass the new tickers directly to avoid DB read race condition
       setExpanded(true);
-      fetchDataMutation.mutate({ id: portfolio.id, forceRefresh: true });
+      fetchDataMutation.mutate({
+        id: portfolio.id,
+        forceRefresh: true,
+        tickers: variables.tickers,
+      });
     },
     onError: (e) => setEditError(e.message),
   });

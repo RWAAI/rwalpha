@@ -420,22 +420,29 @@ export const appRouter = router({
       .input(z.object({
         id: z.number(),
         forceRefresh: z.boolean().optional(),
+        // Optional: pass tickers directly to avoid race condition after update
+        tickers: z.array(z.object({
+          ticker: z.string().min(1).max(16),
+          weight: z.number().min(0).max(1),
+        })).optional(),
       }))
       .mutation(async ({ input }) => {
         const row = await getPortfolioById(input.id);
         if (!row) throw new Error("Portfolio not found");
 
-        // Check cache (1 hour)
+        // Check cache (1 hour) — skip if tickers are explicitly passed (post-edit refresh)
         const cacheAge = row.cachedAt
           ? Date.now() - new Date(row.cachedAt).getTime()
           : Infinity;
         const ONE_HOUR = 60 * 60 * 1000;
 
-        if (!input.forceRefresh && cacheAge < ONE_HOUR && row.cachedData) {
+        if (!input.forceRefresh && !input.tickers && cacheAge < ONE_HOUR && row.cachedData) {
           return JSON.parse(row.cachedData);
         }
 
-        const tickers: { ticker: string; weight: number }[] = JSON.parse(row.tickers || '[]');
+        // Use explicitly passed tickers (post-edit) or fall back to DB value
+        const tickers: { ticker: string; weight: number }[] =
+          input.tickers ?? JSON.parse(row.tickers || '[]');
 
         // Fetch data for all tickers in parallel
         const results = await Promise.all(
