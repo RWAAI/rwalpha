@@ -541,11 +541,12 @@ export const appRouter = router({
         const systemPrompt = `你是一位专业的 ETF 投资组合优化顾问。用户提供了一组 ETF 代码和目标参数，请你计算最优权重分配。
 
 规则：
-1. 所有权重之和必须等于 100%
-2. 每个 ETF 权重在 5% 到 60% 之间
-3. 尽量接近用户的目标参数
-4. 高派息 ETF（如 NVDY、QQQI）适合提升派息率，指数 ETF（如 QQQM、VGT）适合提升年化回报
-5. 只返回 JSON，不要任何解释文字`;
+1. 所有权重之和必须等于 1.0000（即 100%）
+2. 每个 ETF 权重在 0.05 到 0.60 之间
+3. 权重必须精确到小数点后 4 位（如 0.2235、0.1875），不要只用整数百分比（如 0.20、0.25）
+4. 尽量接近用户的目标参数，利用小数权重精确调节以达到目标
+5. 高派息 ETF（如 NVDY、QQQI）适合提升派息率，指数 ETF（如 QQQM、VGT）适合提升年化回报
+6. 只返回 JSON，不要任何解释文字`;
 
         const userPrompt = `请为以下 ETF 分配权重：
 
@@ -553,8 +554,8 @@ ${tickerContext}
 
 ${targetDesc}
 
-请返回如下格式的 JSON（权重为小数，合计=1）：
-{"allocations": [{"ticker": "NVDY", "weight": 0.25}, ...]}`;
+请返回如下格式的 JSON（权重为小数且必须精确到 4 位小数，合计=1）：
+{"allocations": [{"ticker": "NVDY", "weight": 0.2235}, {"ticker": "QQQI", "weight": 0.2918}, ...]}`;
 
         const llmResult = await invokeLLM({
           messages: [
@@ -595,9 +596,21 @@ ${targetDesc}
 
         // Normalize weights to sum to 1
         const total = allocations.reduce((s: number, a: { ticker: string; weight: number }) => s + a.weight, 0);
-        const normalized = total > 0
-          ? allocations.map((a: { ticker: string; weight: number }) => ({ ticker: a.ticker.toUpperCase(), weight: parseFloat((a.weight / total).toFixed(4)) }))
-          : tickers.map(t => ({ ticker: t.toUpperCase(), weight: parseFloat((1 / tickers.length).toFixed(4)) }));
+        // Normalize to sum=1, keep 4 decimal places, adjust last item to fix rounding
+        let normalized: { ticker: string; weight: number }[];
+        if (total > 0) {
+          const rawNorm = allocations.map((a: { ticker: string; weight: number }) => ({
+            ticker: a.ticker.toUpperCase(),
+            weight: parseFloat((a.weight / total).toFixed(4)),
+          }));
+          // Fix rounding: adjust last item so sum is exactly 1
+          const sumFixed = rawNorm.reduce((s: number, a: { ticker: string; weight: number }) => s + a.weight, 0);
+          const diff = parseFloat((1 - sumFixed).toFixed(4));
+          if (rawNorm.length > 0) rawNorm[rawNorm.length - 1].weight = parseFloat((rawNorm[rawNorm.length - 1].weight + diff).toFixed(4));
+          normalized = rawNorm;
+        } else {
+          normalized = tickers.map(t => ({ ticker: t.toUpperCase(), weight: parseFloat((1 / tickers.length).toFixed(4)) }));
+        }
 
         return { allocations: normalized };
       }),
