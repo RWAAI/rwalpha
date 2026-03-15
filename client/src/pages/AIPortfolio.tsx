@@ -768,7 +768,7 @@ export default function AIPortfolio() {
             </div>
             <span className="font-bold text-slate-900 text-base">RWAlpha.io</span>
             <span className="hidden sm:block text-slate-300 mx-1">|</span>
-            <span className="hidden sm:block text-slate-500 text-sm">ETF 组合看板</span>
+            <span className="hidden sm:block text-slate-500 text-sm">AI × RWA · 下一代资产管理</span>
           </div>
 
           {/* Actions */}
