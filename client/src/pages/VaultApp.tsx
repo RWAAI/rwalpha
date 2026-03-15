@@ -8,7 +8,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Zap, Wallet, Clock, ChevronRight, ArrowUpRight, HelpCircle, X, Loader2, RefreshCw, User, LogOut, Settings, ChevronDown } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
@@ -297,6 +297,7 @@ export default function VaultApp() {
   const [showPayDrop, setShowPayDrop] = useState(false);
   const [backedModal, setBackedModal] = useState(false);
   const [weeklyDivModal, setWeeklyDivModal] = useState(false);
+  const [, navigate] = useLocation();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
   // 模拟登录状态
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -554,10 +555,10 @@ export default function VaultApp() {
                       {zh ? '个人资料' : 'Profile'}
                     </button>
                     <button
-                      onClick={() => { setUserMenuOpen(false); alert(zh ? '我的资产功能即将上线' : 'My Assets coming soon'); }}
-                      className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors"
-                    >
-                      {zh ? '我的资产' : 'My Assets'}
+                      onClick={() => { setUserMenuOpen(false); navigate('/my-assets'); }}
+                        className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors"
+                      >
+                        {zh ? '我的资产' : 'My Assets'}
                     </button>
                     <button
                       onClick={() => { setIsLoggedIn(false); setUserMenuOpen(false); }}

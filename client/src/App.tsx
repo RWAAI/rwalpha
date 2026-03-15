@@ -9,6 +9,7 @@ import LandingPage from "./pages/LandingPage";
 import VaultApp from './pages/VaultApp';
 import HowItWorks from './pages/HowItWorks';
 import AdminDashboard from './pages/AdminDashboard';
+import MyAssets from './pages/MyAssets';
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -19,6 +20,7 @@ function Router() {
       <Route path={"/vault"} component={VaultApp} />
       <Route path={"/how-it-works"} component={HowItWorks} />
       <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/my-assets"} component={MyAssets} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
