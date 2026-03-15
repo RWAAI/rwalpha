@@ -248,8 +248,7 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
   const [showAi, setShowAi] = useState(false);
 
   // ── Principal Calculator State ──
-  const [principal, setPrincipal] = useState(100000);
-  const [principalInput, setPrincipalInput] = useState('100000');
+  const principal = 100000;
 
   // ── Edit Mode State ──
   const [editing, setEditing] = useState(false);
@@ -653,92 +652,54 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
           ) : pd ? (
             <div className="p-5 space-y-6">
               {/* Summary Metrics */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-amber-50 rounded-xl p-4 text-center">
-                  <div className="flex items-center justify-center gap-1.5 text-amber-600 mb-1">
-                    <DollarSign size={14} />
-                    <span className="text-xs font-medium">加权派息率</span>
-                  </div>
-                  <div className="text-2xl font-bold text-amber-700">{fmtPct(pd.weightedYield)}</div>
-                  <div className="text-xs text-amber-500 mt-0.5">TTM 年化</div>
-                </div>
-                <div className={`rounded-xl p-4 text-center ${pd.weightedReturn >= 0 ? 'bg-emerald-50' : 'bg-red-50'}`}>
-                  <div className={`flex items-center justify-center gap-1.5 mb-1 ${pd.weightedReturn >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                    {pd.weightedReturn >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                    <span className="text-xs font-medium">1年总回报</span>
-                  </div>
-                  <div className={`text-2xl font-bold ${pd.weightedReturn >= 0 ? 'text-emerald-700' : 'text-red-600'}`}>
-                    {fmtPct(pd.weightedReturn)}
-                  </div>
-                  <div className={`text-xs mt-0.5 ${pd.weightedReturn >= 0 ? 'text-emerald-500' : 'text-red-400'}`}>加权平均</div>
-                </div>
-                {/* Principal Calculator Card */}
-                <div className="bg-white rounded-xl border border-slate-100 p-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
-                      <DollarSign size={16} className="text-emerald-600" />
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-amber-50 rounded-xl px-4 py-3 flex items-center gap-3">
+                  <div>
+                    <div className="flex items-center gap-1 text-amber-600 mb-0.5">
+                      <DollarSign size={12} />
+                      <span className="text-xs font-medium">加权派息率</span>
                     </div>
-                    <span className="text-xs text-slate-400">平均每周到账</span>
+                    <div className="text-2xl font-bold text-amber-700">{fmtPct(pd.weightedYield)}</div>
+                    <div className="text-xs text-amber-500">TTM 年化</div>
                   </div>
-                  {(() => {
-                    const weeklyIncome = pd.holdings.reduce((sum: number, h: any) => {
-                      if (!h.marketData) return sum;
-                      const freq = h.marketData.frequency;
-                      const annualYield = h.marketData.dividendYield / 100;
-                      const annualAmt = principal * h.weight * annualYield;
-                      if (freq === 'Weekly') return sum + annualAmt / 52;
-                      if (freq === 'Monthly') return sum + annualAmt / 52;
-                      return sum;
-                    }, 0);
-                    const annualIncome = pd.holdings.reduce((sum: number, h: any) => {
-                      if (!h.marketData) return sum;
-                      return sum + principal * h.weight * (h.marketData.dividendYield / 100);
-                    }, 0);
-                    return (
-                      <>
-                        <div className="text-3xl font-bold text-slate-900 mb-0.5">
-                          ${Math.round(weeklyIncome).toLocaleString()}
-                        </div>
-                        <div className="text-xs text-slate-400 mb-3">
-                          预计年收息: ${Math.round(annualIncome).toLocaleString()}
-                        </div>
-                        <div className="border-t border-slate-100 pt-3">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs text-slate-400">本金计算器</span>
-                            <div className="flex items-center gap-1.5">
-                              {[50000, 100000, 500000].map(v => (
-                                <button
-                                  key={v}
-                                  onClick={() => { setPrincipal(v); setPrincipalInput(String(v)); }}
-                                  className={`text-xs px-2 py-0.5 rounded-full transition-colors ${
-                                    principal === v
-                                      ? 'bg-indigo-600 text-white'
-                                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                                  }`}
-                                >
-                                  {v >= 10000 ? `${v / 10000}万` : v}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1 border-b border-indigo-200 pb-1">
-                            <span className="text-slate-400 text-sm">$</span>
-                            <input
-                              type="number"
-                              value={principalInput}
-                              onChange={e => {
-                                setPrincipalInput(e.target.value);
-                                const v = parseFloat(e.target.value);
-                                if (!isNaN(v) && v > 0) setPrincipal(v);
-                              }}
-                              className="flex-1 text-right text-sm font-mono text-slate-700 bg-transparent outline-none"
-                              min={0}
-                            />
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })()}
+                </div>
+                <div className={`rounded-xl px-4 py-3 flex items-center gap-3 ${pd.weightedReturn >= 0 ? 'bg-emerald-50' : 'bg-red-50'}`}>
+                  <div>
+                    <div className={`flex items-center gap-1 mb-0.5 ${pd.weightedReturn >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                      {pd.weightedReturn >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                      <span className="text-xs font-medium">1年总回报</span>
+                    </div>
+                    <div className={`text-2xl font-bold ${pd.weightedReturn >= 0 ? 'text-emerald-700' : 'text-red-600'}`}>
+                      {fmtPct(pd.weightedReturn)}
+                    </div>
+                    <div className={`text-xs ${pd.weightedReturn >= 0 ? 'text-emerald-500' : 'text-red-400'}`}>加权平均</div>
+                  </div>
+                </div>
+                {/* Weekly Income Card - fixed $100k principal */}
+                <div className="bg-white rounded-xl border border-slate-100 px-4 py-3 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-slate-400 mb-0.5">每周到账 (10万本金)</div>
+                    {(() => {
+                      const weeklyIncome = pd.holdings.reduce((sum: number, h: any) => {
+                        if (!h.marketData) return sum;
+                        const annualYield = h.marketData.dividendYield / 100;
+                        return sum + principal * h.weight * annualYield / 52;
+                      }, 0);
+                      const annualIncome = pd.holdings.reduce((sum: number, h: any) => {
+                        if (!h.marketData) return sum;
+                        return sum + principal * h.weight * (h.marketData.dividendYield / 100);
+                      }, 0);
+                      return (
+                        <>
+                          <div className="text-2xl font-bold text-slate-900">${Math.round(weeklyIncome).toLocaleString()}</div>
+                          <div className="text-xs text-slate-400">年收息 ${Math.round(annualIncome).toLocaleString()}</div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                  <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
+                    <DollarSign size={16} className="text-emerald-600" />
+                  </div>
                 </div>
               </div>
 
