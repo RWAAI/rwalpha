@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, name, tickers FROM portfolios LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT id, name, tickers FROM portfolios LIMIT 10;",
+  "rows": [
+    {
+      "id": "2",
+      "name": "RWAlpha 指数旗舰金库",
+      "tickers": "[{\"ticker\":\"NVDY\",\"weight\":0.2},{\"ticker\":\"QQQI\",\"weight\":0.1},{\"ticker\":\"QQQM\",\"weight\":0.3},{\"ticker\":\"VGT\",\"weight\":0.35},{\"ticker\":\"AMZY\",\"weight\":0.05}]"
+    },
+    {
+      "id": "30001",
+      "name": "能源/稳健/黄金 组合",
+      "tickers": "[{\"ticker\":\"GLDI\",\"weight\":0.3333},{\"ticker\":\"ENTI\",\"weight\":0.3333},{\"ticker\":\"GLD\",\"weight\":0.3334}]"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\ttickers\n2\tRWAlpha 指数旗舰金库\t[{\"ticker\":\"NVDY\",\"weight\":0.2},{\"ticker\":\"QQQI\",\"weight\":0.1},{\"ticker\":\"QQQM\",\"weight\":0.3},{\"ticker\":\"VGT\",\"weight\":0.35},{\"ticker\":\"AMZY\",\"weight\":0.05}]\n30001\t能源/稳健/黄金 组合\t[{\"ticker\":\"GLDI\",\"weight\":0.3333},{\"ticker\":\"ENTI\",\"weight\":0.3333},{\"ticker\":\"GLD\",\"weight\":0.3334}]\n",
+  "stderr": "",
+  "execution_time_ms": 1559
+}

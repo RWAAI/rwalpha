@@ -1,0 +1,8 @@
+{
+  "query": "SELECT id, name, tickers, weights FROM portfolios;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT id, name, tickers, weights FROM portfolios;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'weights' in 'field list'"
+  ]
+}

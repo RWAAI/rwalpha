@@ -88,9 +88,20 @@ async function fetchTickerData(ticker: string) {
     else if (ttmDivs.length >= 3) frequency = "Quarterly";
     else if (ttmDivs.length >= 1) frequency = "Annual";
 
-    // Always call yfinance for: AUM, description, AND dividend-adjusted 1-year total return
-    // This is critical for high-yield ETFs like NVDY/QQQI where raw price return is misleading
-    // (e.g. NVDY price -22% but total return +45% after including 73% dividend yield)
+    // Override frequency for known ETFs with insufficient history (new launches)
+    // These ETFs have < 1 year of history so the above thresholds undercount
+    const KNOWN_FREQUENCY_OVERRIDES: Record<string, string> = {
+      "MLPI": "Monthly",  // NEOS MLP & Energy Infrastructure High Income ETF, launched Dec 2025
+      "AMZY": "Weekly",   // YieldMax AMZN Option Income Strategy ETF, weekly distributions
+    };
+    if (KNOWN_FREQUENCY_OVERRIDES[ticker.toUpperCase()]) {
+      frequency = KNOWN_FREQUENCY_OVERRIDES[ticker.toUpperCase()];
+    }
+
+    // Fetch supplementary data: AUM, description, 1-year total return, volatility
+    // Primary source: TradingView (via get_ticker_info.py which uses TV Scanner API)
+    // TV total return = price performance (Perf.Y) + dividend yield
+    // This correctly handles high-yield ETFs like NVDY/QQQI
     let aumDisplay = "N/A";
     let description = "";
     let oneYearReturn = 0;
@@ -101,12 +112,12 @@ async function fetchTickerData(ticker: string) {
       if (info) {
         aumDisplay = info.aumDisplay || "N/A";
         description = info.description || "";
-        // Use dividend-adjusted total return from yfinance (auto_adjust=True)
+        // Use total return from TradingView (price perf + dividend yield)
         if (info.oneYearReturn != null) oneYearReturn = info.oneYearReturn;
         if (info.annualVolatility != null) annualVolatility = info.annualVolatility;
       }
     } catch (_) {
-      // Fallback to raw price return from chart data if yfinance fails
+      // Fallback to raw price return from chart data if TV data also fails
       const quotes = chartResult.indicators?.quote?.[0] ?? {};
       const closes = (quotes.close ?? []).filter((c: number | null) => c !== null) as number[];
       oneYearReturn = closes.length >= 2
