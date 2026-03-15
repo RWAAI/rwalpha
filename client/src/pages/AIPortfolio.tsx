@@ -800,24 +800,20 @@ function PortfolioCard({ portfolio, onDeleted }: {
                     const maxAmt = Math.max(...weeks.map(w => w.amount), 1);
                     return (
                       <>
-                        <div className="flex items-end gap-3 h-36 px-2">
+                        {/* 柱状图区域：固定高度，柱子从底部对齐 */}
+                        <div className="flex items-end gap-3 px-2" style={{ height: '100px' }}>
                           {weeks.map((w, wi) => (
-                            <div key={wi} className="flex-1 flex flex-col items-center gap-1 group relative">
-                              {/* 金额标签 */}
-                              <span className="text-[10px] font-semibold text-slate-600 mb-0.5">
-                                {w.amount > 0 ? `$${w.amount.toLocaleString()}` : ''}
-                              </span>
+                            <div key={wi} className="flex-1 flex flex-col items-end justify-end group relative h-full">
                               <div
                                 className="w-full rounded-t-md transition-all duration-300"
                                 style={{
-                                  height: `${Math.max((w.amount / maxAmt) * 100, w.amount > 0 ? 8 : 0)}%`,
+                                  height: `${Math.max((w.amount / maxAmt) * 100, w.amount > 0 ? 6 : 0)}%`,
                                   backgroundColor: wi === 3 ? '#4F46E5' : '#A5B4FC',
                                 }}
                               />
-                              <span className="text-[10px] text-slate-400">{w.week}</span>
                               {/* Hover tooltip: per-ticker breakdown */}
                               {w.breakdown.length > 0 && (
-                                <div className="pointer-events-none absolute bottom-full mb-8 left-1/2 -translate-x-1/2 w-36 bg-slate-800 rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg">
+                                <div className="pointer-events-none absolute bottom-full mb-1 left-1/2 -translate-x-1/2 w-36 bg-slate-800 rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg">
                                   <p className="text-[10px] text-slate-300 font-semibold mb-1">{w.week} 到账明细</p>
                                   {w.breakdown.map(b => (
                                     <div key={b.ticker} className="flex items-center justify-between gap-2">
@@ -831,6 +827,24 @@ function PortfolioCard({ portfolio, onDeleted }: {
                                   </div>
                                 </div>
                               )}
+                            </div>
+                          ))}
+                        </div>
+                        {/* 金额标签行 */}
+                        <div className="flex gap-3 px-2 mt-1">
+                          {weeks.map((w, wi) => (
+                            <div key={wi} className="flex-1 text-center">
+                              <span className="text-[11px] font-semibold text-slate-700">
+                                {w.amount > 0 ? `$${w.amount.toLocaleString()}` : '—'}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                        {/* 周标签行 */}
+                        <div className="flex gap-3 px-2 mt-0.5">
+                          {weeks.map((w, wi) => (
+                            <div key={wi} className="flex-1 text-center">
+                              <span className="text-[10px] text-slate-400">{w.week}</span>
                             </div>
                           ))}
                         </div>
