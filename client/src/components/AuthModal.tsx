@@ -119,7 +119,15 @@ export default function AuthModal({ open, initialMode = 'login', onClose, onLogi
   };
 
   const handleGoogleAuth = () => {
-    alert(zh ? 'Google 登录即将上线！' : 'Google login coming soon!');
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      } else {
+        onClose();
+      }
+    }, 1000);
   };
 
   const switchMode = (m: Mode) => {
