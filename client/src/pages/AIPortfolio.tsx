@@ -530,10 +530,12 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
       setEditing(false);
       setPortfolioData(null);
       setExpanded(true);
+      // Do NOT pass tickers here — let the server read the freshly-saved tickers from DB.
+      // Passing variables.tickers caused a race condition where stale tickers were used.
+      // forceRefresh: true ensures the cleared cache is not reused.
       fetchDataMutation.mutate({
         id: portfolio.id,
         forceRefresh: true,
-        tickers: variables.tickers,
       });
     },
     onError: (e) => setEditError(e.message),
@@ -611,7 +613,9 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
     const hasEmpty = editTickers.some(tk => !tk.ticker.trim());
     if (hasEmpty) { setEditError(t.errFillTicker); return; }
     if (Math.abs(totalWeight - 1) > 0.01) { setEditError(t.errWeightTotal((totalWeight * 100).toFixed(1))); return; }
-    updateMutation.mutate({ id: portfolio.id, tickers: editTickers });
+    // Normalize tickers to uppercase before saving
+    const normalizedTickers = editTickers.map(tk => ({ ...tk, ticker: tk.ticker.trim().toUpperCase() }));
+    updateMutation.mutate({ id: portfolio.id, tickers: normalizedTickers });
   };
 
   // Auto-load data when defaultExpanded is true

@@ -456,8 +456,14 @@ export const appRouter = router({
 
         if (!input.forceRefresh && !input.tickers && cacheAge < ONE_HOUR && row.cachedData) {
           const cached = JSON.parse(row.cachedData);
-          // If cached data has weightedReturn=0 but weightedYield>0, it's stale/incomplete — re-fetch
-          const isIncomplete = cached.weightedReturn === 0 && cached.weightedYield > 0;
+          // Validate cache completeness:
+          // 1. All holdings must have non-null marketData
+          // 2. If any holding has null marketData, the cache is incomplete — re-fetch
+          const holdings = cached.holdings ?? [];
+          const hasNullHolding = holdings.some((h: any) => h.marketData === null || h.marketData === undefined);
+          // 3. If all yields/returns are 0 but we have holdings, likely a bad cache (except pure index ETFs)
+          const allZero = holdings.length > 0 && cached.weightedYield === 0 && cached.weightedReturn === 0;
+          const isIncomplete = hasNullHolding || allZero;
           if (!isIncomplete) return cached;
         }
 
