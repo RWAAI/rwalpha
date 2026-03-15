@@ -384,11 +384,11 @@ export default function VaultApp() {
             <div className="px-4 py-3 space-y-2">
               {[
                 { name: zh ? '币安 Web3 钱包' : 'Binance Web3 Wallet', icon: '🟡', desc: zh ? '币安官方 Web3 钱包' : 'Binance official Web3 wallet' },
+                { name: 'OKX Wallet', icon: '⬤', desc: zh ? 'OKX 钱包扩展' : 'OKX Wallet Extension' },
                 { name: 'Trust Wallet', icon: '🛡️', desc: zh ? '去中心化多链钱包' : 'Decentralized multi-chain wallet' },
                 { name: 'MetaMask', icon: '🦊', desc: zh ? '浏览器扩展钱包' : 'Browser Extension' },
                 { name: 'WalletConnect', icon: '🔗', desc: zh ? '扫码连接移动钱包' : 'Scan with mobile wallet' },
                 { name: 'Coinbase Wallet', icon: '🟦', desc: zh ? 'Coinbase 官方钱包' : 'Coinbase official wallet' },
-                { name: 'OKX Wallet', icon: '⬤', desc: zh ? 'OKX 钱包扩展' : 'OKX Wallet Extension' },
               ].map(w => (
                 <button
                   key={w.name}
