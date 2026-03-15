@@ -1092,7 +1092,7 @@ function PortfolioSwitcherCard({ portfolio, isActive, onClick }: {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-start px-3 py-2.5 rounded-xl border transition-all text-left min-w-[110px] max-w-[160px] ${
+      className={`flex flex-col items-start px-3 py-2.5 rounded-xl border transition-all text-left w-[140px] h-[72px] ${
         isActive
           ? 'bg-indigo-600 border-indigo-600 shadow-md shadow-indigo-200'
           : 'bg-white border-slate-200 hover:border-indigo-300 hover:bg-indigo-50'
