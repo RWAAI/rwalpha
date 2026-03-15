@@ -154,12 +154,7 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
             {/* 关于 下拉 */}
             <AboutDropdown zh={zh} />
 
-            {/* 临时调试入口 */}
-            <Link href="/ai">
-              <button className="px-4 py-1.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition-all duration-150">
-                AI
-              </button>
-            </Link>
+
           </nav>
         </div>
 
