@@ -1,0 +1,8 @@
+{
+  "query": "SELECT p.id, p.name, p.tickers, p.cached_data IS NOT NULL as has_cache, p.fetched_at FROM portfolios p WHERE p.name LIKE '%RWAlpha%' OR p.name LIKE '%指数%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT p.id, p.name, p.tickers, p.cached_data IS NOT NULL as has_cache, p.fetched_at FROM portfolios p WHERE p.name LIKE '%RWAlpha%' OR p.name LIKE '%指数%';",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'p.cached_data' in 'field list'"
+  ]
+}

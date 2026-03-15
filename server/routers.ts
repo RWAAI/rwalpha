@@ -463,7 +463,11 @@ export const appRouter = router({
           const hasNullHolding = holdings.some((h: any) => h.marketData === null || h.marketData === undefined);
           // 3. If all yields/returns are 0 but we have holdings, likely a bad cache (except pure index ETFs)
           const allZero = holdings.length > 0 && cached.weightedYield === 0 && cached.weightedReturn === 0;
-          const isIncomplete = hasNullHolding || allZero;
+          // 4. If all oneYearReturn values are 0 but we have multiple holdings, likely a bad cache
+          //    (pure index ETFs with 0 yield can still have non-zero oneYearReturn)
+          const allReturnZero = holdings.length > 0 &&
+            holdings.every((h: any) => (h.marketData?.oneYearReturn ?? 0) === 0);
+          const isIncomplete = hasNullHolding || allZero || allReturnZero;
           if (!isIncomplete) return cached;
         }
 
