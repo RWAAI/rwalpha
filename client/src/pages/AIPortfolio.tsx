@@ -675,7 +675,7 @@ function PortfolioCard({ portfolio, onDeleted }: {
                     const weeklyIncome = pd.holdings.reduce((sum: number, h: any) => {
                       if (!h.marketData) return sum;
                       const freq = h.marketData.frequency;
-                      const annualYield = h.marketData.ttmYield / 100;
+                      const annualYield = h.marketData.dividendYield / 100;
                       const annualAmt = principal * h.weight * annualYield;
                       if (freq === 'Weekly') return sum + annualAmt / 52;
                       if (freq === 'Monthly') return sum + annualAmt / 52;
@@ -683,7 +683,7 @@ function PortfolioCard({ portfolio, onDeleted }: {
                     }, 0);
                     const annualIncome = pd.holdings.reduce((sum: number, h: any) => {
                       if (!h.marketData) return sum;
-                      return sum + principal * h.weight * (h.marketData.ttmYield / 100);
+                      return sum + principal * h.weight * (h.marketData.dividendYield / 100);
                     }, 0);
                     return (
                       <>
