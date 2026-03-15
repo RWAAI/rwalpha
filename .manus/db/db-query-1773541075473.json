@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, email, name, role, createdAt FROM users WHERE email = 'duke.shi@rwalpha.io';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT id, email, name, role, createdAt FROM users WHERE email = 'duke.shi@rwalpha.io';",
+  "rows": [
+    {
+      "id": "210007",
+      "email": "duke.shi@rwalpha.io",
+      "name": "Duke Shi",
+      "role": "admin",
+      "createdAt": "2026-03-15 02:17:50"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\temail\tname\trole\tcreatedAt\n210007\tduke.shi@rwalpha.io\tDuke Shi\tadmin\t2026-03-15 02:17:50\n",
+  "stderr": "",
+  "execution_time_ms": 1496
+}

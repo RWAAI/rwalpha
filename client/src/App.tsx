@@ -11,6 +11,7 @@ import HowItWorks from './pages/HowItWorks';
 import AdminDashboard from './pages/AdminDashboard';
 import MyAssets from './pages/MyAssets';
 import Profile from './pages/Profile';
+import Insights from './pages/Insights';
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -23,6 +24,7 @@ function Router() {
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/my-assets"} component={MyAssets} />
       <Route path={"/profile"} component={Profile} />
+      <Route path={"/insights"} component={Insights} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
