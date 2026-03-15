@@ -246,6 +246,10 @@ function PortfolioCard({ portfolio, onDeleted }: {
   const [aiError, setAiError] = useState('');
   const [showAi, setShowAi] = useState(false);
 
+  // ── Principal Calculator State ──
+  const [principal, setPrincipal] = useState(100000);
+  const [principalInput, setPrincipalInput] = useState('100000');
+
   // ── Edit Mode State ──
   const [editing, setEditing] = useState(false);
   const [editTickers, setEditTickers] = useState<TickerInput[]>([]);
@@ -659,13 +663,73 @@ function PortfolioCard({ portfolio, onDeleted }: {
                   </div>
                   <div className={`text-xs mt-0.5 ${pd.weightedReturn >= 0 ? 'text-emerald-500' : 'text-red-400'}`}>加权平均</div>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <div className="flex items-center justify-center gap-1.5 text-slate-600 mb-1">
-                    <BarChart2 size={14} />
-                    <span className="text-xs font-medium">年化波动率</span>
+                {/* Principal Calculator Card */}
+                <div className="bg-white rounded-xl border border-slate-100 p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
+                      <DollarSign size={16} className="text-emerald-600" />
+                    </div>
+                    <span className="text-xs text-slate-400">平均每周到账</span>
                   </div>
-                  <div className="text-2xl font-bold text-slate-700">{fmtNum(pd.weightedVolatility)}%</div>
-                  <div className="text-xs text-slate-400 mt-0.5">加权平均</div>
+                  {(() => {
+                    const weeklyIncome = pd.holdings.reduce((sum: number, h: any) => {
+                      if (!h.marketData) return sum;
+                      const freq = h.marketData.frequency;
+                      const annualYield = h.marketData.ttmYield / 100;
+                      const annualAmt = principal * h.weight * annualYield;
+                      if (freq === 'Weekly') return sum + annualAmt / 52;
+                      if (freq === 'Monthly') return sum + annualAmt / 52;
+                      return sum;
+                    }, 0);
+                    const annualIncome = pd.holdings.reduce((sum: number, h: any) => {
+                      if (!h.marketData) return sum;
+                      return sum + principal * h.weight * (h.marketData.ttmYield / 100);
+                    }, 0);
+                    return (
+                      <>
+                        <div className="text-3xl font-bold text-slate-900 mb-0.5">
+                          ${Math.round(weeklyIncome).toLocaleString()}
+                        </div>
+                        <div className="text-xs text-slate-400 mb-3">
+                          预计年收息: ${Math.round(annualIncome).toLocaleString()}
+                        </div>
+                        <div className="border-t border-slate-100 pt-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs text-slate-400">本金计算器</span>
+                            <div className="flex items-center gap-1.5">
+                              {[50000, 100000, 500000].map(v => (
+                                <button
+                                  key={v}
+                                  onClick={() => { setPrincipal(v); setPrincipalInput(String(v)); }}
+                                  className={`text-xs px-2 py-0.5 rounded-full transition-colors ${
+                                    principal === v
+                                      ? 'bg-indigo-600 text-white'
+                                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                                  }`}
+                                >
+                                  {v >= 10000 ? `${v / 10000}万` : v}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 border-b border-indigo-200 pb-1">
+                            <span className="text-slate-400 text-sm">$</span>
+                            <input
+                              type="number"
+                              value={principalInput}
+                              onChange={e => {
+                                setPrincipalInput(e.target.value);
+                                const v = parseFloat(e.target.value);
+                                if (!isNaN(v) && v > 0) setPrincipal(v);
+                              }}
+                              className="flex-1 text-right text-sm font-mono text-slate-700 bg-transparent outline-none"
+                              min={0}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 
