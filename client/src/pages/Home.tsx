@@ -92,7 +92,7 @@ const i18n = {
   },
   en: {
     vaultTitle: 'RWAlpha Index Prime Vault',
-    vaultSub: 'AI-Driven Rebalancing · Weekly Dividend · Index Core Position',
+    vaultSub: 'AI-Driven Management · Weekly Dividend · Index Core Position',
     aiEnabled: 'AI Powered',
     principal: 'Principal Calculator',
     annualYield: 'Net Annual Yield',
