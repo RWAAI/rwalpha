@@ -1200,13 +1200,7 @@ export default function AIPortfolio() {
                     onClick={() => setActivePortfolioId(p.id)}
                   />
                 ))}
-                <button
-                  onClick={() => setShowCreate(true)}
-                  className="flex flex-col items-center justify-center px-3 py-2.5 rounded-xl border-2 border-dashed border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all min-w-[60px] h-[58px] text-slate-400 hover:text-indigo-500"
-                >
-                  <PlusCircle size={16} />
-                  <span className="text-[9px] mt-1">新建</span>
-                </button>
+
               </div>
             )}
           </div>
