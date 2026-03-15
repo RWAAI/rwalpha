@@ -646,7 +646,21 @@ function PortfolioCard({ portfolio, onDeleted }: {
                         <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">权重</th>
                         <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">AUM</th>
                         <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">派息率</th>
-                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">1年回报</th>
+                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">
+                          <span className="inline-flex items-center justify-end gap-1">
+                            1年回报
+                            <span
+                              className="relative group cursor-help"
+                              title="含股息，基于前复权价格计算（等同于股息当天全部再投入）"
+                            >
+                              <Info size={11} className="text-slate-400 hover:text-indigo-500 transition-colors" />
+                              <span className="pointer-events-none absolute bottom-full right-0 mb-1.5 w-52 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg">
+                                含股息，基于前复权价格计算<br />
+                                （等同于股息当天全部再投入的近似总回报）
+                              </span>
+                            </span>
+                          </span>
+                        </th>
                         <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">波动率</th>
                         <th className="text-center px-4 py-3 text-xs font-semibold text-slate-500">频率</th>
                       </tr>
