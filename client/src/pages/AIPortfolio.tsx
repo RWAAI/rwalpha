@@ -3,7 +3,8 @@ import { trpc } from '@/lib/trpc';
 import {
   PlusCircle, Trash2, RefreshCw, BrainCircuit, ChevronDown, ChevronUp,
   TrendingUp, TrendingDown, DollarSign, BarChart2, Calendar, Layers,
-  X, Edit2, Check, AlertTriangle, Loader2, Zap, Info, Pencil, Globe
+  X, Edit2, Check, AlertTriangle, Loader2, Zap, Info, Pencil, Globe,
+  Activity, RotateCcw
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
@@ -53,6 +54,14 @@ const T = {
     // Allocation
     allocationTitle: '资产配比 (NAV)',
     aiAdjustedLabel: 'AI 调仓后',
+    // Weight Simulator
+    simTitle: '权重模拟器',
+    simSubtitle: '拖动滑块实时模拟调仓对派息率和回报的影响',
+    simReset: '重置',
+    simYield: '派息率',
+    simReturn: '总回报',
+    simDelta: '变化',
+    simTotal: '合计',
     // Holdings table
     holdingsTitle: '资产清单与派息频率',
     dataUpdated: '数据最后更新:',
@@ -148,6 +157,14 @@ const T = {
     volatilityLow: 'Volatility: Low →',
     allocationTitle: 'Asset Allocation (NAV)',
     aiAdjustedLabel: 'Post AI Rebalance',
+    // Weight Simulator
+    simTitle: 'Weight Simulator',
+    simSubtitle: 'Drag sliders to simulate how rebalancing affects yield & return',
+    simReset: 'Reset',
+    simYield: 'Yield',
+    simReturn: 'Total Return',
+    simDelta: 'Change',
+    simTotal: 'Total',
     holdingsTitle: 'Holdings & Dividend Frequency',
     dataUpdated: 'Last Updated:',
     dataSource: 'Source: TradingView',
@@ -513,6 +530,63 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
   const [aiAllocLoading, setAiAllocLoading] = useState(false);
   const [aiAllocReason, setAiAllocReason] = useState('');
   const [hoveredWeek, setHoveredWeek] = useState<number | null>(null);
+
+  // ── Weight Simulator State ──
+  // simWeights: { [ticker]: weight (0-1) }, always sums to 1
+  const [simWeights, setSimWeights] = useState<Record<string, number> | null>(null);
+
+  // Initialize simWeights when portfolioData loads (or resets)
+  React.useEffect(() => {
+    if (portfolioData) {
+      const init: Record<string, number> = {};
+      portfolioData.holdings.forEach(h => { init[h.ticker] = h.weight; });
+      setSimWeights(init);
+    } else {
+      setSimWeights(null);
+    }
+  }, [portfolioData]);
+
+  // Handle slider change: adjust one ticker, redistribute remainder proportionally
+  const handleSimSlider = (changedTicker: string, newWeight: number) => {
+    if (!portfolioData || !simWeights) return;
+    const tickers = portfolioData.holdings.map(h => h.ticker);
+    const others = tickers.filter(t => t !== changedTicker);
+    const remaining = Math.max(0, 1 - newWeight);
+    const currentOtherSum = others.reduce((s, t) => s + (simWeights[t] ?? 0), 0);
+    const updated: Record<string, number> = { ...simWeights, [changedTicker]: newWeight };
+    if (currentOtherSum === 0) {
+      // Distribute equally
+      const each = remaining / others.length;
+      others.forEach(t => { updated[t] = each; });
+    } else {
+      // Proportional redistribution
+      others.forEach(t => {
+        updated[t] = (simWeights[t] / currentOtherSum) * remaining;
+      });
+    }
+    setSimWeights(updated);
+  };
+
+  const resetSimWeights = () => {
+    if (!portfolioData) return;
+    const init: Record<string, number> = {};
+    portfolioData.holdings.forEach(h => { init[h.ticker] = h.weight; });
+    setSimWeights(init);
+  };
+
+  // Compute simulated weighted yield & return
+  const simMetrics = React.useMemo(() => {
+    if (!portfolioData || !simWeights) return null;
+    let simYield = 0, simReturn = 0;
+    portfolioData.holdings.forEach(h => {
+      const w = simWeights[h.ticker] ?? h.weight;
+      if (h.marketData) {
+        simYield += w * h.marketData.dividendYield;
+        simReturn += w * h.marketData.oneYearReturn;
+      }
+    });
+    return { simYield, simReturn };
+  }, [portfolioData, simWeights]);
 
   const utils = trpc.useUtils();
 
@@ -1182,6 +1256,100 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                   </div>
                 </div>
               </div>
+
+              {/* Weight Simulator */}
+              {pd && simWeights && (() => {
+                const baseYield = pd.weightedYield;
+                const baseReturn = pd.weightedReturn;
+                const dyYield = simMetrics ? simMetrics.simYield - baseYield : 0;
+                const dyReturn = simMetrics ? simMetrics.simReturn - baseReturn : 0;
+                const totalSim = Object.values(simWeights).reduce((s, w) => s + w, 0);
+                const isChanged = Math.abs(dyYield) > 0.001 || Math.abs(dyReturn) > 0.001;
+                return (
+                  <div className="bg-white rounded-xl border border-slate-100 p-4">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2">
+                        <Activity size={14} className="text-violet-500" />
+                        <h4 className="text-sm font-semibold text-slate-700">{t.simTitle}</h4>
+                      </div>
+                      <button
+                        onClick={resetSimWeights}
+                        className="text-xs text-slate-400 hover:text-indigo-500 transition-colors flex items-center gap-1"
+                      >
+                        <RotateCcw size={11} />{t.simReset}
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-400 mb-4">{t.simSubtitle}</p>
+
+                    {/* Sliders */}
+                    <div className="space-y-4 mb-5">
+                      {pd.holdings.map((h, i) => {
+                        const w = simWeights[h.ticker] ?? h.weight;
+                        const pct = w * 100;
+                        const color = COLORS[i % COLORS.length];
+                        return (
+                          <div key={h.ticker}>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="font-mono text-sm font-bold" style={{ color }}>{h.ticker}</span>
+                              <span className="text-sm font-semibold text-slate-700">{pct.toFixed(1)}%</span>
+                            </div>
+                            <div className="relative">
+                              <input
+                                type="range"
+                                min={0}
+                                max={100}
+                                step={0.5}
+                                value={pct}
+                                onChange={e => handleSimSlider(h.ticker, parseFloat(e.target.value) / 100)}
+                                className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+                                style={{
+                                  background: `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, ${color}22 ${pct}%, ${color}22 100%)`,
+                                  accentColor: color,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Total weight indicator */}
+                    <div className={`flex items-center justify-between text-xs mb-4 px-2 py-1.5 rounded-lg ${
+                      Math.abs(totalSim - 1) < 0.001 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'
+                    }`}>
+                      <span>{t.simTotal}</span>
+                      <span className="font-semibold">{(totalSim * 100).toFixed(1)}%</span>
+                    </div>
+
+                    {/* Impact summary */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="rounded-lg bg-slate-50 p-3">
+                        <div className="text-xs text-slate-400 mb-1">{t.simYield}</div>
+                        <div className={`text-lg font-bold ${(simMetrics?.simYield ?? 0) >= 0 ? 'text-amber-600' : 'text-red-500'}`}>
+                          {fmtPct(simMetrics?.simYield ?? baseYield)}
+                        </div>
+                        {isChanged && (
+                          <div className={`text-xs font-medium mt-0.5 ${dyYield > 0 ? 'text-emerald-600' : dyYield < 0 ? 'text-red-500' : 'text-slate-400'}`}>
+                            {dyYield > 0 ? '▲' : '▼'} {t.simDelta} {Math.abs(dyYield).toFixed(2)}%
+                          </div>
+                        )}
+                      </div>
+                      <div className="rounded-lg bg-slate-50 p-3">
+                        <div className="text-xs text-slate-400 mb-1">{t.simReturn}</div>
+                        <div className={`text-lg font-bold ${(simMetrics?.simReturn ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                          {fmtPct(simMetrics?.simReturn ?? baseReturn)}
+                        </div>
+                        {isChanged && (
+                          <div className={`text-xs font-medium mt-0.5 ${dyReturn > 0 ? 'text-emerald-600' : dyReturn < 0 ? 'text-red-500' : 'text-slate-400'}`}>
+                            {dyReturn > 0 ? '▲' : '▼'} {t.simDelta} {Math.abs(dyReturn).toFixed(2)}%
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Holdings Table */}
               <div>
