@@ -603,7 +603,7 @@ export default function VaultApp() {
         <div className="flex items-center gap-2">
           <p className="text-slate-500 text-sm">
             {zh
-              ? "AI 驱动调仓 · 每周现金派息 · 指数底仓增值"
+              ? "AI 驱动管理 · 每周现金派息 · 指数底仓增值"
               : "AI-driven rebalancing · Weekly cash dividend · Index core appreciation"}
           </p>
           <Link href="/dashboard">

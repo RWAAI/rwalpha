@@ -9,7 +9,7 @@ import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, A
 const i18n = {
   zh: {
     vaultTitle: 'RWAlpha 指数旗舰金库',
-    vaultSub: 'AI 驱动调仓 · 每周现金派息 · 指数底仓增值',
+    vaultSub: 'AI 驱动管理 · 每周现金派息 · 指数底仓增值',
     aiEnabled: 'AI 赋能',
     principal: '本金计算器',
     annualYield: '年度净派息率',
@@ -76,7 +76,7 @@ const i18n = {
     sellingPoints: [
       { title: '每周派息',     desc: 'NVDY 每周到账，英伟达期权收益化为稳定现金流' },
       { title: '指数底仓',     desc: '纳指100底仓（50% QQQM+VGT）保留核心资产上涨潜力' },
-      { title: 'AI 驱动调仓', desc: 'AI 实时监控市场，自动优化仓位与再分配' },
+      { title: 'AI 驱动管理', desc: 'AI 实时监控市场，自动优化仓位与再分配' },
       { title: '稳健增长',     desc: '派息 + NAV 双轨驱动，复利加速资产增长' },
     ],
     portfolio: [
