@@ -962,6 +962,7 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                     <thead className="bg-slate-50">
                       <tr>
                         <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400">代码</th>
+                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400">金库占比</th>
                         <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400">AUM（美元）</th>
                         <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400">派息率</th>
                         <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400">
@@ -1002,14 +1003,13 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                         return (
                           <tr key={i} className="hover:bg-slate-50/30 transition-colors">
                             <td className="px-4 py-3">
-                              <div className="flex items-baseline gap-2">
-                                <span className="font-mono font-bold text-base"
-                                  style={{ color: COLORS[i % COLORS.length] }}>
-                                  {h.ticker}
-                                </span>
-                                <span className="text-xs text-slate-400">占比 {(h.weight * 100).toFixed(2)}%</span>
-                              </div>
-
+                              <span className="font-mono font-bold text-base"
+                                style={{ color: COLORS[i % COLORS.length] }}>
+                                {h.ticker}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              <span className="text-sm font-semibold text-slate-600">{(h.weight * 100).toFixed(2)}%</span>
                             </td>
                             <td className="px-4 py-3 text-right text-slate-500 text-sm">
                               {md?.aumDisplay ?? '—'}
