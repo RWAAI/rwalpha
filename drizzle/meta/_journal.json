@@ -15,6 +15,13 @@
       "when": 1773501504214,
       "tag": "0001_dear_vulcan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1773543411422,
+      "tag": "0002_certain_newton_destine",
+      "breakpoints": true
     }
   ]
 }

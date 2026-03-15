@@ -86,3 +86,21 @@ export const rebalanceLogs = mysqlTable("rebalance_logs", {
 
 export type RebalanceLog = typeof rebalanceLogs.$inferSelect;
 export type InsertRebalanceLog = typeof rebalanceLogs.$inferInsert;
+
+/**
+ * AI 看板用户自定义组合
+ * 存储用户创建的 ETF/股票组合
+ */
+export const portfolios = mysqlTable("portfolios", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 64 }).notNull(),
+  description: text("description"),
+  tickers: text("tickers").notNull(), // JSON array: [{ticker, weight, name?}]
+  cachedData: text("cachedData"),     // JSON: cached market data
+  cachedAt: timestamp("cachedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Portfolio = typeof portfolios.$inferSelect;
+export type InsertPortfolio = typeof portfolios.$inferInsert;

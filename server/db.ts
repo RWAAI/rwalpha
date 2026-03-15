@@ -6,6 +6,7 @@ import {
   InsertDividendRecord, dividendRecords,
   InsertAiSignal, aiSignals,
   InsertRebalanceLog, rebalanceLogs,
+  InsertPortfolio, portfolios,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -187,4 +188,38 @@ export async function deleteRebalanceLog(id: number) {
   const db = await getDb();
   if (!db) return;
   await db.delete(rebalanceLogs).where(eq(rebalanceLogs.id, id));
+}
+
+// ─── Portfolio helpers ────────────────────────────────────────────────────────
+
+export async function getAllPortfolios() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(portfolios).orderBy(desc(portfolios.updatedAt));
+}
+
+export async function getPortfolioById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(portfolios).where(eq(portfolios.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function insertPortfolio(record: InsertPortfolio) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.insert(portfolios).values(record);
+  return result;
+}
+
+export async function updatePortfolio(id: number, data: Partial<InsertPortfolio>) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(portfolios).set(data).where(eq(portfolios.id, id));
+}
+
+export async function deletePortfolio(id: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(portfolios).where(eq(portfolios.id, id));
 }

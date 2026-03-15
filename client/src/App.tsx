@@ -12,6 +12,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import MyAssets from './pages/MyAssets';
 import Profile from './pages/Profile';
 import Insights from './pages/Insights';
+import AIPortfolio from './pages/AIPortfolio';
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -25,6 +26,7 @@ function Router() {
       <Route path={"/my-assets"} component={MyAssets} />
       <Route path={"/profile"} component={Profile} />
       <Route path={"/insights"} component={Insights} />
+      <Route path={"/ai"} component={AIPortfolio} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
