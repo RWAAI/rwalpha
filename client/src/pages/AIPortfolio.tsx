@@ -1003,11 +1003,13 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                 const isChanged = simWeights !== null && (Math.abs(dyYield) > 0.001 || Math.abs(dyReturn) > 0.001);
                 const weeklyIncome = pd.holdings.reduce((sum: number, h: any) => {
                   if (!h.marketData) return sum;
-                  return sum + principal * h.weight * (h.marketData.dividendYield / 100) / 52;
+                  const w_ = simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight;
+                  return sum + principal * w_ * (h.marketData.dividendYield / 100) / 52;
                 }, 0);
                 const annualIncome = pd.holdings.reduce((sum: number, h: any) => {
                   if (!h.marketData) return sum;
-                  return sum + principal * h.weight * (h.marketData.dividendYield / 100);
+                  const w_ = simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight;
+                  return sum + principal * w_ * (h.marketData.dividendYield / 100);
                 }, 0);
                 return (
                   <div className="bg-white rounded-xl border border-slate-100 p-4">
@@ -1119,7 +1121,7 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                       ))}
                     </div>
                   </div>
-                  {/* Weekly bars: 4 weeks — linked to principal */}
+                  {/* Weekly bars: 4 weeks — linked to principal & simWeights */}
                   {(() => {
                     const weeklyHoldings = pd.holdings.filter(h => h.marketData?.frequency === 'Weekly');
                     const monthlyHoldings = pd.holdings.filter(h => h.marketData?.frequency === 'Monthly');
@@ -1127,13 +1129,15 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                       let amount = 0;
                       weeklyHoldings.forEach(h => {
                         if (h.marketData) {
-                          amount += principal * h.weight * (h.marketData.dividendYield / 100) / 52;
+                          const w_ = simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight;
+                          amount += principal * w_ * (h.marketData.dividendYield / 100) / 52;
                         }
                       });
                       if (w === 4) {
                         monthlyHoldings.forEach(h => {
                           if (h.marketData) {
-                            amount += principal * h.weight * (h.marketData.dividendYield / 100) / 12;
+                            const w_ = simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight;
+                            amount += principal * w_ * (h.marketData.dividendYield / 100) / 12;
                           }
                         });
                       }
@@ -1141,9 +1145,10 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                       weeklyHoldings.forEach(h => {
                         if (h.marketData) {
                           const idx = pd.holdings.indexOf(h);
+                          const w_ = simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight;
                           breakdown.push({
                             ticker: h.ticker,
-                            amount: principal * h.weight * (h.marketData.dividendYield / 100) / 52,
+                            amount: principal * w_ * (h.marketData.dividendYield / 100) / 52,
                             color: COLORS[idx % COLORS.length],
                           });
                         }
@@ -1152,9 +1157,10 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                         monthlyHoldings.forEach(h => {
                           if (h.marketData) {
                             const idx = pd.holdings.indexOf(h);
+                            const w_ = simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight;
                             breakdown.push({
                               ticker: h.ticker,
-                              amount: principal * h.weight * (h.marketData.dividendYield / 100) / 12,
+                              amount: principal * w_ * (h.marketData.dividendYield / 100) / 12,
                               color: COLORS[idx % COLORS.length],
                             });
                           }
@@ -1251,46 +1257,54 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                     </div>
                     <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 font-medium">{t.aiAdjustedLabel}</span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    {/* Donut chart */}
-                    <div className="shrink-0">
-                      <ResponsiveContainer width={120} height={120}>
-                        <PieChart>
-                          <Pie data={pieData} cx="50%" cy="50%" innerRadius={32} outerRadius={55}
-                            dataKey="value" nameKey="name" paddingAngle={2} startAngle={90} endAngle={-270}>
-                            {pieData.map((entry: any, index: number) => (
-                              <Cell key={index} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <Tooltip formatter={(v: number) => [`${v}%`, t.weight]} />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-                    {/* Legend list */}
-                    <div className="flex-1 space-y-2">
-                      {pd.holdings.map((h, i) => {
-                        const aiAdj = (portfolio.aiAdjust as Record<string, number> | undefined)?.[h.ticker];
-                        return (
-                          <div key={h.ticker} className="flex items-center gap-2">
-                            <span className="font-mono text-xs font-bold w-10" style={{ color: COLORS[i % COLORS.length] }}>{h.ticker}</span>
-                            <div className="flex-1 h-1.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] + '30' }}>
-                              <div className="h-full rounded-full" style={{ width: `${(h.weight * 100).toFixed(1)}%`, backgroundColor: COLORS[i % COLORS.length] }} />
-                            </div>
-                            <span className="text-xs text-slate-500 w-14 text-right">{(h.weight * 100).toFixed(2)}%</span>
-                            {aiAdj != null ? (
-                              <span className={`text-xs font-semibold w-14 text-right ${
-                                aiAdj > 0 ? 'text-emerald-600' : aiAdj < 0 ? 'text-red-500' : 'text-slate-300'
-                              }`}>
-                                {aiAdj > 0 ? '▲' : aiAdj < 0 ? '▼' : '— '}{aiAdj !== 0 ? `${Math.abs(aiAdj).toFixed(2)}%` : '0.00%'}
-                              </span>
-                            ) : (
-                              <span className="text-xs text-slate-300 w-14 text-right">— 0.00%</span>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                  {(() => {
+                    // Use simWeights for live pie/bar update
+                    const simPieData = pd.holdings.map((h, i) => ({
+                      name: h.ticker,
+                      value: parseFloat(((simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight) * 100).toFixed(1)),
+                      color: COLORS[i % COLORS.length],
+                    }));
+                    return (
+                      <div className="flex items-center gap-4">
+                        {/* Donut chart */}
+                        <div className="shrink-0">
+                          <ResponsiveContainer width={120} height={120}>
+                            <PieChart>
+                              <Pie data={simPieData} cx="50%" cy="50%" innerRadius={32} outerRadius={55}
+                                dataKey="value" nameKey="name" paddingAngle={2} startAngle={90} endAngle={-270}>
+                                {simPieData.map((entry: any, index: number) => (
+                                  <Cell key={index} fill={entry.color} />
+                                ))}
+                              </Pie>
+                              <Tooltip formatter={(v: number) => [`${v}%`, t.weight]} />
+                            </PieChart>
+                          </ResponsiveContainer>
+                        </div>
+                        {/* Legend list */}
+                        <div className="flex-1 space-y-2">
+                          {pd.holdings.map((h, i) => {
+                            const simW = simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight;
+                            const origW = h.weight;
+                            const delta = simW - origW;
+                            return (
+                              <div key={h.ticker} className="flex items-center gap-2">
+                                <span className="font-mono text-xs font-bold w-10" style={{ color: COLORS[i % COLORS.length] }}>{h.ticker}</span>
+                                <div className="flex-1 h-1.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] + '30' }}>
+                                  <div className="h-full rounded-full transition-all duration-200" style={{ width: `${(simW * 100).toFixed(1)}%`, backgroundColor: COLORS[i % COLORS.length] }} />
+                                </div>
+                                <span className="text-xs text-slate-500 w-14 text-right">{(simW * 100).toFixed(2)}%</span>
+                                <span className={`text-xs font-semibold w-14 text-right ${
+                                  Math.abs(delta) < 0.0001 ? 'text-slate-300' : delta > 0 ? 'text-emerald-600' : 'text-red-500'
+                                }`}>
+                                  {Math.abs(delta) < 0.0001 ? '— 0.00%' : `${delta > 0 ? '▲' : '▼'}${Math.abs(delta * 100).toFixed(2)}%`}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
