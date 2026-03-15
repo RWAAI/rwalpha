@@ -26,9 +26,9 @@ const COPY = {
     dualVaultSub: '本金稳健成长，收益每周到账',
     featuresLabel: '四大核心优势',
     features: [
-      { title: '每周派息', desc: '期权收益机制化分配，稳定现金流按周到账。' },
-      { title: '指数底仓', desc: '纳指 ETF 完全支撑，本金随市场长期增值。' },
       { title: 'AI 驱动管理', desc: 'AI 引擎持续监测，驱动调整仓位与复投策略。' },
+      { title: '指数底仓', desc: '纳指 ETF 完全支撑，本金随市场长期增值。' },
+      { title: '每周派息', desc: '期权收益机制化分配，稳定现金流按周到账。' },
       { title: '稳健增长', desc: '派息与净值双轨驱动，复利持续滚动增值。' },
     ],
     statsLabel: '底层表现数据',
@@ -66,9 +66,9 @@ const COPY = {
     dualVaultSub: 'Principal grows steadily, Yield paid weekly.',
     featuresLabel: 'Four Core Advantages',
     features: [
-      { title: 'Weekly Dividend', desc: 'Options income distributed mechanically every week — stable cash flow, not market-dependent.' },
-      { title: 'Index Collateral', desc: 'Fully backed by Nasdaq ETFs. Principal grows with the market over the long term.' },
       { title: 'AI-Driven Management', desc: 'AI engine continuously monitors and drives position adjustment and reinvestment strategy.' },
+      { title: 'Index Collateral', desc: 'Fully backed by Nasdaq ETFs. Principal grows with the market over the long term.' },
+      { title: 'Weekly Dividend', desc: 'Options income distributed mechanically every week — stable cash flow, not market-dependent.' },
       { title: 'Steady Growth', desc: 'Dividend + NAV appreciation on dual tracks. Compounding drives continuous asset growth.' },
     ],
     statsLabel: 'Underlying Performance',
@@ -162,12 +162,12 @@ export default function LandingPage() {
   const statsValues = [19.88, 29.72, 10, 100];
   const statsDecimals = [2, 2, 0, 0];
   const featureIcons = [
-    <Zap size={18} className="text-amber-600" />,
-    <Layers size={18} className="text-indigo-600" />,
     <Brain size={18} className="text-violet-600" />,
+    <Layers size={18} className="text-indigo-600" />,
+    <Zap size={18} className="text-amber-600" />,
     <TrendingUp size={18} className="text-green-600" />,
   ];
-  const featureAccents = ['bg-amber-50', 'bg-indigo-50', 'bg-violet-50', 'bg-green-50'];
+  const featureAccents = ['bg-violet-50', 'bg-indigo-50', 'bg-amber-50', 'bg-green-50'];
   const statColors = ['text-indigo-600', 'text-green-600', 'text-slate-900', 'text-sky-600'];
 
   return (
