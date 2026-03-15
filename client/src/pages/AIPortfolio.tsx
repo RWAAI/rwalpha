@@ -235,11 +235,12 @@ function CreatePortfolioModal({ onClose, onCreated }: {
 }
 
 // ─── Portfolio Card ───────────────────────────────────────────────────────────
-function PortfolioCard({ portfolio, onDeleted }: {
+function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
   portfolio: any;
   onDeleted: () => void;
+  defaultExpanded?: boolean;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
   const [portfolioData, setPortfolioData] = useState<PortfolioData | null>(null);
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
@@ -362,6 +363,14 @@ function PortfolioCard({ portfolio, onDeleted }: {
     if (Math.abs(totalWeight - 1) > 0.01) { setEditError(`权重合计必须为 100%（当前 ${(totalWeight * 100).toFixed(1)}%）`); return; }
     updateMutation.mutate({ id: portfolio.id, tickers: editTickers });
   };
+
+  // Auto-load data when defaultExpanded is true
+  React.useEffect(() => {
+    if (defaultExpanded && !portfolioData && !fetchDataMutation.isPending) {
+      fetchDataMutation.mutate({ id: portfolio.id });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultExpanded, portfolio.id]);
 
   const handleExpand = () => {
     if (!expanded && !portfolioData) {
@@ -1073,16 +1082,70 @@ function PortfolioCard({ portfolio, onDeleted }: {
   );
 }
 
+// ─── Portfolio Switcher Card ─────────────────────────────────────────────────
+function PortfolioSwitcherCard({ portfolio, isActive, onClick }: {
+  portfolio: any;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  const tickers: string[] = (portfolio.tickers ?? []).map((t: any) => t.ticker);
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-start px-3 py-2.5 rounded-xl border transition-all text-left min-w-[110px] max-w-[160px] ${
+        isActive
+          ? 'bg-indigo-600 border-indigo-600 shadow-md shadow-indigo-200'
+          : 'bg-white border-slate-200 hover:border-indigo-300 hover:bg-indigo-50'
+      }`}
+    >
+      <span className={`text-xs font-semibold truncate w-full ${
+        isActive ? 'text-white' : 'text-slate-800'
+      }`}>
+        {portfolio.name}
+      </span>
+      <div className="flex flex-wrap gap-0.5 mt-1.5">
+        {tickers.slice(0, 4).map((t: string) => (
+          <span
+            key={t}
+            className={`text-[9px] font-mono px-1.5 py-0.5 rounded-md ${
+              isActive
+                ? 'bg-white/20 text-white'
+                : 'bg-slate-100 text-slate-500'
+            }`}
+          >
+            {t}
+          </span>
+        ))}
+        {tickers.length > 4 && (
+          <span className={`text-[9px] px-1 py-0.5 rounded-md ${
+            isActive ? 'text-white/70' : 'text-slate-400'
+          }`}>+{tickers.length - 4}</span>
+        )}
+      </div>
+    </button>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function AIPortfolio() {
   const [showCreate, setShowCreate] = useState(false);
+  const [activePortfolioId, setActivePortfolioId] = useState<number | null>(null);
   const utils = trpc.useUtils();
 
-  const { data: portfolios, isLoading, refetch } = trpc.portfolio.list.useQuery();
+  const { data: portfolios, isLoading } = trpc.portfolio.list.useQuery();
+
+  // Auto-select first portfolio when loaded
+  React.useEffect(() => {
+    if (portfolios && portfolios.length > 0 && activePortfolioId === null) {
+      setActivePortfolioId(portfolios[0].id);
+    }
+  }, [portfolios, activePortfolioId]);
 
   const handleCreated = useCallback(() => {
     utils.portfolio.list.invalidate();
   }, [utils]);
+
+  const activePortfolio = portfolios?.find((p: any) => p.id === activePortfolioId);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -1101,8 +1164,8 @@ export default function AIPortfolio() {
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            <a href="/vault" className="text-sm text-slate-500 hover:text-slate-800 transition-colors hidden sm:block">
-              金库
+            <a href="/landing" className="text-sm text-slate-500 hover:text-slate-800 transition-colors hidden sm:block">
+              官网
             </a>
             <button
               onClick={() => setShowCreate(true)}
@@ -1117,30 +1180,56 @@ export default function AIPortfolio() {
 
       {/* Page Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900 mb-1">我的 ETF 组合</h1>
-          <p className="text-slate-500 text-sm">
-            输入 Ticker 创建自定义组合，实时计算派息率、总回报与 AI 调仓建议
-          </p>
+        {/* Page Header with Portfolio Switcher */}
+        <div className="mb-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 mb-1">我的 ETF 组合</h1>
+              <p className="text-slate-500 text-sm">
+                输入 Ticker 创建自定义组合，实时计算派息率、总回报与 AI 调仓建议
+              </p>
+            </div>
+            {/* Portfolio Switcher Cards */}
+            {portfolios && portfolios.length > 0 && (
+              <div className="flex items-center gap-2 flex-wrap justify-end">
+                {portfolios.map((p: any) => (
+                  <PortfolioSwitcherCard
+                    key={p.id}
+                    portfolio={p}
+                    isActive={p.id === activePortfolioId}
+                    onClick={() => setActivePortfolioId(p.id)}
+                  />
+                ))}
+                <button
+                  onClick={() => setShowCreate(true)}
+                  className="flex flex-col items-center justify-center px-3 py-2.5 rounded-xl border-2 border-dashed border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all min-w-[60px] h-[58px] text-slate-400 hover:text-indigo-500"
+                >
+                  <PlusCircle size={16} />
+                  <span className="text-[9px] mt-1">新建</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Portfolio List */}
+        {/* Active Portfolio Card */}
         {isLoading ? (
           <div className="flex items-center justify-center py-20 gap-3 text-slate-400">
             <Loader2 size={24} className="animate-spin" />
             <span>加载中...</span>
           </div>
         ) : portfolios && portfolios.length > 0 ? (
-          <div className="space-y-4">
-            {portfolios.map((p: any) => (
-              <PortfolioCard
-                key={p.id}
-                portfolio={p}
-                onDeleted={() => utils.portfolio.list.invalidate()}
-              />
-            ))}
-          </div>
+          activePortfolio ? (
+            <PortfolioCard
+              key={activePortfolio.id}
+              portfolio={activePortfolio}
+              defaultExpanded={true}
+              onDeleted={() => {
+                utils.portfolio.list.invalidate();
+                setActivePortfolioId(null);
+              }}
+            />
+          ) : null
         ) : (
           /* Empty State */
           <div className="flex flex-col items-center justify-center py-24 text-center">
