@@ -25,6 +25,26 @@ import {
 } from "./db";
 import { callDataApi } from "./_core/dataApi";
 import { invokeLLM } from "./_core/llm";
+import { execSync } from "child_process";
+import path from "path";
+
+// ─── yfinance AUM + Description Helper ───────────────────────────────────────
+function fetchYfinanceInfo(tickers: string[]): Record<string, { aum: number | null; aumDisplay: string; description: string }> {
+  try {
+    const scriptPath = path.join(process.cwd(), "server", "get_ticker_info.py");
+    // Clear PYTHONPATH/PYTHONHOME to avoid Python 3.13 vs 3.11 version conflicts
+    const cleanEnv = { ...process.env };
+    delete cleanEnv.PYTHONPATH;
+    delete cleanEnv.PYTHONHOME;
+    delete cleanEnv.NUITKA_PYTHONPATH;
+    const output = execSync(`python3 ${scriptPath} ${tickers.join(" ")}`, { timeout: 30000, env: cleanEnv }).toString().trim();
+    const parsed = JSON.parse(output);
+    return parsed;
+  } catch (e) {
+    console.error("[fetchYfinanceInfo] Error:", e);
+    return {};
+  }
+}
 
 // ─── ETF Market Data Helper ───────────────────────────────────────────────────
 async function fetchTickerData(ticker: string) {
@@ -80,13 +100,24 @@ async function fetchTickerData(ticker: string) {
       annualVolatility = Math.sqrt(variance) * Math.sqrt(252) * 100;
     }
 
-    // AUM from meta (totalAssets if available)
+    // AUM from meta (totalAssets if available) - fallback to yfinance
     const totalAssets = meta.totalAssets ?? null;
     let aumDisplay = "N/A";
+    let description = "";
     if (totalAssets) {
       if (totalAssets >= 1e9) aumDisplay = `$${(totalAssets / 1e9).toFixed(2)}B`;
       else if (totalAssets >= 1e6) aumDisplay = `$${(totalAssets / 1e6).toFixed(0)}M`;
       else aumDisplay = `$${totalAssets.toLocaleString()}`;
+    } else {
+      // Fallback: call yfinance Python script for AUM + description
+      try {
+        const yInfo = fetchYfinanceInfo([ticker]);
+        const info = yInfo[ticker.toUpperCase()] || yInfo[ticker];
+        if (info) {
+          aumDisplay = info.aumDisplay || "N/A";
+          description = info.description || "";
+        }
+      } catch (_) {}
     }
 
     // Recent dividends for monthly schedule
@@ -108,6 +139,7 @@ async function fetchTickerData(ticker: string) {
       oneYearReturn: parseFloat(oneYearReturn.toFixed(2)),
       annualVolatility: parseFloat(annualVolatility.toFixed(2)),
       aumDisplay,
+      description,
       recentDivs,
       fiftyTwoWeekHigh: meta.fiftyTwoWeekHigh ?? null,
       fiftyTwoWeekLow: meta.fiftyTwoWeekLow ?? null,
