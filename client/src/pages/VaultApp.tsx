@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { Zap, Wallet, Clock, ChevronRight, ArrowUpRight, HelpCircle, X, Loader2, RefreshCw } from "lucide-react";
+import { Zap, Wallet, Clock, ChevronRight, ArrowUpRight, HelpCircle, X, Loader2, RefreshCw, User, LogOut, Settings, ChevronDown } from "lucide-react";
 import { Link } from "wouter";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -298,7 +298,23 @@ export default function VaultApp() {
   const [backedModal, setBackedModal] = useState(false);
   const [weeklyDivModal, setWeeklyDivModal] = useState(false);
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
+  // 模拟登录状态
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [mockUser] = useState({ name: 'Alex Chen', email: 'alex@rwalpha.ai', avatar: 'AC' });
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const zh = lang === "zh";
+
+  // 点击外部关闭用户菜单
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // ── 从数据库获取数据 ──
   const { data: summary, isLoading: summaryLoading, refetch } = trpc.vault.getSummary.useQuery();
@@ -513,19 +529,61 @@ export default function VaultApp() {
             >
               🌐 {zh ? 'EN' : '中文'}
             </button>
-            {/* 登录 / 注册 */}
-            <button
-              onClick={() => setAuthModal({ open: true, mode: 'login' })}
-              className="px-4 py-1.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
-            >
-              {zh ? '登录' : 'Login'}
-            </button>
-            <button
-              onClick={() => setAuthModal({ open: true, mode: 'register' })}
-              className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-sm font-semibold text-white transition-all duration-200 active:scale-95"
-            >
-              {zh ? '注册' : 'Register'}
-            </button>
+            {/* 登录 / 注册 / 用户菜单 */}
+            {isLoggedIn ? (
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setUserMenuOpen(v => !v)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-all duration-200"
+                >
+                  {/* 头像 */}
+                  <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    {mockUser.avatar}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700 max-w-[80px] truncate">{mockUser.name}</span>
+                  <ChevronDown size={13} className={`text-slate-400 transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* 下拉菜单 */}
+                {userMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-44 rounded-2xl border border-slate-100 bg-white shadow-xl shadow-slate-200/50 z-50 overflow-hidden py-2">
+                    <button
+                      onClick={() => { setUserMenuOpen(false); alert(zh ? '个人资料功能即将上线' : 'Profile coming soon'); }}
+                      className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors"
+                    >
+                      {zh ? '个人资料' : 'Profile'}
+                    </button>
+                    <button
+                      onClick={() => { setUserMenuOpen(false); alert(zh ? '我的资产功能即将上线' : 'My Assets coming soon'); }}
+                      className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors"
+                    >
+                      {zh ? '我的资产' : 'My Assets'}
+                    </button>
+                    <button
+                      onClick={() => { setIsLoggedIn(false); setUserMenuOpen(false); }}
+                      className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors"
+                    >
+                      {zh ? '退出' : 'Sign Out'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => setAuthModal({ open: true, mode: 'login' })}
+                  className="px-4 py-1.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
+                >
+                  {zh ? '登录' : 'Login'}
+                </button>
+                <button
+                  onClick={() => setAuthModal({ open: true, mode: 'register' })}
+                  className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-sm font-semibold text-white transition-all duration-200 active:scale-95"
+                >
+                  {zh ? '注册' : 'Register'}
+                </button>
+              </>
+            )}
             <button
               onClick={() => connected ? setConnected(false) : setWalletModal(true)}
               className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all duration-200 active:scale-95 ${
@@ -855,6 +913,7 @@ export default function VaultApp() {
         open={authModal.open}
         initialMode={authModal.mode}
         onClose={() => setAuthModal(prev => ({ ...prev, open: false }))}
+        onLoginSuccess={() => { setAuthModal(prev => ({ ...prev, open: false })); setIsLoggedIn(true); }}
         zh={zh}
       />
     </div>

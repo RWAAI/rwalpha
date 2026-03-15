@@ -11,6 +11,7 @@ interface AuthModalProps {
   open: boolean;
   initialMode?: Mode;
   onClose: () => void;
+  onLoginSuccess?: () => void;
   zh?: boolean;
 }
 
@@ -77,7 +78,7 @@ const GoogleIcon = () => (
   </svg>
 );
 
-export default function AuthModal({ open, initialMode = 'login', onClose, zh = true }: AuthModalProps) {
+export default function AuthModal({ open, initialMode = 'login', onClose, onLoginSuccess, zh = true }: AuthModalProps) {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -109,7 +110,11 @@ export default function AuthModal({ open, initialMode = 'login', onClose, zh = t
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      alert(zh ? '功能即将上线，敬请期待！' : 'Feature coming soon!');
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      } else {
+        onClose();
+      }
     }, 800);
   };
 
