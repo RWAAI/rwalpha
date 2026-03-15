@@ -455,7 +455,10 @@ export const appRouter = router({
         const ONE_HOUR = 60 * 60 * 1000;
 
         if (!input.forceRefresh && !input.tickers && cacheAge < ONE_HOUR && row.cachedData) {
-          return JSON.parse(row.cachedData);
+          const cached = JSON.parse(row.cachedData);
+          // If cached data has weightedReturn=0 but weightedYield>0, it's stale/incomplete — re-fetch
+          const isIncomplete = cached.weightedReturn === 0 && cached.weightedYield > 0;
+          if (!isIncomplete) return cached;
         }
 
         // Use explicitly passed tickers (post-edit) or fall back to DB value

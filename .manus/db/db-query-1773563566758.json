@@ -1,0 +1,28 @@
+{
+  "query": "SELECT id, name, cachedAt, SUBSTRING(cachedData, 1, 200) as cachedDataPreview FROM portfolios;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT id, name, cachedAt, SUBSTRING(cachedData, 1, 200) as cachedDataPreview FROM portfolios;",
+  "rows": [
+    {
+      "id": "2",
+      "name": "RWAlpha 指数旗舰金库-纳指100",
+      "cachedAt": "2026-03-15 08:30:10",
+      "cachedDataPreview": "{\"portfolioId\":2,\"fetchedAt\":\"2026-03-15T08:30:10.014Z\",\"weightedYield\":19.46,\"weightedReturn\":0,\"weightedVolatility\":0,\"monthlySchedule\":[{\"month\":\"2025-04\",\"amount\":0.0531},{\"month\":\"2025-05\",\"amoun"
+    },
+    {
+      "id": "30001",
+      "name": "能源对冲科技组合",
+      "cachedAt": "NULL",
+      "cachedDataPreview": "NULL"
+    },
+    {
+      "id": "30002",
+      "name": "黄金付息组合",
+      "cachedAt": "2026-03-15 08:28:12",
+      "cachedDataPreview": "{\"portfolioId\":30002,\"fetchedAt\":\"2026-03-15T08:28:12.374Z\",\"weightedYield\":8.47,\"weightedReturn\":68.18,\"weightedVolatility\":43.45,\"monthlySchedule\":[{\"month\":\"2025-12\",\"amount\":0.027},{\"month\":\"2026-"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tcachedAt\tcachedDataPreview\n2\tRWAlpha 指数旗舰金库-纳指100\t2026-03-15 08:30:10\t{\"portfolioId\":2,\"fetchedAt\":\"2026-03-15T08:30:10.014Z\",\"weightedYield\":19.46,\"weightedReturn\":0,\"weightedVolatility\":0,\"monthlySchedule\":[{\"month\":\"2025-04\",\"amount\":0.0531},{\"month\":\"2025-05\",\"amoun\n30001\t能源对冲科技组合\tNULL\tNULL\n30002\t黄金付息组合\t2026-03-15 08:28:12\t{\"portfolioId\":30002,\"fetchedAt\":\"2026-03-15T08:28:12.374Z\",\"weightedYield\":8.47,\"weightedReturn\":68.18,\"weightedVolatility\":43.45,\"monthlySchedule\":[{\"month\":\"2025-12\",\"amount\":0.027},{\"month\":\"2026-\n",
+  "stderr": "",
+  "execution_time_ms": 1500
+}

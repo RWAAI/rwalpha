@@ -1,0 +1,31 @@
+{
+  "query": "SELECT id, name, cachedAt, JSON_EXTRACT(cachedData, '$.weightedReturn') as weightedReturn, JSON_EXTRACT(cachedData, '$.weightedYield') as weightedYield FROM portfolios;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT id, name, cachedAt, JSON_EXTRACT(cachedData, '$.weightedReturn') as weightedReturn, JSON_EXTRACT(cachedData, '$.weightedYield') as weightedYield FROM portfolios;",
+  "rows": [
+    {
+      "id": "2",
+      "name": "RWAlpha 指数旗舰金库-纳指100",
+      "cachedAt": "2026-03-15 08:30:10",
+      "weightedReturn": "0",
+      "weightedYield": "19.46"
+    },
+    {
+      "id": "30001",
+      "name": "能源对冲科技组合",
+      "cachedAt": "NULL",
+      "weightedReturn": "NULL",
+      "weightedYield": "NULL"
+    },
+    {
+      "id": "30002",
+      "name": "黄金付息组合",
+      "cachedAt": "2026-03-15 08:28:12",
+      "weightedReturn": "68.18",
+      "weightedYield": "8.47"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tcachedAt\tweightedReturn\tweightedYield\n2\tRWAlpha 指数旗舰金库-纳指100\t2026-03-15 08:30:10\t0\t19.46\n30001\t能源对冲科技组合\tNULL\tNULL\tNULL\n30002\t黄金付息组合\t2026-03-15 08:28:12\t68.18\t8.47\n",
+  "stderr": "",
+  "execution_time_ms": 1564
+}
