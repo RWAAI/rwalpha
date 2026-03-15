@@ -534,6 +534,8 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
   // ── Weight Simulator State ──
   // simWeights: { [ticker]: weight (0-1) }, always sums to 1
   const [simWeights, setSimWeights] = useState<Record<string, number> | null>(null);
+  // lockedTickers: set of tickers that have been manually dragged (should not be auto-adjusted)
+  const [lockedTickers, setLockedTickers] = useState<Set<string>>(new Set());
 
   // Initialize simWeights when portfolioData loads (or resets)
   React.useEffect(() => {
@@ -541,27 +543,42 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
       const init: Record<string, number> = {};
       portfolioData.holdings.forEach(h => { init[h.ticker] = h.weight; });
       setSimWeights(init);
+      setLockedTickers(new Set());
     } else {
       setSimWeights(null);
+      setLockedTickers(new Set());
     }
   }, [portfolioData]);
 
-  // Handle slider change: adjust one ticker, redistribute remainder proportionally
+  // Handle slider change:
+  // - Mark changedTicker as locked
+  // - Only redistribute among unlocked tickers (excluding changedTicker)
+  // - If no unlocked tickers remain, fall back to proportional across all others
   const handleSimSlider = (changedTicker: string, newWeight: number) => {
     if (!portfolioData || !simWeights) return;
     const tickers = portfolioData.holdings.map(h => h.ticker);
-    const others = tickers.filter(t => t !== changedTicker);
+    // Mark this ticker as locked
+    const newLocked = new Set(lockedTickers);
+    newLocked.add(changedTicker);
+    setLockedTickers(newLocked);
+
+    // Unlocked others = all tickers except changedTicker and already-locked ones
+    const unlockedOthers = tickers.filter(t => t !== changedTicker && !newLocked.has(t));
+    const allOthers = tickers.filter(t => t !== changedTicker);
+    const targets = unlockedOthers.length > 0 ? unlockedOthers : allOthers;
+
     const remaining = Math.max(0, 1 - newWeight);
-    const currentOtherSum = others.reduce((s, t) => s + (simWeights[t] ?? 0), 0);
+    const currentTargetSum = targets.reduce((s, t) => s + (simWeights[t] ?? 0), 0);
     const updated: Record<string, number> = { ...simWeights, [changedTicker]: newWeight };
-    if (currentOtherSum === 0) {
-      // Distribute equally
-      const each = remaining / others.length;
-      others.forEach(t => { updated[t] = each; });
+
+    if (currentTargetSum === 0) {
+      // Distribute equally among targets
+      const each = remaining / targets.length;
+      targets.forEach(t => { updated[t] = each; });
     } else {
-      // Proportional redistribution
-      others.forEach(t => {
-        updated[t] = (simWeights[t] / currentOtherSum) * remaining;
+      // Proportional redistribution among targets only
+      targets.forEach(t => {
+        updated[t] = (simWeights[t] / currentTargetSum) * remaining;
       });
     }
     setSimWeights(updated);
@@ -572,6 +589,7 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
     const init: Record<string, number> = {};
     portfolioData.holdings.forEach(h => { init[h.ticker] = h.weight; });
     setSimWeights(init);
+    setLockedTickers(new Set());
   };
 
   // Compute simulated weighted yield & return
