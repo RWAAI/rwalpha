@@ -784,24 +784,7 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
         </div>
 
         <div className="flex items-center gap-2">
-          {pd && (
-            <div className="hidden sm:flex items-center gap-4 mr-4">
-              <div className="text-center">
-                <div className="text-xs text-slate-400">{t.dividendRate}</div>
-                <div className="text-sm font-bold text-amber-600">{fmtPct(pd.weightedYield)}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xs text-slate-400">{t.oneYearReturnShort}</div>
-                <div className={`text-sm font-bold ${pd.weightedReturn >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                  {fmtPct(pd.weightedReturn)}
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-xs text-slate-400">{t.volatility}</div>
-                <div className="text-sm font-bold text-slate-600">{fmtNum(pd.weightedVolatility)}%</div>
-              </div>
-            </div>
-          )}
+
           <button
             onClick={handleRefresh}
             className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
