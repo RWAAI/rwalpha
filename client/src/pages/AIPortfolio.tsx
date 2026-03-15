@@ -3,7 +3,7 @@ import { trpc } from '@/lib/trpc';
 import {
   PlusCircle, Trash2, RefreshCw, BrainCircuit, ChevronDown, ChevronUp,
   TrendingUp, TrendingDown, DollarSign, BarChart2, Calendar, Layers,
-  X, Edit2, Check, AlertTriangle, Loader2, Zap, Info
+  X, Edit2, Check, AlertTriangle, Loader2, Zap, Info, Pencil
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
@@ -250,6 +250,37 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
   // ── Principal Calculator State ──
   const principal = 100000;
 
+  // ── Inline Name Edit State ──
+  const [editingName, setEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState(portfolio.name);
+  const nameInputRef = React.useRef<HTMLInputElement>(null);
+
+  const renameMutation = trpc.portfolio.update.useMutation({
+    onSuccess: () => utils.portfolio.list.invalidate(),
+    onError: () => setNameInput(portfolio.name),
+  });
+
+  const startNameEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setNameInput(portfolio.name);
+    setEditingName(true);
+    setTimeout(() => nameInputRef.current?.select(), 0);
+  };
+
+  const commitNameEdit = () => {
+    const trimmed = nameInput.trim();
+    if (!trimmed) { setNameInput(portfolio.name); setEditingName(false); return; }
+    setEditingName(false);
+    if (trimmed !== portfolio.name) {
+      renameMutation.mutate({ id: portfolio.id, name: trimmed, tickers: portfolio.tickers });
+    }
+  };
+
+  const cancelNameEdit = () => {
+    setNameInput(portfolio.name);
+    setEditingName(false);
+  };
+
   // ── Edit Mode State ──
   const [editing, setEditing] = useState(false);
   const [editTickers, setEditTickers] = useState<TickerInput[]>([]);
@@ -413,7 +444,27 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
             <Layers size={18} className="text-indigo-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900 text-base">{portfolio.name}</h3>
+            {editingName ? (
+              <input
+                ref={nameInputRef}
+                value={nameInput}
+                onChange={e => setNameInput(e.target.value)}
+                onBlur={commitNameEdit}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); commitNameEdit(); } if (e.key === 'Escape') cancelNameEdit(); }}
+                onClick={e => e.stopPropagation()}
+                className="font-semibold text-slate-900 text-base bg-transparent border-b-2 border-indigo-500 outline-none w-full max-w-[220px]"
+                maxLength={64}
+              />
+            ) : (
+              <h3
+                className="font-semibold text-slate-900 text-base cursor-text hover:text-indigo-600 transition-colors group flex items-center gap-1"
+                onClick={startNameEdit}
+                title="点击修改名称"
+              >
+                {portfolio.name}
+                <Pencil size={12} className="opacity-0 group-hover:opacity-40 transition-opacity" />
+              </h3>
+            )}
             {portfolio.description && (
               <p className="text-xs text-slate-500 mt-0.5">{portfolio.description}</p>
             )}
