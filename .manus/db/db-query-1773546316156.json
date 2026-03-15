@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, name, tickers, LEFT(cachedData, 300) as cached_preview FROM portfolios LIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT id, name, tickers, LEFT(cachedData, 300) as cached_preview FROM portfolios LIMIT 3;",
+  "rows": [
+    {
+      "id": "2",
+      "name": "RWAlpha 指数旗舰金库",
+      "tickers": "[{\"ticker\":\"NVDY\",\"weight\":0.22},{\"ticker\":\"QQQI\",\"weight\":0.29},{\"ticker\":\"QQQM\",\"weight\":0.29},{\"ticker\":\"VGT\",\"weight\":0.2}]",
+      "cached_preview": "{\"portfolioId\":2,\"fetchedAt\":\"2026-03-15T03:44:47.172Z\",\"weightedYield\":20.69,\"weightedReturn\":28.72,\"weightedVolatility\":24.39,\"monthlySchedule\":[{\"month\":\"2025-04\",\"amount\":0.154},{\"month\":\"2025-05\",\"amount\":0.1847},{\"month\":\"2025-06\",\"amount\":0.4144},{\"month\":\"2025-07\",\"amount\":0.1847},{\"month\":\""
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\ttickers\tcached_preview\n2\tRWAlpha 指数旗舰金库\t[{\"ticker\":\"NVDY\",\"weight\":0.22},{\"ticker\":\"QQQI\",\"weight\":0.29},{\"ticker\":\"QQQM\",\"weight\":0.29},{\"ticker\":\"VGT\",\"weight\":0.2}]\t{\"portfolioId\":2,\"fetchedAt\":\"2026-03-15T03:44:47.172Z\",\"weightedYield\":20.69,\"weightedReturn\":28.72,\"weightedVolatility\":24.39,\"monthlySchedule\":[{\"month\":\"2025-04\",\"amount\":0.154},{\"month\":\"2025-05\",\"amount\":0.1847},{\"month\":\"2025-06\",\"amount\":0.4144},{\"month\":\"2025-07\",\"amount\":0.1847},{\"month\":\"\n",
+  "stderr": "",
+  "execution_time_ms": 1591
+}

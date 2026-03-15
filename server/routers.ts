@@ -402,7 +402,12 @@ export const appRouter = router({
         const { id, tickers, ...rest } = input;
         await updatePortfolio(id, {
           ...rest,
-          ...(tickers ? { tickers: JSON.stringify(tickers) } : {}),
+          ...(tickers ? {
+            tickers: JSON.stringify(tickers),
+            // Clear stale cache whenever tickers change
+            cachedData: null,
+            cachedAt: null,
+          } : {}),
         });
         return { success: true };
       }),
