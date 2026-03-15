@@ -253,6 +253,7 @@ function PortfolioCard({ portfolio, onDeleted }: {
   const [targetYield, setTargetYield] = useState('');
   const [targetReturn, setTargetReturn] = useState('');
   const [aiAllocLoading, setAiAllocLoading] = useState(false);
+  const [aiAllocReason, setAiAllocReason] = useState('');
 
   const utils = trpc.useUtils();
 
@@ -288,6 +289,7 @@ function PortfolioCard({ portfolio, onDeleted }: {
         const found = alloc.find((a: { ticker: string; weight: number }) => a.ticker === t.ticker.toUpperCase());
         return found ? { ...t, weight: found.weight } : t;
       }));
+      setAiAllocReason(data.reason ?? '');
       setAiAllocLoading(false);
     },
     onError: (e) => {
@@ -311,6 +313,7 @@ function PortfolioCard({ portfolio, onDeleted }: {
     e.stopPropagation();
     setEditTickers(portfolio.tickers.map((t: TickerInput) => ({ ...t })));
     setEditError('');
+    setAiAllocReason('');
     setEditing(true);
   };
 
@@ -589,6 +592,12 @@ function PortfolioCard({ portfolio, onDeleted }: {
                 <p className="text-[10px] text-indigo-500 leading-relaxed">
                   以派息率 <span className="font-semibold">{targetYield || '___'}%</span>、年化回报 <span className="font-semibold">{targetReturn || '___'}%</span> 为目标，AI 自动分配权重
                 </p>
+                {aiAllocReason && (
+                  <div className="flex items-start gap-1.5 p-2 bg-white rounded-lg border border-indigo-100">
+                    <BrainCircuit size={11} className="text-indigo-500 mt-0.5 shrink-0" />
+                    <p className="text-[10px] text-slate-600 leading-relaxed">{aiAllocReason}</p>
+                  </div>
+                )}
               </div>
 
               {editError && (

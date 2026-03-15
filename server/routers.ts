@@ -538,7 +538,7 @@ export const appRouter = router({
           targetReturn !== undefined ? `目标年化回报: ${targetReturn}%` : null,
         ].filter(Boolean).join('，') || '请根据风险收益平衡原则分配';
 
-        const systemPrompt = `你是一位专业的 ETF 投资组合优化顾问。用户提供了一组 ETF 代码和目标参数，请你计算最优权重分配。
+        const systemPrompt = `你是一位专业的 ETF 投资组合优化顾问。用户提供了一组 ETF 代码和目标参数，请你计算最优权重分配并说明理由。
 
 规则：
 1. 所有权重之和必须等于 1.0000（即 100%）
@@ -546,7 +546,7 @@ export const appRouter = router({
 3. 权重必须精确到小数点后 4 位（如 0.2235、0.1875），不要只用整数百分比（如 0.20、0.25）
 4. 尽量接近用户的目标参数，利用小数权重精确调节以达到目标
 5. 高派息 ETF（如 NVDY、QQQI）适合提升派息率，指数 ETF（如 QQQM、VGT）适合提升年化回报
-6. 只返回 JSON，不要任何解释文字`;
+6. reason 字段用中文写一句话解释分配逻辑（如「NVDY 提升至 35.20% 以达到目标派息率，QQQM 维持 20.15% 保留增长弹性」）`;
 
         const userPrompt = `请为以下 ETF 分配权重：
 
@@ -555,7 +555,7 @@ ${tickerContext}
 ${targetDesc}
 
 请返回如下格式的 JSON（权重为小数且必须精确到 4 位小数，合计=1）：
-{"allocations": [{"ticker": "NVDY", "weight": 0.2235}, {"ticker": "QQQI", "weight": 0.2918}, ...]}`;
+{"allocations": [{"ticker": "NVDY", "weight": 0.2235}, {"ticker": "QQQI", "weight": 0.2918}, ...], "reason": "一句话中文理由"}`;
 
         const llmResult = await invokeLLM({
           messages: [
@@ -582,8 +582,9 @@ ${targetDesc}
                       additionalProperties: false,
                     },
                   },
+                  reason: { type: 'string' },
                 },
-                required: ['allocations'],
+                required: ['allocations', 'reason'],
                 additionalProperties: false,
               },
             },
@@ -612,7 +613,8 @@ ${targetDesc}
           normalized = tickers.map(t => ({ ticker: t.toUpperCase(), weight: parseFloat((1 / tickers.length).toFixed(4)) }));
         }
 
-        return { allocations: normalized };
+        const reason: string = parsed.reason ?? '';
+        return { allocations: normalized, reason };
       }),
 
     // 生成 AI 调仓建议
