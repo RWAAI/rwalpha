@@ -549,7 +549,7 @@ export default function VaultApp() {
                 {userMenuOpen && (
                   <div className="absolute right-0 top-full mt-2 w-44 rounded-2xl border border-slate-100 bg-white shadow-xl shadow-slate-200/50 z-50 overflow-hidden py-2">
                     <button
-                      onClick={() => { setUserMenuOpen(false); alert(zh ? '个人资料功能即将上线' : 'Profile coming soon'); }}
+                      onClick={() => { setUserMenuOpen(false); navigate('/profile'); }}
                       className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors"
                     >
                       {zh ? '个人资料' : 'Profile'}
