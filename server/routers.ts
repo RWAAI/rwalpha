@@ -37,7 +37,9 @@ function fetchYfinanceInfo(tickers: string[]): Record<string, { aum: number | nu
     delete cleanEnv.PYTHONPATH;
     delete cleanEnv.PYTHONHOME;
     delete cleanEnv.NUITKA_PYTHONPATH;
-    const output = execSync(`python3 ${scriptPath} ${tickers.join(" ")}`, { timeout: 30000, env: cleanEnv }).toString().trim();
+    // Use Python 3.13 venv to match PYTHONHOME set by the Manus sandbox runtime
+    const python3Bin = "/opt/.manus/.sandbox-runtime/.venv/bin/python3";
+    const output = execSync(`${python3Bin} ${scriptPath} ${tickers.join(" ")}`, { timeout: 30000, env: cleanEnv }).toString().trim();
     const parsed = JSON.parse(output);
     return parsed;
   } catch (e) {
