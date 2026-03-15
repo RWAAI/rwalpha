@@ -26,6 +26,7 @@ interface MarketData {
   oneYearReturn: number;
   annualVolatility: number;
   aumDisplay: string;
+  description?: string | null;
   recentDivs: { date: string; amount: number }[];
   fiftyTwoWeekHigh: number | null;
   fiftyTwoWeekLow: number | null;
@@ -670,124 +671,225 @@ function PortfolioCard({ portfolio, onDeleted }: {
 
               {/* Charts Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Monthly Dividend Schedule */}
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Calendar size={14} className="text-indigo-500" />
-                    <h4 className="text-sm font-semibold text-slate-700">月度派息节奏</h4>
+                {/* Cash Flow Weekly Calendar */}
+                <div className="bg-white rounded-xl border border-slate-100 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <Calendar size={14} className="text-indigo-500" />
+                      <h4 className="text-sm font-semibold text-slate-700">现金流周历 (月度模拟)</h4>
+                    </div>
+                    {/* Legend: weekly ETFs */}
+                    <div className="flex items-center gap-3">
+                      {pd.holdings.filter(h => h.marketData?.frequency === 'Weekly' || h.marketData?.frequency === 'Monthly').map((h, i) => (
+                        <div key={h.ticker} className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[pd.holdings.indexOf(h) % COLORS.length] }} />
+                          <span className="text-xs text-slate-500">{h.ticker}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  {pd.monthlySchedule.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={160}>
-                      <BarChart data={pd.monthlySchedule} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                        <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8' }}
-                          tickFormatter={(v) => v.slice(5)} />
-                        <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} />
-                        <Tooltip
-                          formatter={(v: number) => [`$${v.toFixed(4)}`, '每单位派息']}
-                          contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}
-                        />
-                        <Bar dataKey="amount" fill="#6366F1" radius={[4, 4, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="flex items-center justify-center h-40 text-slate-400 text-sm">暂无派息记录</div>
-                  )}
+                  {/* Weekly bars: 4 weeks */}
+                  {(() => {
+                    const weeklyHoldings = pd.holdings.filter(h => h.marketData?.frequency === 'Weekly');
+                    const monthlyHoldings = pd.holdings.filter(h => h.marketData?.frequency === 'Monthly');
+                    const weeks = [1, 2, 3, 4].map(w => {
+                      let amount = 0;
+                      weeklyHoldings.forEach(h => {
+                        if (h.marketData) amount += (h.marketData.ttmDividendPerShare / 52) * 1000;
+                      });
+                      if (w === 4) {
+                        monthlyHoldings.forEach(h => {
+                          if (h.marketData) amount += (h.marketData.ttmDividendPerShare / 12) * 1000;
+                        });
+                      }
+                      return { week: `第 ${w} 周`, amount: Math.round(amount) };
+                    });
+                    const maxAmt = Math.max(...weeks.map(w => w.amount), 1);
+                    return (
+                      <>
+                        <div className="flex items-end gap-3 h-28 px-2">
+                          {weeks.map((w, wi) => (
+                            <div key={wi} className="flex-1 flex flex-col items-center gap-1">
+                              <div
+                                className="w-full rounded-t-md"
+                                style={{
+                                  height: `${Math.max((w.amount / maxAmt) * 100, 8)}%`,
+                                  backgroundColor: wi === 3 ? '#4F46E5' : '#A5B4FC',
+                                }}
+                              />
+                              <span className="text-[10px] text-slate-400">{w.week}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-50">
+                          <p className="text-[11px] text-slate-400">
+                            {weeklyHoldings.length > 0 ? `前三周仅 ${weeklyHoldings.map(h => h.ticker).join('/')}` : ''}
+                            {weeklyHoldings.length > 0 && monthlyHoldings.length > 0 ? '，' : ''}
+                            {monthlyHoldings.length > 0 ? `第四周叠加 ${monthlyHoldings.map(h => h.ticker).join('/')}` : ''}
+                            {weeklyHoldings.length === 0 && monthlyHoldings.length === 0 ? '暂无周期派息持仓' : ''}。
+                          </p>
+                          <button className="text-[11px] text-indigo-500 hover:text-indigo-700 font-medium flex items-center gap-0.5">
+                            波动率: 低 →
+                          </button>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
 
-                {/* Allocation Pie */}
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Layers size={14} className="text-indigo-500" />
-                    <h4 className="text-sm font-semibold text-slate-700">持仓配比</h4>
+                {/* Allocation Pie with legend list */}
+                <div className="bg-white rounded-xl border border-slate-100 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <Layers size={14} className="text-indigo-500" />
+                      <h4 className="text-sm font-semibold text-slate-700">资产配比 (NAV)</h4>
+                    </div>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 font-medium">AI 调仓后</span>
                   </div>
-                  <ResponsiveContainer width="100%" height={160}>
-                    <PieChart>
-                      <Pie data={pieData} cx="50%" cy="50%" innerRadius={40} outerRadius={65}
-                        dataKey="value" nameKey="name" paddingAngle={2}>
-                        {pieData.map((entry: any, index: number) => (
-                          <Cell key={index} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Legend
-                        formatter={(value, entry: any) => (
-                          <span className="text-xs text-slate-600">{value} {entry.payload.value}%</span>
-                        )}
-                      />
-                      <Tooltip formatter={(v: number) => [`${v}%`, '权重']} />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <div className="flex items-center gap-4">
+                    {/* Donut chart */}
+                    <div className="shrink-0">
+                      <ResponsiveContainer width={120} height={120}>
+                        <PieChart>
+                          <Pie data={pieData} cx="50%" cy="50%" innerRadius={32} outerRadius={55}
+                            dataKey="value" nameKey="name" paddingAngle={2} startAngle={90} endAngle={-270}>
+                            {pieData.map((entry: any, index: number) => (
+                              <Cell key={index} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip formatter={(v: number) => [`${v}%`, '权重']} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    {/* Legend list */}
+                    <div className="flex-1 space-y-2">
+                      {pd.holdings.map((h, i) => {
+                        const aiAdj = (portfolio.aiAdjust as Record<string, number> | undefined)?.[h.ticker];
+                        return (
+                          <div key={h.ticker} className="flex items-center gap-2">
+                            <span className="font-mono text-xs font-bold w-10" style={{ color: COLORS[i % COLORS.length] }}>{h.ticker}</span>
+                            <div className="flex-1 h-1.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] + '30' }}>
+                              <div className="h-full rounded-full" style={{ width: `${(h.weight * 100).toFixed(1)}%`, backgroundColor: COLORS[i % COLORS.length] }} />
+                            </div>
+                            <span className="text-xs text-slate-500 w-14 text-right">{(h.weight * 100).toFixed(2)}%</span>
+                            {aiAdj != null ? (
+                              <span className={`text-xs font-semibold w-14 text-right ${
+                                aiAdj > 0 ? 'text-emerald-600' : aiAdj < 0 ? 'text-red-500' : 'text-slate-300'
+                              }`}>
+                                {aiAdj > 0 ? '▲' : aiAdj < 0 ? '▼' : '— '}{aiAdj !== 0 ? `${Math.abs(aiAdj).toFixed(2)}%` : '0.00%'}
+                              </span>
+                            ) : (
+                              <span className="text-xs text-slate-300 w-14 text-right">— 0.00%</span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Holdings Table */}
               <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <BarChart2 size={14} className="text-indigo-500" />
-                  <h4 className="text-sm font-semibold text-slate-700">持仓明细</h4>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <BarChart2 size={14} className="text-indigo-500" />
+                    <h4 className="text-sm font-semibold text-slate-700">资产清单与派息频率</h4>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-slate-400">
+                    <span>数据最后更新: {pd.fetchedAt ? new Date(pd.fetchedAt).toLocaleDateString('zh-CN') : '—'}</span>
+                    <a href="https://tradingview.com" target="_blank" rel="noopener noreferrer"
+                      className="text-indigo-500 hover:text-indigo-700 font-medium">数据来源: TradingView</a>
+                  </div>
                 </div>
                 <div className="overflow-x-auto rounded-xl border border-slate-100">
                   <table className="w-full text-sm">
                     <thead className="bg-slate-50">
                       <tr>
-                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500">代码</th>
-                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500">名称</th>
-                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">权重</th>
-                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">AUM</th>
-                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">派息率</th>
-                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">
+                        <th className="text-left px-4 py-3 text-xs font-semibold text-slate-400">代码</th>
+                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400">AUM（美元）</th>
+                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400">派息率</th>
+                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400">
                           <span className="inline-flex items-center justify-end gap-1">
-                            1年回报
-                            <span
-                              className="relative group cursor-help"
-                              title="含股息，基于前复权价格计算（等同于股息当天全部再投入）"
-                            >
+                            总回报
+                            <span className="relative group cursor-help">
                               <Info size={11} className="text-slate-400 hover:text-indigo-500 transition-colors" />
                               <span className="pointer-events-none absolute bottom-full right-0 mb-1.5 w-52 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg">
-                                含股息，基于前复权价格计算<br />
-                                （等同于股息当天全部再投入的近似总回报）
+                                含股息，基于前复权价格计算
                               </span>
                             </span>
                           </span>
                         </th>
-                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500">波动率</th>
-                        <th className="text-center px-4 py-3 text-xs font-semibold text-slate-500">频率</th>
+                        <th className="text-center px-4 py-3 text-xs font-semibold text-slate-400">频率</th>
+                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400">周到账 (预计)</th>
+                        <th className="text-right px-4 py-3 text-xs font-semibold text-slate-400">本周 AI 调仓</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-50">
+                    <tbody className="divide-y divide-slate-100">
                       {pd.holdings.map((h, i) => {
                         const md = h.marketData;
                         const freq = md?.frequency ?? 'None';
                         const badge = freqBadge[freq] ?? freqBadge.None;
+                        // 计算周到账（仅 Weekly/Monthly ETF）
+                        const weeklyIncome = (() => {
+                          if (!md) return null;
+                          if (md.frequency === 'Weekly') {
+                            return md.ttmDividendPerShare / 52;
+                          } else if (md.frequency === 'Monthly') {
+                            return md.ttmDividendPerShare / 12;
+                          }
+                          return null;
+                        })();
+                        // AI 调仓幅度（从 portfolio.aiAdjust 获取，如没有则显示—）
+                        const aiAdj = (portfolio.aiAdjust as Record<string, number> | undefined)?.[h.ticker];
+                        // tagline 来自 marketData.description
+                        const tagline = md?.description ?? null;
                         return (
-                          <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                          <tr key={i} className="hover:bg-slate-50/30 transition-colors">
                             <td className="px-4 py-3">
-                              <span className="font-mono font-bold text-slate-900"
-                                style={{ color: COLORS[i % COLORS.length] }}>
-                                {h.ticker}
-                              </span>
+                              <div className="flex items-baseline gap-2">
+                                <span className="font-mono font-bold text-base"
+                                  style={{ color: COLORS[i % COLORS.length] }}>
+                                  {h.ticker}
+                                </span>
+                                <span className="text-xs text-slate-400">占比 {(h.weight * 100).toFixed(2)}%</span>
+                              </div>
+                              {tagline && (
+                                <div className="mt-0.5">
+                                  <span className="text-xs px-2 py-0.5 rounded-full"
+                                    style={{ backgroundColor: COLORS[i % COLORS.length] + '18', color: COLORS[i % COLORS.length] }}>
+                                    {tagline}
+                                  </span>
+                                </div>
+                              )}
                             </td>
-                            <td className="px-4 py-3 text-slate-600 text-xs max-w-[160px] truncate">
-                              {md?.name ?? '—'}
-                            </td>
-                            <td className="px-4 py-3 text-right font-medium text-slate-700">
-                              {(h.weight * 100).toFixed(0)}%
-                            </td>
-                            <td className="px-4 py-3 text-right text-slate-500 text-xs">
+                            <td className="px-4 py-3 text-right text-slate-500 text-sm">
                               {md?.aumDisplay ?? '—'}
                             </td>
-                            <td className="px-4 py-3 text-right font-semibold text-amber-600">
+                            <td className="px-4 py-3 text-right font-semibold text-indigo-600">
                               {md ? `${md.dividendYield.toFixed(2)}%` : '—'}
                             </td>
                             <td className={`px-4 py-3 text-right font-semibold ${md && md.oneYearReturn >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                               {md ? fmtPct(md.oneYearReturn) : '—'}
                             </td>
-                            <td className="px-4 py-3 text-right text-slate-500">
-                              {md ? `${md.annualVolatility.toFixed(1)}%` : '—'}
-                            </td>
                             <td className="px-4 py-3 text-center">
-                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${badge.color}`}>
+                              <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${badge.color}`}>
                                 {badge.label}
                               </span>
+                            </td>
+                            <td className="px-4 py-3 text-right font-medium text-slate-700">
+                              {weeklyIncome != null ? `$${Math.round(weeklyIncome * 1000)}` : '—'}
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              {aiAdj != null ? (
+                                <span className={`font-semibold text-sm ${
+                                  aiAdj > 0 ? 'text-emerald-600' : aiAdj < 0 ? 'text-red-500' : 'text-slate-400'
+                                }`}>
+                                  {aiAdj > 0 ? '▲' : aiAdj < 0 ? '▼' : '— '}{aiAdj !== 0 ? `${Math.abs(aiAdj).toFixed(2)}%` : '0.00%'}
+                                </span>
+                              ) : (
+                                <span className="text-slate-300 text-sm">— 0.00%</span>
+                              )}
                             </td>
                           </tr>
                         );
@@ -795,10 +897,6 @@ function PortfolioCard({ portfolio, onDeleted }: {
                     </tbody>
                   </table>
                 </div>
-                <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">
-                  <Info size={11} />
-                  数据来源：Yahoo Finance · 更新于 {pd.fetchedAt ? new Date(pd.fetchedAt).toLocaleString('zh-CN') : '—'}
-                </p>
               </div>
 
               {/* AI Rebalancing Section */}
