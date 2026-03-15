@@ -682,12 +682,17 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
                 onClick={(e) => { e.stopPropagation(); startNameEdit(e); }}
                 title={t.editNameHint}
               >
-                {portfolio.name}
+                {lang === 'en' && portfolio.nameEn ? portfolio.nameEn : portfolio.name}
+                {lang === 'en' && !portfolio.nameEn && (
+                  <Loader2 size={10} className="animate-spin text-slate-300 ml-1" />
+                )}
                 <Pencil size={12} className="opacity-0 group-hover:opacity-40 transition-opacity" />
               </h3>
             )}
-            {portfolio.description && (
-              <p className="text-xs text-slate-500 mt-0.5">{portfolio.description}</p>
+            {(lang === 'en' ? (portfolio.descriptionEn || portfolio.description) : portfolio.description) && (
+              <p className="text-xs text-slate-500 mt-0.5">
+                {lang === 'en' ? (portfolio.descriptionEn || portfolio.description) : portfolio.description}
+              </p>
             )}
             <div className="flex items-center gap-1.5 mt-1">
               {portfolio.tickers.map((tk: TickerInput, i: number) => (
@@ -1330,7 +1335,9 @@ function PortfolioSwitcherCard({ portfolio, isActive, onClick }: {
   isActive: boolean;
   onClick: () => void;
 }) {
+  const lang = useLang();
   const tickers: string[] = (portfolio.tickers ?? []).map((t: any) => t.ticker);
+  const displayName = lang === 'en' && portfolio.nameEn ? portfolio.nameEn : portfolio.name;
   return (
     <button
       onClick={onClick}
@@ -1343,7 +1350,10 @@ function PortfolioSwitcherCard({ portfolio, isActive, onClick }: {
       <span className={`text-xs font-semibold truncate w-full ${
         isActive ? 'text-white' : 'text-slate-800'
       }`}>
-        {portfolio.name}
+        {displayName}
+        {lang === 'en' && !portfolio.nameEn && (
+          <Loader2 size={8} className="inline animate-spin ml-1 opacity-50" />
+        )}
       </span>
       <div className="flex flex-wrap gap-0.5 mt-1.5">
         {tickers.slice(0, 4).map((t: string) => (
@@ -1392,10 +1402,26 @@ export default function AIPortfolio() {
     utils.portfolio.list.invalidate();
   }, [utils]);
 
+  const translateNameMutation = trpc.portfolio.translateName.useMutation({
+    onSuccess: () => utils.portfolio.list.invalidate(),
+  });
+
   const toggleLang = () => {
     const next: Lang = lang === 'zh' ? 'en' : 'zh';
     setLang(next);
     try { localStorage.setItem('rwa-lang', next); } catch {}
+    // When switching to English, auto-translate portfolios that don't have an English name yet
+    if (next === 'en' && portfolios) {
+      portfolios.forEach((p: any) => {
+        if (!p.nameEn) {
+          translateNameMutation.mutate({
+            id: p.id,
+            name: p.name,
+            description: p.description ?? undefined,
+          });
+        }
+      });
+    }
   };
 
   const activePortfolio = portfolios?.find((p: any) => p.id === activePortfolioId);

@@ -94,7 +94,9 @@ export type InsertRebalanceLog = typeof rebalanceLogs.$inferInsert;
 export const portfolios = mysqlTable("portfolios", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 64 }).notNull(),
+  nameEn: varchar("nameEn", { length: 128 }),       // AI-translated English name
   description: text("description"),
+  descriptionEn: text("descriptionEn"),              // AI-translated English description
   tickers: text("tickers").notNull(), // JSON array: [{ticker, weight, name?}]
   cachedData: text("cachedData"),     // JSON: cached market data
   cachedAt: timestamp("cachedAt"),

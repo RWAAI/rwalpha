@@ -524,6 +524,46 @@ export const appRouter = router({
 
         return portfolioData;
       }),
+
+    // 翻译组合名称为英文（AI 自动翻译并缓存到 nameEn 字段）
+    translateName: publicProcedure
+      .input(z.object({
+        id: z.number(),
+        name: z.string(),
+        description: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        // Call LLM to translate name (and optional description) to English
+        const prompt = input.description
+          ? `Translate the following Chinese ETF portfolio name and description to concise, professional English. Return JSON only with keys "name" and "description".
+
+Name: ${input.name}
+Description: ${input.description}`
+          : `Translate the following Chinese ETF portfolio name to concise, professional English. Return JSON only with key "name".
+
+Name: ${input.name}`;
+
+        const llmResult = await invokeLLM({
+          messages: [
+            { role: 'system', content: 'You are a professional financial translator. Translate Chinese ETF portfolio names to concise English. Return only valid JSON, no markdown.' },
+            { role: 'user', content: prompt },
+          ],
+          response_format: { type: 'json_object' },
+          maxTokens: 128,
+        });
+
+        const content = llmResult.choices?.[0]?.message?.content ?? '{}';
+        let parsed: { name?: string; description?: string } = {};
+        try { parsed = JSON.parse(typeof content === 'string' ? content : JSON.stringify(content)); } catch {}
+
+        const nameEn = parsed.name?.trim() || input.name;
+        const descriptionEn = parsed.description?.trim() || undefined;
+
+        // Cache to database
+        await updatePortfolio(input.id, { nameEn, ...(descriptionEn ? { descriptionEn } : {}) });
+
+        return { nameEn, descriptionEn };
+      }),
   }),
 
   // ─── AI Advisor Router ───────────────────────────────────────────────────────
