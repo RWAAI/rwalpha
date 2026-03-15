@@ -784,66 +784,24 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
         </div>
 
         <div className="flex items-center gap-2">
-          {pd && (() => {
-            const displayYield = simMetrics?.simYield ?? pd.weightedYield;
-            const displayReturn = simMetrics?.simReturn ?? pd.weightedReturn;
-            const dyYield = simMetrics ? simMetrics.simYield - pd.weightedYield : 0;
-            const dyReturn = simMetrics ? simMetrics.simReturn - pd.weightedReturn : 0;
-            const isChanged = Math.abs(dyYield) > 0.001 || Math.abs(dyReturn) > 0.001;
-            return (
-              <div className="hidden sm:flex flex-col items-end gap-1 mr-2">
-                {/* Sliders row */}
-                <div className="flex items-center gap-3">
-                  {pd.holdings.map((h, i) => {
-                    const w = simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight;
-                    const pct = w * 100;
-                    const color = COLORS[i % COLORS.length];
-                    return (
-                      <div key={h.ticker} className="flex flex-col items-center gap-0.5" style={{ minWidth: 64 }}>
-                        <div className="flex items-center justify-between w-full">
-                          <span className="font-mono text-[10px] font-bold" style={{ color }}>{h.ticker}</span>
-                          <span className="text-[10px] text-slate-500 font-medium">{pct.toFixed(0)}%</span>
-                        </div>
-                        <input
-                          type="range" min={0} max={100} step={0.5} value={pct}
-                          onChange={e => handleSimSlider(h.ticker, parseFloat(e.target.value) / 100)}
-                          className="w-full h-0.5 rounded-full appearance-none cursor-pointer"
-                          style={{
-                            background: `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, ${color}22 ${pct}%, ${color}22 100%)`,
-                            accentColor: color,
-                          }}
-                        />
-                      </div>
-                    );
-                  })}
-                  <button
-                    onClick={resetSimWeights}
-                    className="text-[10px] text-slate-300 hover:text-indigo-400 transition-colors flex items-center gap-0.5 ml-1"
-                    title={t.simReset}
-                  >
-                    <RotateCcw size={9} />
-                  </button>
-                </div>
-                {/* Metrics row */}
-                <div className="flex items-center gap-4">
-                  <div className="text-center">
-                    <div className="text-xs text-slate-400">{t.dividendRate}</div>
-                    <div className="text-sm font-bold text-amber-600">{fmtPct(displayYield)}</div>
-                    {isChanged && <div className={`text-[10px] font-medium leading-none ${dyYield > 0 ? 'text-emerald-500' : 'text-red-400'}`}>{dyYield > 0 ? '▲' : '▼'}{Math.abs(dyYield).toFixed(2)}%</div>}
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xs text-slate-400">{t.oneYearReturnShort}</div>
-                    <div className={`text-sm font-bold ${displayReturn >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{fmtPct(displayReturn)}</div>
-                    {isChanged && <div className={`text-[10px] font-medium leading-none ${dyReturn > 0 ? 'text-emerald-500' : 'text-red-400'}`}>{dyReturn > 0 ? '▲' : '▼'}{Math.abs(dyReturn).toFixed(2)}%</div>}
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xs text-slate-400">{t.volatility}</div>
-                    <div className="text-sm font-bold text-slate-600">{fmtNum(pd.weightedVolatility)}%</div>
-                  </div>
+          {pd && (
+            <div className="hidden sm:flex items-center gap-4 mr-4">
+              <div className="text-center">
+                <div className="text-xs text-slate-400">{t.dividendRate}</div>
+                <div className="text-sm font-bold text-amber-600">{fmtPct(pd.weightedYield)}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs text-slate-400">{t.oneYearReturnShort}</div>
+                <div className={`text-sm font-bold ${pd.weightedReturn >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                  {fmtPct(pd.weightedReturn)}
                 </div>
               </div>
-            );
-          })()}
+              <div className="text-center">
+                <div className="text-xs text-slate-400">{t.volatility}</div>
+                <div className="text-sm font-bold text-slate-600">{fmtNum(pd.weightedVolatility)}%</div>
+              </div>
+            </div>
+          )}
           <button
             onClick={handleRefresh}
             className="p-2 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
@@ -1053,6 +1011,112 @@ function PortfolioCard({ portfolio, onDeleted, defaultExpanded = false }: {
             </div>
           ) : pd ? (
             <div className="p-5 space-y-6">
+              {/* Summary Metrics + Weight Simulator in one row */}
+              {(() => {
+                const baseYield = pd.weightedYield;
+                const baseReturn = pd.weightedReturn;
+                const dyYield = simMetrics ? simMetrics.simYield - baseYield : 0;
+                const dyReturn = simMetrics ? simMetrics.simReturn - baseReturn : 0;
+                const isChanged = simWeights !== null && (Math.abs(dyYield) > 0.001 || Math.abs(dyReturn) > 0.001);
+                const weeklyIncome = pd.holdings.reduce((sum: number, h: any) => {
+                  if (!h.marketData) return sum;
+                  return sum + principal * h.weight * (h.marketData.dividendYield / 100) / 52;
+                }, 0);
+                const annualIncome = pd.holdings.reduce((sum: number, h: any) => {
+                  if (!h.marketData) return sum;
+                  return sum + principal * h.weight * (h.marketData.dividendYield / 100);
+                }, 0);
+                return (
+                  <div className="bg-white rounded-xl border border-slate-100 p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Activity size={13} className="text-violet-500" />
+                        <span className="text-xs font-semibold text-slate-600">{t.simTitle}</span>
+                        <span className="text-xs text-slate-400 hidden sm:inline">— {t.simSubtitle}</span>
+                      </div>
+                      <button onClick={resetSimWeights} className="text-xs text-slate-400 hover:text-indigo-500 transition-colors flex items-center gap-1">
+                        <RotateCcw size={10} />{t.simReset}
+                      </button>
+                    </div>
+
+                    {/* Sliders */}
+                    <div className="grid gap-x-4 gap-y-2 mb-4" style={{ gridTemplateColumns: `repeat(${pd.holdings.length}, 1fr)` }}>
+                      {pd.holdings.map((h, i) => {
+                        const w = simWeights ? (simWeights[h.ticker] ?? h.weight) : h.weight;
+                        const pct = w * 100;
+                        const color = COLORS[i % COLORS.length];
+                        return (
+                          <div key={h.ticker}>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-mono text-xs font-bold" style={{ color }}>{h.ticker}</span>
+                              <span className="text-xs font-semibold text-slate-600">{pct.toFixed(1)}%</span>
+                            </div>
+                            <input
+                              type="range" min={0} max={100} step={0.5} value={pct}
+                              onChange={e => handleSimSlider(h.ticker, parseFloat(e.target.value) / 100)}
+                              className="w-full h-1 rounded-full appearance-none cursor-pointer"
+                              style={{
+                                background: `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, ${color}22 ${pct}%, ${color}22 100%)`,
+                                accentColor: color,
+                              }}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Metrics row */}
+                    <div className="grid grid-cols-3 gap-3 pt-3 border-t border-slate-100">
+                      {/* Yield */}
+                      <div className="bg-amber-50 rounded-lg px-3 py-2">
+                        <div className="flex items-center gap-1 text-amber-600 mb-0.5">
+                          <DollarSign size={11} />
+                          <span className="text-xs font-medium">{t.weightedYield}</span>
+                        </div>
+                        <div className="text-xl font-bold text-amber-700">
+                          {fmtPct(simMetrics?.simYield ?? baseYield)}
+                        </div>
+                        {isChanged ? (
+                          <div className={`text-xs font-medium ${dyYield > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                            {dyYield > 0 ? '▲' : '▼'}{Math.abs(dyYield).toFixed(2)}%
+                          </div>
+                        ) : (
+                          <div className="text-xs text-amber-500">{t.ttmAnnualized}</div>
+                        )}
+                      </div>
+                      {/* Return */}
+                      <div className={`rounded-lg px-3 py-2 ${(simMetrics?.simReturn ?? baseReturn) >= 0 ? 'bg-emerald-50' : 'bg-red-50'}`}>
+                        <div className={`flex items-center gap-1 mb-0.5 ${(simMetrics?.simReturn ?? baseReturn) >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                          {(simMetrics?.simReturn ?? baseReturn) >= 0 ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                          <span className="text-xs font-medium">{t.oneYearReturn}</span>
+                        </div>
+                        <div className={`text-xl font-bold ${(simMetrics?.simReturn ?? baseReturn) >= 0 ? 'text-emerald-700' : 'text-red-600'}`}>
+                          {fmtPct(simMetrics?.simReturn ?? baseReturn)}
+                        </div>
+                        {isChanged ? (
+                          <div className={`text-xs font-medium ${dyReturn > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                            {dyReturn > 0 ? '▲' : '▼'}{Math.abs(dyReturn).toFixed(2)}%
+                          </div>
+                        ) : (
+                          <div className={`text-xs ${baseReturn >= 0 ? 'text-emerald-500' : 'text-red-400'}`}>{t.weightedAvg}</div>
+                        )}
+                      </div>
+                      {/* Weekly Income */}
+                      <div className="bg-white rounded-lg border border-slate-100 px-3 py-2 flex items-center justify-between">
+                        <div>
+                          <div className="text-xs text-slate-400 mb-0.5">{t.weeklyIncome}</div>
+                          <div className="text-xl font-bold text-slate-900">${Math.round(weeklyIncome).toLocaleString()}</div>
+                          <div className="text-xs text-slate-400">{t.annualIncome} ${Math.round(annualIncome).toLocaleString()}</div>
+                        </div>
+                        <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center">
+                          <DollarSign size={14} className="text-emerald-600" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* Charts Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Cash Flow Weekly Calendar */}
