@@ -264,7 +264,10 @@ function PortfolioCard({ portfolio, onDeleted }: {
     onSuccess: () => {
       utils.portfolio.list.invalidate();
       setEditing(false);
-      setPortfolioData(null); // clear cached data so it refetches with new tickers
+      setPortfolioData(null); // clear cached data
+      // Auto-refresh with new tickers after saving
+      setExpanded(true);
+      fetchDataMutation.mutate({ id: portfolio.id, forceRefresh: true });
     },
     onError: (e) => setEditError(e.message),
   });
