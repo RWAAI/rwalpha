@@ -236,10 +236,10 @@ export default function LandingPage() {
         <div className="relative max-w-4xl mx-auto text-center">
 
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-100 bg-white/70 text-indigo-600 text-xs font-mono tracking-widest mb-8 uppercase backdrop-blur-sm shadow-sm">
-            <Cpu size={11} className="opacity-70" />
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-indigo-100 bg-white/70 text-indigo-600 text-sm font-mono tracking-wider mb-8 uppercase backdrop-blur-sm shadow-sm">
+            <Cpu size={13} className="opacity-70" />
             {T.badge}
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
           </div>
 
           {/* Title */}
@@ -254,13 +254,10 @@ export default function LandingPage() {
             </span>
           </h1>
 
-          {/* Sub */}
-          <p className="text-base md:text-lg text-slate-500 max-w-xl mx-auto leading-relaxed mb-10 font-mono tracking-wide">
-            {T.heroSub1}
-          </p>
+
 
           {/* CTA */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-10">
             <Link href="/vault">
               <button
                 className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm text-white transition-all duration-200 active:scale-95 relative overflow-hidden"
