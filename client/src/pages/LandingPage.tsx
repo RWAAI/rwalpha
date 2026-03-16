@@ -201,37 +201,42 @@ export default function LandingPage() {
       />
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-white pt-24 pb-0 px-6">
+      <section className="relative overflow-hidden pt-24 pb-20 px-6" style={{ background: 'linear-gradient(160deg, #f8f9ff 0%, #eef2ff 35%, #f0fdfa 70%, #f8faff 100%)' }}>
 
-        {/* Subtle dot-grid background */}
+        {/* Fine grid lines */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            backgroundImage: 'radial-gradient(circle, #c7d2fe 1px, transparent 1px)',
-            backgroundSize: '32px 32px',
-            opacity: 0.45,
+            backgroundImage: 'linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
           }}
         />
 
-        {/* Soft glow blobs */}
-        <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-[700px] h-[420px] rounded-full"
-          style={{ background: 'radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)' }} />
-        <div className="pointer-events-none absolute top-10 right-0 w-[320px] h-[320px] rounded-full"
-          style={{ background: 'radial-gradient(ellipse, rgba(6,182,212,0.08) 0%, transparent 70%)' }} />
-        <div className="pointer-events-none absolute top-20 left-0 w-[280px] h-[280px] rounded-full"
-          style={{ background: 'radial-gradient(ellipse, rgba(139,92,246,0.07) 0%, transparent 70%)' }} />
+        {/* Diagonal accent lines */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-[15%] w-px h-full" style={{ background: 'linear-gradient(to bottom, transparent, rgba(99,102,241,0.12) 30%, rgba(99,102,241,0.12) 70%, transparent)' }} />
+          <div className="absolute top-0 right-[15%] w-px h-full" style={{ background: 'linear-gradient(to bottom, transparent, rgba(6,182,212,0.10) 30%, rgba(6,182,212,0.10) 70%, transparent)' }} />
+        </div>
 
-        {/* Thin horizontal accent line */}
-        <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-300/60 to-transparent" />
+        {/* Large central glow */}
+        <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[600px]"
+          style={{ background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.10) 0%, rgba(6,182,212,0.05) 40%, transparent 70%)' }} />
 
-        {/* Corner brackets */}
-        <div className="pointer-events-none absolute top-16 left-8 w-10 h-10 border-l border-t border-indigo-200/70" />
-        <div className="pointer-events-none absolute top-16 right-8 w-10 h-10 border-r border-t border-indigo-200/70" />
+        {/* Side glows */}
+        <div className="pointer-events-none absolute top-1/3 -left-20 w-[400px] h-[400px]"
+          style={{ background: 'radial-gradient(ellipse, rgba(139,92,246,0.07) 0%, transparent 65%)' }} />
+        <div className="pointer-events-none absolute top-1/4 -right-20 w-[350px] h-[350px]"
+          style={{ background: 'radial-gradient(ellipse, rgba(6,182,212,0.07) 0%, transparent 65%)' }} />
+
+        {/* Top accent line */}
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-[2px]" style={{ background: 'linear-gradient(90deg, transparent 0%, #818cf8 30%, #38bdf8 60%, transparent 100%)' }} />
+        {/* Bottom accent line */}
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.15) 50%, transparent)' }} />
 
         <div className="relative max-w-4xl mx-auto text-center">
 
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-100 bg-indigo-50/80 text-indigo-600 text-xs font-mono tracking-widest mb-8 uppercase backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-100 bg-white/70 text-indigo-600 text-xs font-mono tracking-widest mb-8 uppercase backdrop-blur-sm shadow-sm">
             <Cpu size={11} className="opacity-70" />
             {T.badge}
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
@@ -255,7 +260,7 @@ export default function LandingPage() {
           </p>
 
           {/* CTA */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/vault">
               <button
                 className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm text-white transition-all duration-200 active:scale-95 relative overflow-hidden"
@@ -268,34 +273,12 @@ export default function LandingPage() {
               </button>
             </Link>
             <Link href="/dashboard">
-              <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm text-slate-700 border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 shadow-sm">
+              <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm text-slate-700 border border-slate-200 bg-white/80 hover:bg-white hover:border-slate-300 transition-all duration-200 shadow-sm backdrop-blur-sm">
                 {T.cta2} <ChevronRight size={15} />
               </button>
             </Link>
           </div>
-
-          {/* Live metric chips */}
-          <div className="flex flex-wrap justify-center gap-2.5 mb-10">
-            {T.chips.map((chip, i) => {
-              const s = chipStyles[chip.color];
-              return (
-                <div key={i} className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border ${s.chip} backdrop-blur-sm`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${s.dot} ${chip.color === 'cyan' ? 'animate-pulse' : ''}`} />
-                  <span className="text-slate-400 text-xs font-mono">{chip.label}</span>
-                  <span className={`${s.value} text-xs font-bold font-mono`}>{chip.value}</span>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Scrolling ticker strip */}
-          <div className="border-t border-b border-slate-100 py-2.5 -mx-6 px-6 bg-slate-50/60 backdrop-blur-sm overflow-hidden">
-            <DataTicker />
-          </div>
         </div>
-
-        {/* Bottom fade into next section */}
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-white" />
       </section>
 
       {/* ── Dual Vault ────────────────────────────────────────── */}
