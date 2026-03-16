@@ -278,29 +278,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Dual Vault ────────────────────────────────────────── */}
-      <section className="bg-white py-16 px-6 border-t border-slate-100">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="inline-block text-xs font-bold tracking-widest text-indigo-500 uppercase bg-indigo-50 px-3 py-1 rounded-full mb-3">{T.dualVaultLabel}</span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">{T.dualVaultTitle}</h2>
-            <p className="text-slate-500 text-base">{T.dualVaultSub}</p>
-          </div>
-          <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-slate-100 hover:scale-[1.01] transition-transform duration-300">
-            <img
-              key={lang}
-              src={lang === 'zh'
-                ? 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/product-screenshot-v2_600f9ad8.png'
-                : 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/product-screenshot-en_f0605357.png'
-              }
-              alt="RWAlpha Product Preview"
-              className="w-full h-auto object-cover"
-              style={{ animation: 'fadeIn 0.4s ease' }}
-            />
-          </div>
-        </div>
-      </section>
-
       {/* ── Four Features ─────────────────────────────────────── */}
       <section className="bg-slate-50 py-16 px-6">
         <div className="max-w-4xl mx-auto">
@@ -332,6 +309,29 @@ export default function LandingPage() {
                 <span className="text-xs text-slate-400 font-medium">{s.label}</span>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Dual Vault ────────────────────────────────────────── */}
+      <section className="bg-white py-16 px-6 border-t border-slate-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="inline-block text-xs font-bold tracking-widest text-indigo-500 uppercase bg-indigo-50 px-3 py-1 rounded-full mb-3">{T.dualVaultLabel}</span>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">{T.dualVaultTitle}</h2>
+            <p className="text-slate-500 text-base">{T.dualVaultSub}</p>
+          </div>
+          <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-slate-100 hover:scale-[1.01] transition-transform duration-300">
+            <img
+              key={lang}
+              src={lang === 'zh'
+                ? 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/product-screenshot-v2_600f9ad8.png'
+                : 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/product-screenshot-en_f0605357.png'
+              }
+              alt="RWAlpha Product Preview"
+              className="w-full h-auto object-cover"
+              style={{ animation: 'fadeIn 0.4s ease' }}
+            />
           </div>
         </div>
       </section>
