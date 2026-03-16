@@ -35,7 +35,8 @@ const COPY = {
       { label: '底层 ETF 规模', prefix: '$', suffix: '亿+' },
       { label: '链上持仓验证', suffix: '%' },
     ],
-    ctaTitle: '准备好进入 AI × RWA 的世界了吗？',
+    ctaTitle: '准备好进入这个世界了吗？',
+    ctaTitleLine2: 'AI × RWA',
     ctaSub: '机构级策略，链上透明，每周派息。现在就开始。',
     ctaBtn1: '立即查看金库',
     ctaBtn2: '进入应用',
@@ -70,7 +71,8 @@ const COPY = {
       { label: 'Underlying ETF AUM', prefix: '$', suffix: 'B+' },
       { label: 'On-chain Verification', suffix: '%' },
     ],
-    ctaTitle: 'Ready to Enter the World of AI × RWA?',
+    ctaTitle: 'Ready to Enter the World of',
+    ctaTitleLine2: 'AI × RWA?',
     ctaSub: 'Institutional strategy. On-chain transparency. Weekly dividends. Start now.',
     ctaBtn1: 'View Vault',
     ctaBtn2: 'Launch App',
@@ -339,7 +341,10 @@ export default function LandingPage() {
       {/* ── Bottom CTA ────────────────────────────────────────── */}
       <section className="bg-white py-20 px-6 border-t border-slate-100">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">{T.ctaTitle}</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
+            {T.ctaTitle}<br />
+            <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #4f46e5 0%, #0891b2 100%)' }}>{T.ctaTitleLine2}</span>
+          </h2>
           <p className="text-slate-500 text-base mb-8">{T.ctaSub}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/vault">
