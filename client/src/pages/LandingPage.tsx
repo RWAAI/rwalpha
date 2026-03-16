@@ -250,7 +250,7 @@ export default function LandingPage() {
           </div>
           <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-slate-100">
             <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/rwalpha-product-screenshot_f448ae09.png"
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/product-screenshot-v2_600f9ad8.png"
               alt="RWAlpha Product Preview"
               className="w-full h-auto object-cover"
             />
