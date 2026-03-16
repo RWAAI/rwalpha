@@ -239,9 +239,7 @@ export default function LandingPage() {
 
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-indigo-100 bg-white/70 text-indigo-600 text-sm font-mono tracking-wider mb-8 uppercase backdrop-blur-sm shadow-sm">
-            <Cpu size={13} className="opacity-70" />
             {T.badge}
-            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
           </div>
 
           {/* Title */}
