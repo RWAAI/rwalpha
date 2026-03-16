@@ -12,7 +12,7 @@ import { Zap, Layers, Brain, TrendingUp, ArrowRight, ChevronRight, Shield, Activ
 // ── i18n copy ─────────────────────────────────────────────────────
 const COPY = {
   zh: {
-    badge: 'AI × RWA · 下一代资产管理',
+    badge: 'AI × RWA = RWA 2.0',
     heroTitle1: '当 AI 遇上',
     heroTitle2: '真实世界资产',
     heroSub1: 'AI 驱动管理 · 每周现金派息 · 指数底仓增值',
@@ -47,7 +47,7 @@ const COPY = {
     ],
   },
   en: {
-    badge: 'AI × RWA · Next-Gen Asset Management',
+    badge: 'AI × RWA = RWA 2.0',
     heroTitle1: 'When AI Meets',
     heroTitle2: 'Real World Assets',
     heroSub1: 'AI-Driven Management · Weekly Cash Dividend · Core Index Growth',
