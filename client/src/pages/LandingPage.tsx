@@ -67,7 +67,7 @@ const COPY = {
     featuresLabel: 'Four Core Advantages',
     features: [
       { title: 'AI-Driven Management', desc: 'AI engine continuously monitors and drives position adjustment and reinvestment strategy.' },
-      { title: 'Index Collateral', desc: 'Fully backed by Nasdaq ETFs. Principal grows with the market over the long term.' },
+      { title: 'Core Index Position', desc: 'Nasdaq ETFs as core holding (QQQM + VGT). Principal grows with the market over the long term.' },
       { title: 'Weekly Dividend', desc: 'Options income distributed mechanically every week — stable cash flow, not market-dependent.' },
       { title: 'Steady Growth', desc: 'Dividend + NAV appreciation on dual tracks. Compounding drives continuous asset growth.' },
     ],
