@@ -1,14 +1,14 @@
-// Design: Clean white background, AI × RWA theme
+// Design: Dark tech hero with animated grid, glowing orbs, floating data cards
 // Typography: Bold display for hero, clean sans for body
-// Colors: Slate/white base, indigo accent, green for yield numbers
-// Layout: Asymmetric hero, full-width feature strip, stats row, CTA
+// Colors: Deep dark bg, indigo/cyan/violet neon accents, white text
+// Layout: Full-screen dark hero, then light content sections below
 // i18n: zh/en toggle via localStorage + state
 
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'wouter';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
-import { Zap, Layers, Brain, TrendingUp, ArrowRight, ChevronRight } from 'lucide-react';
+import { Zap, Layers, Brain, TrendingUp, ArrowRight, ChevronRight, Shield, Activity } from 'lucide-react';
 
 // ── i18n copy ─────────────────────────────────────────────────────
 const COPY = {
@@ -51,12 +51,16 @@ const COPY = {
     ctaBtn1: '立即查看金库',
     ctaBtn2: '进入应用',
     footerRight: '© 2026 RWAlpha. All rights reserved.',
+    liveYield: '年化派息率',
+    liveReturn: '年化总回报',
+    liveStatus: 'AI 运行中',
+    liveWeekly: '本周派息',
   },
   en: {
     badge: 'AI × RWA · Next-Gen Asset Management',
     heroTitle1: 'When AI Meets',
     heroTitle2: 'Real World Assets',
-    heroSub1: 'AI-Driven Management · Weekly Cash Dividend · Index Core Growth',
+    heroSub1: 'AI-Driven Management · Weekly Cash Dividend · Core Index Growth',
     heroSub2: '',
     cta1: 'View Vault',
     cta2: 'Launch App',
@@ -91,6 +95,10 @@ const COPY = {
     ctaBtn1: 'View Vault',
     ctaBtn2: 'Launch App',
     footerRight: '© 2026 RWAlpha. All rights reserved.',
+    liveYield: 'Annual Yield',
+    liveReturn: 'Total Return',
+    liveStatus: 'AI Active',
+    liveWeekly: 'Weekly Dist.',
   },
 } as const;
 
@@ -117,6 +125,22 @@ function Counter({ to, prefix = '', suffix = '', decimals = 0 }: { to: number; p
   return <span ref={ref}>{prefix}{val.toFixed(decimals)}{suffix}</span>;
 }
 
+// ── Animated ticker (scrolling data stream) ───────────────────────
+function DataTicker() {
+  const items = ['NVDY +73.84%', 'QQQI +14.49%', 'QQQM +25.17%', 'VGT +28.97%', 'rINDEX NAV $130.99', 'AI Signal: HOLD', 'Weekly Dist: $0.502'];
+  return (
+    <div className="overflow-hidden w-full">
+      <div className="flex gap-8 animate-[ticker_18s_linear_infinite] whitespace-nowrap">
+        {[...items, ...items].map((item, i) => (
+          <span key={i} className="text-xs font-mono text-cyan-400/60 shrink-0">
+            <span className="text-cyan-400/30 mr-2">▸</span>{item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Feature card ─────────────────────────────────────────────────
 function FeatureCard({ icon, title, desc, accent }: { icon: React.ReactNode; title: string; desc: string; accent: string }) {
   return (
@@ -135,7 +159,6 @@ export default function LandingPage() {
     try { return (localStorage.getItem('rwa-lang') as Lang) || 'zh'; } catch { return 'zh'; }
   });
 
-  // 监听 NavBar 或其他组件触发的语言变化
   useEffect(() => {
     const handler = () => {
       try {
@@ -172,71 +195,125 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans">
-      <NavBar
-        activeTab="home"
-        rightSlot={
-          <div className="flex items-center gap-2">
-            <button
-              onClick={toggleLang}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all duration-200"
-            >
-              🌐 {lang === 'zh' ? 'EN' : '中文'}
-            </button>
-            <Link href="/vault">
-              <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-all duration-200 active:scale-95">
-                <Zap size={14} />
-                {lang === 'zh' ? '进入应用' : 'Launch App'}
+      {/* NavBar with transparent overlay on dark hero */}
+      <div className="relative z-50">
+        <NavBar
+          activeTab="home"
+          rightSlot={
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleLang}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/20 text-sm font-medium text-white/80 hover:bg-white/10 transition-all duration-200"
+              >
+                🌐 {lang === 'zh' ? 'EN' : '中文'}
               </button>
-            </Link>
-          </div>
-        }
-      />
+              <Link href="/vault">
+                <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg shadow-indigo-500/30 transition-all duration-200 active:scale-95">
+                  <Zap size={14} />
+                  {lang === 'zh' ? '进入应用' : 'Launch App'}
+                </button>
+              </Link>
+            </div>
+          }
+        />
+      </div>
 
-      {/* ── Hero ──────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-white pt-20 pb-16 px-6">
+      {/* ── HERO — Dark Tech ──────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-[#080c14] min-h-[92vh] flex flex-col" style={{ marginTop: '-64px' }}>
+
+        {/* Animated grid background */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
+          className="pointer-events-none absolute inset-0"
           style={{
-            backgroundImage: 'linear-gradient(#0f172a 1px, transparent 1px), linear-gradient(90deg, #0f172a 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
+            backgroundImage: 'linear-gradient(rgba(99,102,241,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.08) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
           }}
         />
-        <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-indigo-100 blur-3xl opacity-50" />
 
-        <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-semibold tracking-wide mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+        {/* Radial glow orbs */}
+        <div className="pointer-events-none absolute top-[-10%] left-[20%] w-[500px] h-[500px] rounded-full bg-indigo-600/20 blur-[120px]" />
+        <div className="pointer-events-none absolute top-[10%] right-[10%] w-[350px] h-[350px] rounded-full bg-violet-600/15 blur-[100px]" />
+        <div className="pointer-events-none absolute bottom-[5%] left-[5%] w-[300px] h-[300px] rounded-full bg-cyan-500/10 blur-[90px]" />
+
+        {/* Scanning line animation */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div
+            className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-400/40 to-transparent"
+            style={{ animation: 'scanline 6s linear infinite' }}
+          />
+        </div>
+
+        {/* Corner decorations */}
+        <div className="pointer-events-none absolute top-20 left-6 w-16 h-16 border-l-2 border-t-2 border-indigo-500/30" />
+        <div className="pointer-events-none absolute top-20 right-6 w-16 h-16 border-r-2 border-t-2 border-indigo-500/30" />
+        <div className="pointer-events-none absolute bottom-8 left-6 w-16 h-16 border-l-2 border-b-2 border-cyan-500/20" />
+        <div className="pointer-events-none absolute bottom-8 right-6 w-16 h-16 border-r-2 border-b-2 border-cyan-500/20" />
+
+        {/* Main content */}
+        <div className="relative flex-1 flex flex-col items-center justify-center px-6 pt-28 pb-16">
+
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-mono tracking-widest mb-10 uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
             {T.badge}
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 leading-[1.1] tracking-tight mb-6">
+          {/* Hero title */}
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-[1.05] tracking-tight mb-6 text-center max-w-4xl">
             {T.heroTitle1}
             <br />
-            <span className="bg-gradient-to-r from-indigo-600 to-sky-500 bg-clip-text text-transparent">
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: 'linear-gradient(135deg, #818cf8 0%, #38bdf8 50%, #34d399 100%)' }}
+            >
               {T.heroTitle2}
             </span>
           </h1>
 
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed mb-3">
+          {/* Sub */}
+          <p className="text-base md:text-lg text-slate-400 max-w-xl mx-auto text-center leading-relaxed mb-12 font-mono tracking-wide">
             {T.heroSub1}
           </p>
-          <p className="text-sm text-slate-400 max-w-xl mx-auto mb-10">
-            {T.heroSub2}
-          </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/dashboard">
-              <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-md shadow-indigo-200 transition-all duration-200 active:scale-95">
-                {T.cta1} <ArrowRight size={15} />
+          {/* CTA buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <Link href="/vault">
+              <button className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm text-white transition-all duration-200 active:scale-95 relative overflow-hidden"
+                style={{ background: 'linear-gradient(135deg, #4f46e5, #0ea5e9)', boxShadow: '0 0 30px rgba(99,102,241,0.4)' }}
+              >
+                <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Zap size={15} />
+                {T.cta1}
+                <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
               </button>
             </Link>
-            <Link href="/vault">
-              <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm border border-slate-200 transition-all duration-200">
+            <Link href="/dashboard">
+              <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm text-slate-300 border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200">
                 {T.cta2} <ChevronRight size={15} />
               </button>
             </Link>
           </div>
 
+          {/* Live metrics strip */}
+          <div className="flex flex-wrap justify-center gap-3 mb-12">
+            {[
+              { icon: <Activity size={12} />, label: T.liveYield, value: '~19.93%', color: 'text-emerald-400', border: 'border-emerald-500/20', bg: 'bg-emerald-500/5' },
+              { icon: <TrendingUp size={12} />, label: T.liveReturn, value: '+29.72%', color: 'text-indigo-400', border: 'border-indigo-500/20', bg: 'bg-indigo-500/5' },
+              { icon: <Shield size={12} />, label: T.liveStatus, value: '● LIVE', color: 'text-cyan-400', border: 'border-cyan-500/20', bg: 'bg-cyan-500/5' },
+              { icon: <Zap size={12} />, label: T.liveWeekly, value: '$0.502 / rINDEX', color: 'text-amber-400', border: 'border-amber-500/20', bg: 'bg-amber-500/5' },
+            ].map((m, i) => (
+              <div key={i} className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${m.border} ${m.bg} backdrop-blur-sm`}>
+                <span className={`${m.color} opacity-70`}>{m.icon}</span>
+                <span className="text-slate-500 text-xs font-mono">{m.label}</span>
+                <span className={`${m.color} text-xs font-bold font-mono`}>{m.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Data ticker */}
+          <div className="w-full max-w-3xl border-t border-b border-white/5 py-2.5 overflow-hidden">
+            <DataTicker />
+          </div>
         </div>
       </section>
 
@@ -248,14 +325,16 @@ export default function LandingPage() {
             <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">{T.dualVaultTitle}</h2>
             <p className="text-slate-500 text-base">{T.dualVaultSub}</p>
           </div>
-          <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-slate-100">
+          <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-slate-100 hover:scale-[1.01] transition-transform duration-300">
             <img
+              key={lang}
               src={lang === 'zh'
                 ? 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/product-screenshot-v2_600f9ad8.png'
                 : 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/product-screenshot-en_f0605357.png'
               }
               alt="RWAlpha Product Preview"
               className="w-full h-auto object-cover"
+              style={{ animation: 'fadeIn 0.4s ease' }}
             />
           </div>
         </div>
@@ -307,7 +386,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-
       {/* ── Bottom CTA ────────────────────────────────────────── */}
       <section className="bg-white py-20 px-6 border-t border-slate-100">
         <div className="max-w-2xl mx-auto text-center">
@@ -332,6 +410,24 @@ export default function LandingPage() {
       </section>
 
       <Footer />
+
+      {/* Global keyframes */}
+      <style>{`
+        @keyframes ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes scanline {
+          0% { top: -2px; opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { top: 100%; opacity: 0; }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }
