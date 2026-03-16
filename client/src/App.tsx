@@ -18,8 +18,7 @@ function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"/"} component={AIPortfolio} />
-      <Route path={"/landing"} component={LandingPage} />
+      <Route path={"/"} component={LandingPage} />
       <Route path={"/dashboard"} component={Home} />
       <Route path={"/vault"} component={VaultApp} />
       <Route path={"/how-it-works"} component={HowItWorks} />
