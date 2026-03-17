@@ -8,6 +8,7 @@ export default function MyAssets() {
   const [, navigate] = useLocation();
   const [lang, setLang] = useState<"zh" | "en">(localStorage.getItem("rwa-lang") === "en" ? "en" : "zh");
   const zh = lang === "zh";
+  const [tab, setTab] = useState<"holdings" | "dividends">("holdings");
 
   const { data: holdings = [], isLoading: holdingsLoading } = trpc.assets.getHoldings.useQuery();
   const { data: dividends = [], isLoading: dividendsLoading } = trpc.assets.getDividendHistory.useQuery();
@@ -42,13 +43,34 @@ export default function MyAssets() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-10 space-y-10">
+      <div className="max-w-4xl mx-auto px-4 py-8">
 
-        {/* 本金金库 */}
-        <div>
-          <h2 className="text-base font-semibold text-slate-800 mb-3">
+        {/* ── Tab 切换 ── */}
+        <div className="flex gap-1 bg-slate-100 rounded-lg p-1 w-fit mb-6">
+          <button
+            onClick={() => setTab("holdings")}
+            className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
+              tab === "holdings"
+                ? "bg-white text-slate-800 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
             {zh ? "本金金库" : "Principal Vault"}
-          </h2>
+          </button>
+          <button
+            onClick={() => setTab("dividends")}
+            className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
+              tab === "dividends"
+                ? "bg-white text-slate-800 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            {zh ? "派息记录" : "Dividend History"}
+          </button>
+        </div>
+
+        {/* ── 本金金库表格 ── */}
+        {tab === "holdings" && (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
@@ -87,13 +109,10 @@ export default function MyAssets() {
               </tbody>
             </table>
           </div>
-        </div>
+        )}
 
-        {/* 派息记录 */}
-        <div>
-          <h2 className="text-base font-semibold text-slate-800 mb-3">
-            {zh ? "派息记录" : "Dividend History"}
-          </h2>
+        {/* ── 派息记录表格 ── */}
+        {tab === "dividends" && (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
@@ -146,7 +165,7 @@ export default function MyAssets() {
               </tbody>
             </table>
           </div>
-        </div>
+        )}
 
       </div>
 
