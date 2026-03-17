@@ -233,6 +233,21 @@ export default function About() {
     }
   };
 
+  // 页面加载时处理 URL hash，自动滚动到对应锁点
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      setActiveId(hash);
+      // 等待 DOM 渲染完成再滚动
+      setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
+    }
+  }, []);
+
   // 监听滚动，更新 activeId
   useEffect(() => {
     const allIds = SECTIONS.flatMap((s) => [s.id, ...s.children.map((c) => c.id)]);
