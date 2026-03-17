@@ -24,6 +24,14 @@ const SECTIONS = [
     ],
   },
   {
+    id: "team",
+    zh: "团队介绍",
+    en: "Team",
+    children: [
+      { id: "team-intro", zh: "核心团队", en: "Core Team" },
+    ],
+  },
+  {
     id: "how-it-works",
     zh: "运作机制",
     en: "How It Works",
@@ -403,8 +411,46 @@ export default function About() {
               </div>
             </Section>
 
+             <Divider />
+            {/* ── Team ── */}
+            <Section id="team">
+              <H1>{zh ? "团队介绍" : "Team"}</H1>
+            </Section>
+            <Section id="team-intro">
+              <H2>{zh ? "核心团队" : "Core Team"}</H2>
+              <P>
+                {zh
+                  ? "RWAlpha 由汇集了 TradFi、Crypto 与 AI 领域顶尖人才的资深团队打造。"
+                  : "RWAlpha is built by a seasoned team bringing together top talent from TradFi, Crypto, and AI."}
+              </P>
+              <P>
+                {zh
+                  ? "核心成员来自海通国际、招銀国际（新加坡）等知名传统金融机构，以及加密资产和 AI 领域的一线从业者。团队拥有超过 16 年的传统金融经验，深谙 ETF、结构化产品及大宗经纪业务。此外，团队在新加坡、香港和迪拜拥有丰富的跨境合规架构搞建经验，具备极强的资产筛选、合规基金结构设立以及链上协议设计的综合能力。"
+                  : "Core members come from renowned traditional financial institutions including Haitong International and CMB International (Singapore), as well as leading practitioners in crypto assets and AI. The team has over 16 years of traditional finance experience, with deep expertise in ETFs, structured products, and prime brokerage. Additionally, the team has extensive cross-border compliance and fund structuring experience across Singapore, Hong Kong, and Dubai, with strong capabilities in asset selection, compliant fund structure establishment, and on-chain protocol design."}
+              </P>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+                {[
+                  { icon: "🏦", zh: "传统金融", en: "TradFi", desc_zh: "来自海通国际、招銀国际等顶级金融机构", desc_en: "From Haitong International, CMB International & more" },
+                  { icon: "🤖", zh: "AI 与加密", en: "AI & Crypto", desc_zh: "加密资产和 AI 领域一线从业者", desc_en: "Front-line practitioners in crypto & AI" },
+                  { icon: "🌏", zh: "跨境合规", en: "Cross-border Compliance", desc_zh: "新加坡、香港、迪拜三地合规经验", desc_en: "Singapore, Hong Kong & Dubai expertise" },
+                ].map((item) => (
+                  <div key={item.icon} className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                    <div className="text-2xl mb-2">{item.icon}</div>
+                    <div className="text-sm font-bold text-slate-800 mb-1">{zh ? item.zh : item.en}</div>
+                    <div className="text-xs text-slate-500">{zh ? item.desc_zh : item.desc_en}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
+                <p className="text-sm text-indigo-800">
+                  <strong>{zh ? "孵化机构" : "Incubated by"}</strong>
+                  {zh
+                    ? "：RWAlpha 由 DMZ Finance 孵化，核心团队分布在新加坡、香港和迪拜三地。"
+                    : ": RWAlpha is incubated by DMZ Finance, with the core team based across Singapore, Hong Kong, and Dubai."}
+                </p>
+              </div>
+            </Section>
             <Divider />
-
             {/* ── How It Works ── */}
             <Section id="how-it-works">
               <H1>{zh ? "运作机制" : "How It Works"}</H1>
