@@ -13,6 +13,8 @@ import MyAssets from './pages/MyAssets';
 import Profile from './pages/Profile';
 import Insights from './pages/Insights';
 import AIPortfolio from './pages/AIPortfolio';
+import About from './pages/About';
+import LegalPage from './pages/LegalPage';
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -27,6 +29,10 @@ function Router() {
       <Route path={"/profile"} component={Profile} />
       <Route path={"/insights"} component={Insights} />
       <Route path={"/ai"} component={AIPortfolio} />
+      <Route path={"/about"} component={About} />
+      <Route path={"/privacy"} component={() => <LegalPage type="privacy" />} />
+      <Route path={"/terms"} component={() => <LegalPage type="terms" />} />
+      <Route path={"/risk-disclosure"} component={() => <LegalPage type="risk-disclosure" />} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

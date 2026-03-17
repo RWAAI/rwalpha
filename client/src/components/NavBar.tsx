@@ -33,14 +33,18 @@ function AboutDropdown({ zh }: { zh: boolean }) {
 
   const items = zh
     ? [
-        { label: '文档', href: '#' },
-        { label: '安全与审计', href: '#' },
-        { label: '团队', href: '#' },
+        { label: '文档总览', href: '/about' },
+        { label: '安全与审计', href: '/about#security' },
+        { label: '法律与合规', href: '/about#legal' },
+        { label: '常见问题', href: '/about#faq' },
+        { label: '联系我们', href: '/about#contact' },
       ]
     : [
-        { label: 'Docs', href: '#' },
-        { label: 'Security & Audit', href: '#' },
-        { label: 'Team', href: '#' },
+        { label: 'Docs Overview', href: '/about' },
+        { label: 'Security & Audit', href: '/about#security' },
+        { label: 'Legal & Compliance', href: '/about#legal' },
+        { label: 'FAQ', href: '/about#faq' },
+        { label: 'Contact Us', href: '/about#contact' },
       ];
 
   const trigger = zh ? '关于' : 'About';
@@ -59,7 +63,7 @@ function AboutDropdown({ zh }: { zh: boolean }) {
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1.5 w-40 bg-white rounded-xl border border-slate-100 shadow-lg py-1 z-50">
+        <div className="absolute top-full left-0 mt-1.5 w-48 bg-white rounded-xl border border-slate-100 shadow-lg py-1 z-50">
           {items.map((item) => (
             <a
               key={item.label}

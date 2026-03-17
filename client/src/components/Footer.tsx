@@ -57,7 +57,7 @@ export default function Footer() {
               Contact
             </a>
             <a
-              href="#"
+              href="/about"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-slate-200 text-slate-500 text-xs hover:border-slate-400 hover:text-slate-800 transition-colors"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -72,9 +72,9 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-xs text-slate-500">
           <span>{copyright}</span>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-slate-800 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-slate-800 transition-colors">Terms of Use</a>
-            <a href="#" className="hover:text-slate-800 transition-colors">Risk Disclosure</a>
+            <a href="/privacy" className="hover:text-slate-800 transition-colors">Privacy Policy</a>
+            <a href="/terms" className="hover:text-slate-800 transition-colors">Terms of Use</a>
+            <a href="/risk-disclosure" className="hover:text-slate-800 transition-colors">Risk Disclosure</a>
           </div>
         </div>
       </div>
