@@ -7,9 +7,9 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import {
   ArrowLeft, User, Mail, Phone, MapPin, Calendar,
-  Shield, CheckCircle2, Clock, AlertCircle, Upload,
+  Shield, CheckCircle2, Clock, AlertCircle, Camera,
   ChevronRight, Edit2, Save, X, Lock, Bell, Eye, EyeOff,
-  Camera, FileText, Globe, Wallet, Plus, Trash2, Star, Copy
+  Globe, Wallet, Plus, Trash2, Star, Copy, ExternalLink
 } from "lucide-react";
 import Footer from "@/components/Footer";
 import { trpc } from "@/lib/trpc";
@@ -60,13 +60,8 @@ const KYC_CONFIG: Record<KycStatus, { label: string; labelEn: string; color: str
   },
 };
 
-// KYC 步骤
-const KYC_STEPS = [
-  { id: 1, key: "identity", labelZh: "身份信息", labelEn: "Identity Info", done: true },
-  { id: 2, key: "document", labelZh: "证件上传", labelEn: "Document Upload", done: true },
-  { id: 3, key: "selfie", labelZh: "人脸识别", labelEn: "Face Verification", done: false },
-  { id: 4, key: "review", labelZh: "人工审核", labelEn: "Manual Review", done: false },
-];
+// Sumsub KYC 入口 URL（实际对接时替换为真实 Sumsub applicant URL）
+const SUMSUB_KYC_URL = "https://sumsub.com";
 
 // ─── 头像上传占位组件 ─────────────────────────────────────────────────────────
 
@@ -124,20 +119,7 @@ export default function Profile() {
   const [showNewPwd, setShowNewPwd] = useState(false);
 
   // KYC 真实数据
-  const { data: kycData, isLoading: kycLoading } = trpc.profile.getKyc.useQuery();
-  const [kycStatus, setKycStatus] = useState<KycStatus>("unverified");
-  const [uploadedFront, setUploadedFront] = useState(false);
-  const [uploadedBack, setUploadedBack] = useState(false);
-  const [uploadedSelfie, setUploadedSelfie] = useState(false);
-  const [kycForm, setKycForm] = useState({ fullName: "", idType: "passport" as "passport" | "id_card" | "driver_license", idNumber: "", country: "", dateOfBirth: "" });
-
-  const submitKyc = trpc.profile.submitKyc.useMutation({
-    onSuccess: () => {
-      utils.profile.getKyc.invalidate();
-      toast.success(zh ? "KYC 已提交，审核中" : "KYC submitted, under review");
-    },
-    onError: (e) => toast.error(e.message),
-  });
+  const { data: kycData } = trpc.profile.getKyc.useQuery();
 
   // 钱包绑定真实数据
   const { data: wallets = [], isLoading: walletsLoading } = trpc.profile.getWallets.useQuery();
@@ -170,7 +152,7 @@ export default function Profile() {
   const truncateAddr = (addr: string) =>
     addr.length > 16 ? `${addr.slice(0, 8)}...${addr.slice(-6)}` : addr;
 
-  // 同步 KYC 状态到真实数据
+  // KYC 状态
   const realKycStatus: KycStatus = kycData?.status as KycStatus ?? "unverified";
 
   const handleSave = () => {
@@ -181,14 +163,6 @@ export default function Profile() {
   const handleCancel = () => {
     setForm({ ...savedForm });
     setEditing(false);
-  };
-
-  const handleKycSubmit = () => {
-    if (!kycForm.fullName || !kycForm.idNumber || !kycForm.country || !kycForm.dateOfBirth) {
-      toast.error(zh ? "请填写完整的 KYC 信息" : "Please fill in all KYC fields");
-      return;
-    }
-    submitKyc.mutate(kycForm);
   };
 
   const kycCfg = KYC_CONFIG[realKycStatus];
@@ -228,7 +202,7 @@ export default function Profile() {
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h2 className="text-xl font-bold text-slate-900">{savedForm.name}</h2>
-                <KycBadge status={kycStatus} zh={zh} />
+                <KycBadge status={realKycStatus} zh={zh} />
               </div>
               <p className="text-sm text-slate-400 mb-2">{MOCK_USER.email}</p>
               <div className="flex flex-wrap gap-3 text-xs text-slate-400">
@@ -481,10 +455,10 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* ── 右列：KYC 认证 ── */}
+          {/* ── 右列：KYC 认证 + 钱包绑定 ── */}
           <div className="lg:col-span-2 space-y-5">
 
-            {/* KYC 状态卡 */}
+            {/* KYC 状态卡（简化版，对接 Sumsub） */}
             <div className={`rounded-2xl border shadow-sm overflow-hidden ${kycCfg.bg} ${kycCfg.border}`}>
               <div className="px-5 py-4 border-b border-white/60">
                 <div className="flex items-center gap-2 mb-1">
@@ -494,178 +468,75 @@ export default function Profile() {
                 <p className="text-xs text-slate-500">{zh ? "完成认证后可解锁更高交易限额" : "Complete KYC to unlock higher limits"}</p>
               </div>
               <div className="p-5">
-                {/* 当前状态 */}
-                <div className="flex items-center justify-between mb-4">
+                {/* 当前状态行 */}
+                <div className="flex items-center justify-between mb-5">
                   <span className="text-xs text-slate-500">{zh ? "认证状态" : "Status"}</span>
                   <KycBadge status={realKycStatus} zh={zh} />
                 </div>
 
-                {/* 进度步骤 */}
-                <div className="space-y-2.5 mb-4">
-                  {KYC_STEPS.map((step, i) => {
-                    const isDone = realKycStatus === "verified" ? true : (realKycStatus === "pending" ? step.done || step.id <= 2 : step.done);
-                    const isCurrent = realKycStatus === "pending" && step.id === 3;
-                    return (
-                      <div key={step.id} className="flex items-center gap-3">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold border-2 transition-all ${
-                          isDone
-                            ? "bg-emerald-500 border-emerald-500 text-white"
-                            : isCurrent
-                            ? "bg-amber-100 border-amber-400 text-amber-600"
-                            : "bg-white border-slate-200 text-slate-400"
-                        }`}>
-                          {isDone ? <CheckCircle2 size={12} /> : step.id}
-                        </div>
-                        <div className="flex-1">
-                          <p className={`text-xs font-medium ${isDone ? "text-slate-700" : isCurrent ? "text-amber-600" : "text-slate-400"}`}>
-                            {zh ? step.labelZh : step.labelEn}
-                          </p>
-                        </div>
-                        {isDone && <CheckCircle2 size={13} className="text-emerald-500 shrink-0" />}
-                        {isCurrent && <Clock size={13} className="text-amber-500 shrink-0" />}
-                      </div>
-                    );
-                  })}
-                </div>
-
                 {/* 状态说明 */}
-                {realKycStatus === "pending" && (
-                  <div className="p-3 bg-amber-100/60 rounded-xl text-xs text-amber-700 mb-3">
+                {realKycStatus === "unverified" && (
+                  <div className="p-3 bg-slate-100/80 rounded-xl text-xs text-slate-600 mb-4 leading-relaxed">
                     {zh
-                      ? "您的资料已提交，预计 1-3 个工作日完成审核。审核结果将通过邮件通知您。"
-                      : "Your documents are under review. Expect 1-3 business days. You'll be notified by email."}
+                      ? "您尚未完成身份认证。点击下方按钮前往 Sumsub 完成 KYC 流程，认证后即可解锁完整交易权限。"
+                      : "You haven't completed identity verification. Click below to start KYC via Sumsub and unlock full trading access."}
                   </div>
                 )}
-                {realKycStatus === "rejected" && (
-                  <div className="p-3 bg-red-100/60 rounded-xl text-xs text-red-600 mb-3">
-                    {zh ? "认证失败原因：证件照片不清晰，请重新上传高清照片。" : "Rejection reason: Document photo unclear. Please re-upload a clear photo."}
+                {realKycStatus === "pending" && (
+                  <div className="p-3 bg-amber-100/60 rounded-xl text-xs text-amber-700 mb-4 leading-relaxed">
+                    {zh
+                      ? "您的资料已提交，预计 1–3 个工作日完成审核。审核结果将通过邮件通知您。"
+                      : "Your documents are under review. Expect 1–3 business days. You'll be notified by email."}
                   </div>
                 )}
                 {realKycStatus === "verified" && (
-                  <div className="p-3 bg-emerald-100/60 rounded-xl text-xs text-emerald-700 mb-3">
+                  <div className="p-3 bg-emerald-100/60 rounded-xl text-xs text-emerald-700 mb-4 leading-relaxed">
                     {zh ? "🎉 恭喜！您的身份已通过认证，可享受完整交易权限。" : "🎉 Congratulations! Your identity is verified. Full trading access unlocked."}
                   </div>
                 )}
+                {realKycStatus === "rejected" && (
+                  <div className="p-3 bg-red-100/60 rounded-xl text-xs text-red-600 mb-4 leading-relaxed">
+                    {zh ? "认证未通过，请重新发起认证流程。如有疑问请联系客服。" : "Verification failed. Please restart the KYC process. Contact support if needed."}
+                  </div>
+                )}
 
-                {/* 操作按鈕 */}
-                {(realKycStatus === "unverified" || realKycStatus === "rejected") && (
-                  <button
-                    onClick={handleKycSubmit}
-                    disabled={submitKyc.isPending}
-                    className="w-full py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                {/* 操作按钮 */}
+                {realKycStatus === "unverified" && (
+                  <a
+                    href={SUMSUB_KYC_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
                   >
-                    {submitKyc.isPending ? (
-                      <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{zh ? "提交中..." : "Submitting..."}</>
-                    ) : (
-                      <>{zh ? (realKycStatus === "rejected" ? "重新认证" : "开始认证") : (realKycStatus === "rejected" ? "Re-verify" : "Start KYC")}<ChevronRight size={14} /></>
-                    )}
-                  </button>
+                    {zh ? "开始认证" : "Start KYC"}
+                    <ExternalLink size={13} />
+                  </a>
+                )}
+                {realKycStatus === "rejected" && (
+                  <a
+                    href={SUMSUB_KYC_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 bg-red-500 text-white text-sm font-semibold rounded-xl hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    {zh ? "重新认证" : "Re-verify"}
+                    <ExternalLink size={13} />
+                  </a>
+                )}
+                {realKycStatus === "pending" && (
+                  <div className="w-full py-2.5 bg-amber-50 border border-amber-200 text-amber-600 text-sm font-medium rounded-xl flex items-center justify-center gap-2">
+                    <Clock size={14} />
+                    {zh ? "审核中，请耐心等待" : "Under review, please wait"}
+                  </div>
+                )}
+                {realKycStatus === "verified" && (
+                  <div className="w-full py-2.5 bg-emerald-50 border border-emerald-200 text-emerald-600 text-sm font-medium rounded-xl flex items-center justify-center gap-2">
+                    <CheckCircle2 size={14} />
+                    {zh ? "认证已完成" : "Verification Complete"}
+                  </div>
                 )}
               </div>
             </div>
-
-            {/* 证件上传卡 */}
-            {(realKycStatus === "unverified" || realKycStatus === "rejected" || realKycStatus === "pending") && (
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
-                  <FileText size={15} className="text-indigo-500" />
-                  <h3 className="text-sm font-bold text-slate-800">{zh ? "证件上传" : "Document Upload"}</h3>
-                </div>
-                <div className="p-5 space-y-3">
-                  {/* 证件类型选择 */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">{zh ? "证件类型" : "Document Type"}</label>
-                    <select className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white">
-                      <option value="id">{zh ? "身份证" : "National ID"}</option>
-                      <option value="passport">{zh ? "护照" : "Passport"}</option>
-                      <option value="driver">{zh ? "驾照" : "Driver's License"}</option>
-                    </select>
-                  </div>
-
-                  {/* 正面 */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">{zh ? "证件正面" : "Front Side"}</label>
-                    <div
-                      className={`relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
-                        uploadedFront ? "border-emerald-300 bg-emerald-50" : "border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30"
-                      }`}
-                      onClick={() => setUploadedFront(!uploadedFront)}
-                    >
-                      {uploadedFront ? (
-                        <div className="flex items-center justify-center gap-2 text-emerald-600">
-                          <CheckCircle2 size={16} />
-                          <span className="text-sm font-medium">{zh ? "已上传" : "Uploaded"}</span>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-1.5">
-                          <Upload size={20} className="text-slate-300" />
-                          <p className="text-xs text-slate-400">{zh ? "点击上传或拖拽文件" : "Click or drag to upload"}</p>
-                          <p className="text-[10px] text-slate-300">JPG / PNG，最大 5MB</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* 背面 */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">{zh ? "证件背面" : "Back Side"}</label>
-                    <div
-                      className={`relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
-                        uploadedBack ? "border-emerald-300 bg-emerald-50" : "border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/30"
-                      }`}
-                      onClick={() => setUploadedBack(!uploadedBack)}
-                    >
-                      {uploadedBack ? (
-                        <div className="flex items-center justify-center gap-2 text-emerald-600">
-                          <CheckCircle2 size={16} />
-                          <span className="text-sm font-medium">{zh ? "已上传" : "Uploaded"}</span>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-1.5">
-                          <Upload size={20} className="text-slate-300" />
-                          <p className="text-xs text-slate-400">{zh ? "点击上传或拖拽文件" : "Click or drag to upload"}</p>
-                          <p className="text-[10px] text-slate-300">JPG / PNG，最大 5MB</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* 手持证件自拍 */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">
-                      {zh ? "手持证件自拍" : "Selfie with Document"}
-                      <span className="ml-1 text-red-400">*</span>
-                    </label>
-                    <div
-                      className={`relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
-                        uploadedSelfie ? "border-emerald-300 bg-emerald-50" : "border-amber-200 bg-amber-50/40 hover:border-amber-400"
-                      }`}
-                      onClick={() => setUploadedSelfie(!uploadedSelfie)}
-                    >
-                      {uploadedSelfie ? (
-                        <div className="flex items-center justify-center gap-2 text-emerald-600">
-                          <CheckCircle2 size={16} />
-                          <span className="text-sm font-medium">{zh ? "已上传" : "Uploaded"}</span>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-1.5">
-                          <Camera size={20} className="text-amber-400" />
-                          <p className="text-xs text-amber-600 font-medium">{zh ? "待上传（必填）" : "Required"}</p>
-                          <p className="text-[10px] text-amber-400">{zh ? "手持证件正面，面部清晰可见" : "Hold document, face clearly visible"}</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <p className="text-[11px] text-slate-400 flex items-start gap-1.5">
-                    <Shield size={11} className="text-slate-300 mt-0.5 shrink-0" />
-                    {zh
-                      ? "您的证件信息将通过加密传输，仅用于合规验证，不会对外共享。"
-                      : "Your documents are encrypted and used solely for compliance. Never shared."}
-                  </p>
-                </div>
-              </div>
-            )}
 
             {/* 钱包绑定模块 */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
