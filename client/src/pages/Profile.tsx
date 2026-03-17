@@ -97,7 +97,7 @@ function KycBadge({ status, zh }: { status: KycStatus; zh: boolean }) {
 
 export default function Profile() {
   const [, navigate] = useLocation();
-  const [lang, setLang] = useState<"zh" | "en">("zh");
+  const [lang, setLang] = useState<"zh" | "en">(localStorage.getItem("rwa-lang") === "en" ? "en" : "zh");
   const zh = lang === "zh";
   const { user } = useAuth();
   const utils = trpc.useUtils();
@@ -195,7 +195,7 @@ export default function Profile() {
             </div>
           </div>
           <button
-            onClick={() => setLang(zh ? "en" : "zh")}
+            onClick={() => { const next = zh ? "en" : "zh"; setLang(next); localStorage.setItem("rwa-lang", next); }}
             className="text-xs text-slate-500 hover:text-slate-700 border border-slate-200 rounded-md px-2 py-1 transition-colors"
           >
             🌐 {zh ? "EN" : "中文"}
