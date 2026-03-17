@@ -767,7 +767,7 @@ ${targetDesc}
 
     addWallet: protectedProcedure
       .input(z.object({
-        address: z.string().min(10).max(128),
+        address: z.string().min(1).max(128),
         chain: z.enum(["Ethereum", "BSC", "Polygon", "Arbitrum", "Optimism"]),
         label: z.string().max(64).optional(),
       }))
