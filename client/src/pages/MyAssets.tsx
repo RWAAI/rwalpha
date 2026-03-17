@@ -1,16 +1,46 @@
 import { trpc } from "@/lib/trpc";
-import NavBar from "@/components/NavBar";
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
 
 export default function MyAssets() {
-  const zh = localStorage.getItem("rwa-lang") !== "en";
+  const [, navigate] = useLocation();
+  const [lang, setLang] = useState<"zh" | "en">(localStorage.getItem("rwa-lang") === "en" ? "en" : "zh");
+  const zh = lang === "zh";
 
   const { data: holdings = [], isLoading: holdingsLoading } = trpc.assets.getHoldings.useQuery();
   const { data: dividends = [], isLoading: dividendsLoading } = trpc.assets.getDividendHistory.useQuery();
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
-      <NavBar />
+
+      {/* ── 顶部导航 ── */}
+      <div className="sticky top-0 z-40 bg-white border-b border-slate-100 shadow-sm">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate("/vault")}
+              className="flex items-center gap-1.5 text-slate-500 hover:text-slate-800 transition-colors text-sm"
+            >
+              <ArrowLeft size={16} />
+              {zh ? "返回金库" : "Back to Vault"}
+            </button>
+            <span className="text-slate-200">|</span>
+            <h1 className="text-sm font-semibold text-slate-800">{zh ? "我的资产" : "My Assets"}</h1>
+          </div>
+          <button
+            onClick={() => {
+              const next = zh ? "en" : "zh";
+              setLang(next);
+              localStorage.setItem("rwa-lang", next);
+            }}
+            className="text-xs text-slate-500 hover:text-slate-700 border border-slate-200 rounded-md px-2 py-1 transition-colors"
+          >
+            🌐 {zh ? "EN" : "中文"}
+          </button>
+        </div>
+      </div>
 
       <div className="max-w-4xl mx-auto px-4 py-10 space-y-10">
 

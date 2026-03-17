@@ -1,0 +1,25 @@
+{
+  "query": "SELECT id, name, email FROM users;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT id, name, email FROM users;",
+  "rows": [
+    {
+      "id": "1",
+      "name": "Nathan ma",
+      "email": "nmaqiang@gmail.com"
+    },
+    {
+      "id": "210007",
+      "name": "Duke Shi",
+      "email": "duke.shi@rwalpha.io"
+    },
+    {
+      "id": "870001",
+      "name": "Rick Zhu",
+      "email": "pogesoft8@gmail.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\temail\n1\tNathan ma\tnmaqiang@gmail.com\n210007\tDuke Shi\tduke.shi@rwalpha.io\n870001\tRick Zhu\tpogesoft8@gmail.com\n",
+  "stderr": "",
+  "execution_time_ms": 1578
+}
