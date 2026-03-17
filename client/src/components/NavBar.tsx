@@ -35,12 +35,12 @@ function AboutDropdown({ zh }: { zh: boolean }) {
     ? [
         { label: 'AI 引擎', href: '/about#ai-engine' },
         { label: '团队', href: '/about#team-intro' },
-        { label: 'FAQ 与合规', href: '/about#faq' },
+        { label: 'FAQ', href: '/about#faq' },
       ]
     : [
         { label: 'AI Engine', href: '/about#ai-engine' },
         { label: 'Team', href: '/about#team-intro' },
-        { label: 'FAQ & Compliance', href: '/about#faq' },
+        { label: 'FAQ', href: '/about#faq' },
       ];
 
   const trigger = zh ? '关于' : 'About';
