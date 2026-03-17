@@ -1,0 +1,9 @@
+{
+  "query": "\nINSERT INTO user_holdings (userId, tokenSymbol, quantity, navPerToken, totalValue, change24h, totalReturn, updatedAt, createdAt)\nVALUES (1, 'rINDEX', 1250.000000, 130.9900, 163737.5000, 0.0000, 28.9900, NOW(), NOW());\n\nINSERT INTO user_dividend_history (userId, date, tokenSymbol, amount, amountPerToken, status, createdAt)\nVALUES\n  (1, '2026-03-14', 'rINDEX', 627.5000, 0.502000, 'claimable', NOW()),\n  (1, '2026-03-07', 'rINDEX', 627.5000, 0.502000, 'claimed', NOW()),\n  (1, '2026-02-28', 'rINDEX', 601.2500, 0.481000, 'claimed', NOW()),\n  (1, '2026-02-21', 'rINDEX', 589.0000, 0.471200, 'claimed', NOW()),\n  (1, '2026-02-14', 'rINDEX', 615.7500, 0.492600, 'claimed', NOW()),\n  (1, '2026-02-07', 'rINDEX', 598.5000, 0.478800, 'claimed', NOW());\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute \nINSERT INTO user_holdings (userId, tokenSymbol, quantity, navPerToken, totalValue, change24h, totalReturn, updatedAt, createdAt)\nVALUES (1, 'rINDEX', 1250.000000, 130.9900, 163737.5000, 0.0000, 28.9900, NOW(), NOW());\n\nINSERT INTO user_dividend_history (userId, date, tokenSymbol, amount, amountPerToken, status, createdAt)\nVALUES\n  (1, '2026-03-14', 'rINDEX', 627.5000, 0.502000, 'claimable', NOW()),\n  (1, '2026-03-07', 'rINDEX', 627.5000, 0.502000, 'claimed', NOW()),\n  (1, '2026-02-28', 'rINDEX', 601.2500, 0.481000, 'claimed', NOW()),\n  (1, '2026-02-21', 'rINDEX', 589.0000, 0.471200, 'claimed', NOW()),\n  (1, '2026-02-14', 'rINDEX', 615.7500, 0.492600, 'claimed', NOW()),\n  (1, '2026-02-07', 'rINDEX', 598.5000, 0.478800, 'claimed', NOW());\n",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1827
+}

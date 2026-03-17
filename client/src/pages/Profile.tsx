@@ -674,23 +674,7 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* 认证权益卡 */}
-            <div className="bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 rounded-2xl p-5">
-              <h4 className="text-sm font-bold text-indigo-700 mb-3">{zh ? "认证后解锁权益" : "Benefits After Verification"}</h4>
-              <div className="space-y-2">
-                {[
-                  { zh: "单笔认购上限提升至 $500,000", en: "Single purchase limit up to $500,000" },
-                  { zh: "优先参与新产品白名单", en: "Priority whitelist for new products" },
-                  { zh: "专属客户经理服务", en: "Dedicated account manager" },
-                  { zh: "更低的赎回手续费", en: "Lower redemption fees" },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 text-xs text-indigo-600">
-                    <CheckCircle2 size={12} className="text-indigo-400 shrink-0" />
-                    {zh ? item.zh : item.en}
-                  </div>
-                ))}
-              </div>
-            </div>
+
 
           </div>
         </div>
