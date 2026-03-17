@@ -1,6 +1,6 @@
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
 
@@ -28,7 +28,17 @@ export default function MyAssets() {
               {zh ? "返回金库" : "Back to Vault"}
             </button>
             <span className="text-slate-200">|</span>
-            <h1 className="text-sm font-semibold text-slate-800">{zh ? "我的资产" : "My Assets"}</h1>
+            {/* Tab 切换 */}
+            <div className="flex gap-1 bg-slate-100 rounded-lg p-0.5">
+              <Link href="/profile">
+                <span className="px-4 py-1.5 rounded-md text-sm font-medium text-slate-500 hover:text-slate-700 cursor-pointer">
+                  {zh ? "个人资料" : "Profile"}
+                </span>
+              </Link>
+              <span className="px-4 py-1.5 rounded-md text-sm font-medium bg-white text-slate-800 shadow-sm">
+                {zh ? "我的资产" : "My Assets"}
+              </span>
+            </div>
           </div>
           <button
             onClick={() => {
