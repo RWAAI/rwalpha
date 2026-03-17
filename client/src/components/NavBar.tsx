@@ -33,18 +33,14 @@ function AboutDropdown({ zh }: { zh: boolean }) {
 
   const items = zh
     ? [
-        { label: '文档总览', href: '/about' },
-        { label: '安全与审计', href: '/about#security' },
-        { label: '法律与合规', href: '/about#legal' },
-        { label: '常见问题', href: '/about#faq' },
-        { label: '联系我们', href: '/about#contact' },
+        { label: 'AI 引擎', href: '/about#ai-engine' },
+        { label: '团队', href: '/about#team-intro' },
+        { label: 'FAQ 与合规', href: '/about#faq' },
       ]
     : [
-        { label: 'Docs Overview', href: '/about' },
-        { label: 'Security & Audit', href: '/about#security' },
-        { label: 'Legal & Compliance', href: '/about#legal' },
-        { label: 'FAQ', href: '/about#faq' },
-        { label: 'Contact Us', href: '/about#contact' },
+        { label: 'AI Engine', href: '/about#ai-engine' },
+        { label: 'Team', href: '/about#team-intro' },
+        { label: 'FAQ & Compliance', href: '/about#faq' },
       ];
 
   const trigger = zh ? '关于' : 'About';
