@@ -188,26 +188,13 @@ function Divider() {
 }
 
 // ─── FAQ 条目 ─────────────────────────────────────────────────────────────────
-
 function FaqItem({ id, question, answer }: { id: string; question: string; answer: React.ReactNode }) {
-  const [open, setOpen] = useState(false);
   return (
-    <div id={id} className="scroll-mt-24 border border-slate-100 rounded-xl mb-3 overflow-hidden">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="w-full text-left px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors"
-      >
-        <span className="text-sm font-semibold text-slate-800">{question}</span>
-        <ChevronRight
-          size={15}
-          className={`text-slate-400 transition-transform duration-200 shrink-0 ml-3 ${open ? "rotate-90" : ""}`}
-        />
-      </button>
-      {open && (
-        <div className="px-5 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-50 pt-3">
-          {answer}
-        </div>
-      )}
+    <div id={id} className="scroll-mt-24 mb-6">
+      <h3 className="text-sm font-bold text-slate-800 mb-2">{question}</h3>
+      <div className="text-sm text-slate-600 leading-relaxed">
+        {answer}
+      </div>
     </div>
   );
 }
