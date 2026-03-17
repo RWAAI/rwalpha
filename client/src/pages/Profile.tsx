@@ -1,6 +1,6 @@
 /**
  * 个人资料页面
- * 包含：基础信息编辑 + KYC 身份认证模块
+ * 包含：基础信息编辑 + KYC 身份认证模块 + 钱包绑定
  */
 
 import { useState } from "react";
@@ -9,9 +9,12 @@ import {
   ArrowLeft, User, Mail, Phone, MapPin, Calendar,
   Shield, CheckCircle2, Clock, AlertCircle, Upload,
   ChevronRight, Edit2, Save, X, Lock, Bell, Eye, EyeOff,
-  Camera, FileText, Globe
+  Camera, FileText, Globe, Wallet, Plus, Trash2, Star, Copy
 } from "lucide-react";
 import Footer from "@/components/Footer";
+import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { toast } from "sonner";
 
 // ─── 类型 ────────────────────────────────────────────────────────────────────
 
@@ -101,6 +104,8 @@ export default function Profile() {
   const [, navigate] = useLocation();
   const [lang, setLang] = useState<"zh" | "en">("zh");
   const zh = lang === "zh";
+  const { user } = useAuth();
+  const utils = trpc.useUtils();
 
   // 基础信息编辑状态
   const [editing, setEditing] = useState(false);
@@ -118,12 +123,55 @@ export default function Profile() {
   const [showOldPwd, setShowOldPwd] = useState(false);
   const [showNewPwd, setShowNewPwd] = useState(false);
 
-  // KYC 上传模拟
-  const [kycStatus, setKycStatus] = useState<KycStatus>(MOCK_USER.kycStatus);
-  const [uploadedFront, setUploadedFront] = useState(true);
-  const [uploadedBack, setUploadedBack] = useState(true);
+  // KYC 真实数据
+  const { data: kycData, isLoading: kycLoading } = trpc.profile.getKyc.useQuery();
+  const [kycStatus, setKycStatus] = useState<KycStatus>("unverified");
+  const [uploadedFront, setUploadedFront] = useState(false);
+  const [uploadedBack, setUploadedBack] = useState(false);
   const [uploadedSelfie, setUploadedSelfie] = useState(false);
-  const [kycSubmitting, setKycSubmitting] = useState(false);
+  const [kycForm, setKycForm] = useState({ fullName: "", idType: "passport" as "passport" | "id_card" | "driver_license", idNumber: "", country: "", dateOfBirth: "" });
+
+  const submitKyc = trpc.profile.submitKyc.useMutation({
+    onSuccess: () => {
+      utils.profile.getKyc.invalidate();
+      toast.success(zh ? "KYC 已提交，审核中" : "KYC submitted, under review");
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  // 钱包绑定真实数据
+  const { data: wallets = [], isLoading: walletsLoading } = trpc.profile.getWallets.useQuery();
+  const [walletForm, setWalletForm] = useState({ address: "", chain: "Ethereum" as "Ethereum" | "BSC" | "Polygon" | "Arbitrum" | "Optimism", label: "" });
+  const [showWalletForm, setShowWalletForm] = useState(false);
+
+  const addWallet = trpc.profile.addWallet.useMutation({
+    onSuccess: () => {
+      utils.profile.getWallets.invalidate();
+      setShowWalletForm(false);
+      setWalletForm({ address: "", chain: "Ethereum", label: "" });
+      toast.success(zh ? "钱包已绑定" : "Wallet bound");
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const removeWallet = trpc.profile.removeWallet.useMutation({
+    onSuccess: () => { utils.profile.getWallets.invalidate(); toast.success(zh ? "钱包已移除" : "Wallet removed"); },
+  });
+
+  const setPrimaryWallet = trpc.profile.setPrimaryWallet.useMutation({
+    onSuccess: () => { utils.profile.getWallets.invalidate(); toast.success(zh ? "已设为主钱包" : "Set as primary"); },
+  });
+
+  const copyAddress = (addr: string) => {
+    navigator.clipboard.writeText(addr);
+    toast.success(zh ? "地址已复制" : "Address copied");
+  };
+
+  const truncateAddr = (addr: string) =>
+    addr.length > 16 ? `${addr.slice(0, 8)}...${addr.slice(-6)}` : addr;
+
+  // 同步 KYC 状态到真实数据
+  const realKycStatus: KycStatus = kycData?.status as KycStatus ?? "unverified";
 
   const handleSave = () => {
     setSavedForm({ ...form });
@@ -136,14 +184,14 @@ export default function Profile() {
   };
 
   const handleKycSubmit = () => {
-    setKycSubmitting(true);
-    setTimeout(() => {
-      setKycSubmitting(false);
-      setKycStatus("pending");
-    }, 1500);
+    if (!kycForm.fullName || !kycForm.idNumber || !kycForm.country || !kycForm.dateOfBirth) {
+      toast.error(zh ? "请填写完整的 KYC 信息" : "Please fill in all KYC fields");
+      return;
+    }
+    submitKyc.mutate(kycForm);
   };
 
-  const kycCfg = KYC_CONFIG[kycStatus];
+  const kycCfg = KYC_CONFIG[realKycStatus];
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
@@ -449,14 +497,14 @@ export default function Profile() {
                 {/* 当前状态 */}
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs text-slate-500">{zh ? "认证状态" : "Status"}</span>
-                  <KycBadge status={kycStatus} zh={zh} />
+                  <KycBadge status={realKycStatus} zh={zh} />
                 </div>
 
                 {/* 进度步骤 */}
                 <div className="space-y-2.5 mb-4">
                   {KYC_STEPS.map((step, i) => {
-                    const isDone = kycStatus === "verified" ? true : (kycStatus === "pending" ? step.done || step.id <= 2 : step.done);
-                    const isCurrent = kycStatus === "pending" && step.id === 3;
+                    const isDone = realKycStatus === "verified" ? true : (realKycStatus === "pending" ? step.done || step.id <= 2 : step.done);
+                    const isCurrent = realKycStatus === "pending" && step.id === 3;
                     return (
                       <div key={step.id} className="flex items-center gap-3">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold border-2 transition-all ${
@@ -481,35 +529,35 @@ export default function Profile() {
                 </div>
 
                 {/* 状态说明 */}
-                {kycStatus === "pending" && (
+                {realKycStatus === "pending" && (
                   <div className="p-3 bg-amber-100/60 rounded-xl text-xs text-amber-700 mb-3">
                     {zh
                       ? "您的资料已提交，预计 1-3 个工作日完成审核。审核结果将通过邮件通知您。"
                       : "Your documents are under review. Expect 1-3 business days. You'll be notified by email."}
                   </div>
                 )}
-                {kycStatus === "rejected" && (
+                {realKycStatus === "rejected" && (
                   <div className="p-3 bg-red-100/60 rounded-xl text-xs text-red-600 mb-3">
                     {zh ? "认证失败原因：证件照片不清晰，请重新上传高清照片。" : "Rejection reason: Document photo unclear. Please re-upload a clear photo."}
                   </div>
                 )}
-                {kycStatus === "verified" && (
+                {realKycStatus === "verified" && (
                   <div className="p-3 bg-emerald-100/60 rounded-xl text-xs text-emerald-700 mb-3">
                     {zh ? "🎉 恭喜！您的身份已通过认证，可享受完整交易权限。" : "🎉 Congratulations! Your identity is verified. Full trading access unlocked."}
                   </div>
                 )}
 
-                {/* 操作按钮 */}
-                {(kycStatus === "unverified" || kycStatus === "rejected") && (
+                {/* 操作按鈕 */}
+                {(realKycStatus === "unverified" || realKycStatus === "rejected") && (
                   <button
                     onClick={handleKycSubmit}
-                    disabled={kycSubmitting}
+                    disabled={submitKyc.isPending}
                     className="w-full py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                   >
-                    {kycSubmitting ? (
+                    {submitKyc.isPending ? (
                       <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{zh ? "提交中..." : "Submitting..."}</>
                     ) : (
-                      <>{zh ? (kycStatus === "rejected" ? "重新认证" : "开始认证") : (kycStatus === "rejected" ? "Re-verify" : "Start KYC")}<ChevronRight size={14} /></>
+                      <>{zh ? (realKycStatus === "rejected" ? "重新认证" : "开始认证") : (realKycStatus === "rejected" ? "Re-verify" : "Start KYC")}<ChevronRight size={14} /></>
                     )}
                   </button>
                 )}
@@ -517,7 +565,7 @@ export default function Profile() {
             </div>
 
             {/* 证件上传卡 */}
-            {(kycStatus === "unverified" || kycStatus === "rejected" || kycStatus === "pending") && (
+            {(realKycStatus === "unverified" || realKycStatus === "rejected" || realKycStatus === "pending") && (
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                 <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100">
                   <FileText size={15} className="text-indigo-500" />
@@ -618,6 +666,132 @@ export default function Profile() {
                 </div>
               </div>
             )}
+
+            {/* 钱包绑定模块 */}
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <Wallet size={15} className="text-indigo-500" />
+                  <h3 className="text-sm font-bold text-slate-800">{zh ? "钱包绑定" : "Linked Wallets"}</h3>
+                  <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{wallets.length}</span>
+                </div>
+                <button
+                  onClick={() => setShowWalletForm(!showWalletForm)}
+                  className="flex items-center gap-1.5 text-xs text-indigo-600 border border-indigo-200 rounded-lg px-3 py-1.5 hover:bg-indigo-50 transition-colors font-medium"
+                >
+                  <Plus size={12} />
+                  {zh ? "添加钱包" : "Add Wallet"}
+                </button>
+              </div>
+              <div className="p-5 space-y-3">
+                {walletsLoading ? (
+                  <div className="flex items-center justify-center py-6">
+                    <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+                  </div>
+                ) : wallets.length === 0 && !showWalletForm ? (
+                  <div className="text-center py-6">
+                    <Wallet size={28} className="text-slate-200 mx-auto mb-2" />
+                    <p className="text-sm text-slate-400">{zh ? "还没有绑定的钱包" : "No wallets linked yet"}</p>
+                    <button onClick={() => setShowWalletForm(true)} className="mt-2 text-xs text-indigo-500 hover:underline">
+                      {zh ? "立即绑定" : "Link now"}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {(wallets as Array<{id: number; address: string; chain: string; label: string | null; isPrimary: number; userId: number; createdAt: Date}>).map((w) => (
+                      <div key={w.id} className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
+                        w.isPrimary === 1 ? "border-indigo-200 bg-indigo-50/50" : "border-slate-100 bg-slate-50 hover:bg-slate-100"
+                      }`}>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                            w.isPrimary === 1 ? "bg-indigo-100" : "bg-slate-200"
+                          }`}>
+                            <Wallet size={14} className={w.isPrimary === 1 ? "text-indigo-600" : "text-slate-500"} />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs font-mono text-slate-700 truncate">{truncateAddr(w.address)}</span>
+                              {w.isPrimary === 1 && <span className="text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-full shrink-0">{zh ? "主" : "Primary"}</span>}
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-[10px] text-slate-400">{w.chain}</span>
+                              {w.label && <span className="text-[10px] text-slate-400">· {w.label}</span>}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button onClick={() => copyAddress(w.address)} className="p-1.5 text-slate-400 hover:text-indigo-500 transition-colors rounded-lg hover:bg-white">
+                            <Copy size={12} />
+                          </button>
+                          {w.isPrimary !== 1 && (
+                            <button onClick={() => setPrimaryWallet.mutate({ id: w.id })} className="p-1.5 text-slate-400 hover:text-amber-500 transition-colors rounded-lg hover:bg-white">
+                              <Star size={12} />
+                            </button>
+                          )}
+                          <button onClick={() => removeWallet.mutate({ id: w.id })} className="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-white">
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 添加钱包表单 */}
+                {showWalletForm && (
+                  <div className="border border-indigo-200 bg-indigo-50/30 rounded-xl p-4 space-y-3">
+                    <p className="text-xs font-semibold text-indigo-700">{zh ? "绑定新钱包" : "Link New Wallet"}</p>
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-1">{zh ? "钱包地址" : "Wallet Address"}</label>
+                      <input
+                        type="text"
+                        value={walletForm.address}
+                        onChange={(e) => setWalletForm(f => ({ ...f, address: e.target.value }))}
+                        placeholder="0x..."
+                        className="w-full px-3 py-2 text-sm font-mono border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-xs text-slate-500 mb-1">{zh ? "公链" : "Chain"}</label>
+                        <select
+                          value={walletForm.chain}
+                          onChange={(e) => setWalletForm(f => ({ ...f, chain: e.target.value as typeof walletForm.chain }))}
+                          className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+                        >
+                          {["Ethereum","BSC","Polygon","Arbitrum","Optimism"].map(c => <option key={c}>{c}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-slate-500 mb-1">{zh ? "备注（可选）" : "Label (optional)"}</label>
+                        <input
+                          type="text"
+                          value={walletForm.label}
+                          onChange={(e) => setWalletForm(f => ({ ...f, label: e.target.value }))}
+                          placeholder={zh ? "如：主钱包" : "e.g. Main"}
+                          className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => addWallet.mutate(walletForm)}
+                        disabled={addWallet.isPending || !walletForm.address}
+                        className="flex-1 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-60"
+                      >
+                        {addWallet.isPending ? (zh ? "绑定中..." : "Binding...") : (zh ? "确认绑定" : "Confirm")}
+                      </button>
+                      <button
+                        onClick={() => { setShowWalletForm(false); setWalletForm({ address: "", chain: "Ethereum", label: "" }); }}
+                        className="px-4 py-2 text-sm text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
+                      >
+                        {zh ? "取消" : "Cancel"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* 认证权益卡 */}
             <div className="bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 rounded-2xl p-5">

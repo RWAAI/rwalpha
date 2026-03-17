@@ -223,3 +223,106 @@ export async function deletePortfolio(id: number) {
   if (!db) return;
   await db.delete(portfolios).where(eq(portfolios.id, id));
 }
+
+// ─── KYC helpers ─────────────────────────────────────────────────────────────
+
+import {
+  kycRecords, InsertKycRecord,
+  walletBindings, InsertWalletBinding,
+  userHoldings, InsertUserHolding,
+  userDividendHistory, InsertUserDividendHistory,
+} from "../drizzle/schema";
+
+export async function getKycByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db.select().from(kycRecords).where(eq(kycRecords.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function upsertKyc(userId: number, data: Partial<InsertKycRecord>) {
+  const db = await getDb();
+  if (!db) return;
+  const existing = await getKycByUserId(userId);
+  if (existing) {
+    await db.update(kycRecords).set({ ...data, updatedAt: new Date() }).where(eq(kycRecords.userId, userId));
+  } else {
+    await db.insert(kycRecords).values({ userId, ...data } as InsertKycRecord);
+  }
+}
+
+// ─── Wallet Binding helpers ───────────────────────────────────────────────────
+
+export async function getWalletsByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(walletBindings).where(eq(walletBindings.userId, userId)).orderBy(desc(walletBindings.createdAt));
+}
+
+export async function addWalletBinding(data: InsertWalletBinding) {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(walletBindings).values(data);
+}
+
+export async function deleteWalletBinding(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.delete(walletBindings).where(eq(walletBindings.id, id));
+}
+
+export async function setPrimaryWallet(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) return;
+  // Clear all primary flags for this user
+  await db.update(walletBindings).set({ isPrimary: 0 }).where(eq(walletBindings.userId, userId));
+  // Set the selected one as primary
+  await db.update(walletBindings).set({ isPrimary: 1 }).where(eq(walletBindings.id, id));
+}
+
+// ─── User Holdings helpers ────────────────────────────────────────────────────
+
+export async function getHoldingsByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(userHoldings).where(eq(userHoldings.userId, userId)).orderBy(desc(userHoldings.totalValue));
+}
+
+export async function upsertHolding(userId: number, tokenSymbol: string, data: Partial<InsertUserHolding>) {
+  const db = await getDb();
+  if (!db) return;
+  const existing = await db.select().from(userHoldings)
+    .where(eq(userHoldings.userId, userId))
+    .limit(1);
+  const match = existing.find(h => h.tokenSymbol === tokenSymbol);
+  if (match) {
+    await db.update(userHoldings).set(data).where(eq(userHoldings.id, match.id));
+  } else {
+    await db.insert(userHoldings).values({ userId, tokenSymbol, quantity: "0", ...data } as InsertUserHolding);
+  }
+}
+
+// ─── User Dividend History helpers ───────────────────────────────────────────
+
+export async function getDividendHistoryByUserId(userId: number, limit = 50) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(userDividendHistory)
+    .where(eq(userDividendHistory.userId, userId))
+    .orderBy(desc(userDividendHistory.date))
+    .limit(limit);
+}
+
+export async function insertUserDividend(data: InsertUserDividendHistory) {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(userDividendHistory).values(data);
+}
+
+export async function claimDividend(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(userDividendHistory)
+    .set({ status: "claimed", claimedAt: new Date() })
+    .where(eq(userDividendHistory.id, id));
+}

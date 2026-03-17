@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 // ─── 静态模拟数据 ────────────────────────────────────────────────────────────
 
@@ -116,17 +118,44 @@ export default function MyAssets() {
   const [lang, setLang] = useState<'zh' | 'en'>('zh');
   const [, navigate] = useLocation();
   const zh = lang === 'zh';
+  const { user } = useAuth();
 
-  const { rINDEX, nav, costBasis, purchaseDate } = MOCK_HOLDINGS;
+  // 真实持仓数据
+  const { data: holdingsArr = [], isLoading: holdingsLoading, refetch: refetchHoldings } = trpc.assets.getHoldings.useQuery();
+  // 真实派息历史
+  const { data: dividendHistory = [], isLoading: dividendsLoading } = trpc.assets.getDividendHistory.useQuery();
+
+  // 找到 rINDEX 持仓
+  const rIndexHolding = holdingsArr.find((h: { tokenSymbol: string }) => h.tokenSymbol === 'rINDEX');
+
+  // 回落到 mock 数据（如果后端还没有真实数据）
+  const rINDEX = rIndexHolding ? parseFloat(rIndexHolding.quantity) : MOCK_HOLDINGS.rINDEX;
+  const nav = rIndexHolding?.navPerToken ? parseFloat(rIndexHolding.navPerToken) : MOCK_HOLDINGS.nav;
+  const costBasis = MOCK_HOLDINGS.costBasis; // 成本价暂用 mock，后续可从链上获取
+  const purchaseDate = rIndexHolding?.createdAt
+    ? new Date(rIndexHolding.createdAt).toISOString().split('T')[0]
+    : MOCK_HOLDINGS.purchaseDate;
+  const MOCK_DIVS = dividendHistory.length > 0
+    ? (dividendHistory as Array<{date: string; amountPerToken: string | null; amount: string; status: string; claimedAt: Date | null; createdAt: Date; id: number; userId: number; tokenSymbol: string}>).map((d, i, arr) => {
+        const cumulative = arr.slice(0, i + 1).reduce((sum, x) => sum + parseFloat(x.amount), 0);
+        return {
+          date: d.date,
+          perToken: d.amountPerToken ? parseFloat(d.amountPerToken) : 0,
+          total: parseFloat(d.amount),
+          cumulative,
+        };
+      })
+    : MOCK_DIVIDENDS;
+
   const currentValue = rINDEX * nav;
   const costValue = rINDEX * costBasis;
   const unrealizedGain = currentValue - costValue;
   const unrealizedPct = ((nav - costBasis) / costBasis * 100);
-  const totalClaimed = MOCK_DIVIDENDS[0].cumulative;
+  const totalClaimed = MOCK_DIVS.length > 0 ? MOCK_DIVS[0].cumulative : 0;
   const totalReturn = unrealizedGain + totalClaimed;
-  const totalReturnPct = (totalReturn / costValue * 100);
-  const latestDiv = MOCK_DIVIDENDS[0];
-  const annualYield = (latestDiv.perToken * 52 / nav * 100);
+  const totalReturnPct = costValue > 0 ? (totalReturn / costValue * 100) : 0;
+  const latestDiv = MOCK_DIVS.length > 0 ? MOCK_DIVS[0] : { date: '-', perToken: 0, total: 0, cumulative: 0 };
+  const annualYield = nav > 0 ? (latestDiv.perToken * 52 / nav * 100) : 0;
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans">

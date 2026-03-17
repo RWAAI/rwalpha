@@ -106,3 +106,78 @@ export const portfolios = mysqlTable("portfolios", {
 
 export type Portfolio = typeof portfolios.$inferSelect;
 export type InsertPortfolio = typeof portfolios.$inferInsert;
+
+/**
+ * 用户 KYC 认证记录
+ */
+export const kycRecords = mysqlTable("kyc_records", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  status: mysqlEnum("status", ["pending", "submitted", "approved", "rejected"]).default("pending").notNull(),
+  fullName: varchar("fullName", { length: 128 }),
+  idType: varchar("idType", { length: 32 }), // passport / id_card / driver_license
+  idNumber: varchar("idNumber", { length: 64 }),
+  country: varchar("country", { length: 64 }),
+  dateOfBirth: varchar("dateOfBirth", { length: 10 }), // YYYY-MM-DD
+  submittedAt: timestamp("submittedAt"),
+  reviewedAt: timestamp("reviewedAt"),
+  rejectReason: text("rejectReason"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type KycRecord = typeof kycRecords.$inferSelect;
+export type InsertKycRecord = typeof kycRecords.$inferInsert;
+
+/**
+ * 用户绑定的钱包地址
+ */
+export const walletBindings = mysqlTable("wallet_bindings", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  address: varchar("address", { length: 128 }).notNull(),
+  chain: varchar("chain", { length: 32 }).notNull().default("Ethereum"), // Ethereum / BSC / Polygon
+  label: varchar("label", { length: 64 }), // 用户自定义备注
+  isPrimary: int("isPrimary").default(0).notNull(), // 1 = 主钱包
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type WalletBinding = typeof walletBindings.$inferSelect;
+export type InsertWalletBinding = typeof walletBindings.$inferInsert;
+
+/**
+ * 用户资产持仓（本金金库）
+ */
+export const userHoldings = mysqlTable("user_holdings", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  tokenSymbol: varchar("tokenSymbol", { length: 32 }).notNull(), // rINDEX / rFCN 等
+  quantity: decimal("quantity", { precision: 20, scale: 6 }).notNull().default("0"),
+  navPerToken: decimal("navPerToken", { precision: 12, scale: 4 }),
+  totalValue: decimal("totalValue", { precision: 20, scale: 4 }),
+  change24h: decimal("change24h", { precision: 8, scale: 4 }), // % 24h 变动
+  totalReturn: decimal("totalReturn", { precision: 8, scale: 4 }), // % 含股息总回报
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type UserHolding = typeof userHoldings.$inferSelect;
+export type InsertUserHolding = typeof userHoldings.$inferInsert;
+
+/**
+ * 用户派息历史（收益金库）
+ */
+export const userDividendHistory = mysqlTable("user_dividend_history", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  date: varchar("date", { length: 10 }).notNull(), // YYYY-MM-DD
+  tokenSymbol: varchar("tokenSymbol", { length: 32 }).notNull(),
+  amount: decimal("amount", { precision: 16, scale: 4 }).notNull(), // USDT 金额
+  amountPerToken: decimal("amountPerToken", { precision: 12, scale: 6 }),
+  status: mysqlEnum("status", ["pending", "claimable", "claimed"]).default("claimable").notNull(),
+  claimedAt: timestamp("claimedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type UserDividendHistory = typeof userDividendHistory.$inferSelect;
+export type InsertUserDividendHistory = typeof userDividendHistory.$inferInsert;

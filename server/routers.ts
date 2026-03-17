@@ -22,6 +22,14 @@ import {
   insertPortfolio,
   updatePortfolio,
   deletePortfolio,
+  getKycByUserId,
+  upsertKyc,
+  getWalletsByUserId,
+  addWalletBinding,
+  deleteWalletBinding,
+  setPrimaryWallet,
+  getHoldingsByUserId,
+  getDividendHistoryByUserId,
 } from "./db";
 import { callDataApi } from "./_core/dataApi";
 import { invokeLLM } from "./_core/llm";
@@ -729,6 +737,80 @@ ${targetDesc}
         };
       }),
   }),
+
+  // ─── Profile ─────────────────────────────────────────────────────────────
+  profile: router({
+    getKyc: protectedProcedure.query(async ({ ctx }) => {
+      return getKycByUserId(ctx.user.id);
+    }),
+
+    submitKyc: protectedProcedure
+      .input(z.object({
+        fullName: z.string().min(1).max(128),
+        idType: z.enum(["passport", "id_card", "driver_license"]),
+        idNumber: z.string().min(1).max(64),
+        country: z.string().min(1).max(64),
+        dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        await upsertKyc(ctx.user.id, {
+          ...input,
+          status: "submitted",
+          submittedAt: new Date(),
+        });
+        return { success: true };
+      }),
+
+    getWallets: protectedProcedure.query(async ({ ctx }) => {
+      return getWalletsByUserId(ctx.user.id);
+    }),
+
+    addWallet: protectedProcedure
+      .input(z.object({
+        address: z.string().min(10).max(128),
+        chain: z.enum(["Ethereum", "BSC", "Polygon", "Arbitrum", "Optimism"]),
+        label: z.string().max(64).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const existing = await getWalletsByUserId(ctx.user.id);
+        await addWalletBinding({
+          userId: ctx.user.id,
+          address: input.address,
+          chain: input.chain,
+          label: input.label ?? null,
+          isPrimary: existing.length === 0 ? 1 : 0,
+        });
+        return { success: true };
+      }),
+
+    removeWallet: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await deleteWalletBinding(input.id, ctx.user.id);
+        return { success: true };
+      }),
+
+    setPrimaryWallet: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        await setPrimaryWallet(input.id, ctx.user.id);
+        return { success: true };
+      }),
+  }),
+
+  // ─── Assets ──────────────────────────────────────────────────────────────
+  assets: router({
+    getHoldings: protectedProcedure.query(async ({ ctx }) => {
+      return getHoldingsByUserId(ctx.user.id);
+    }),
+
+    getDividendHistory: protectedProcedure
+      .input(z.object({ limit: z.number().min(1).max(200).optional() }).optional())
+      .query(async ({ ctx, input }) => {
+        return getDividendHistoryByUserId(ctx.user.id, input?.limit ?? 50);
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;
+
