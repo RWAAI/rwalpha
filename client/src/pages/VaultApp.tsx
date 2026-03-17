@@ -13,6 +13,8 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 
 // ─── 静态 fallback 数据 ─────────────────────────────────────────────────────
 
@@ -299,9 +301,9 @@ export default function VaultApp() {
   const [weeklyDivModal, setWeeklyDivModal] = useState(false);
   const [, navigate] = useLocation();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
-  // 模拟登录状态
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [mockUser] = useState({ name: 'Alex Chen', email: 'alex@rwalpha.ai', avatar: 'AC' });
+  // 真实登录状态（OAuth）
+  const { user, isAuthenticated, logout } = useAuth();
+  const isLoggedIn = isAuthenticated;
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const zh = lang === "zh";
@@ -541,9 +543,9 @@ export default function VaultApp() {
                 >
                   {/* 头像 */}
                   <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                    {mockUser.avatar}
+                    {user?.name ? user.name.slice(0, 2).toUpperCase() : 'U'}
                   </div>
-                  <span className="text-sm font-medium text-slate-700 max-w-[80px] truncate">{mockUser.name}</span>
+                  <span className="text-sm font-medium text-slate-700 max-w-[80px] truncate">{user?.name ?? user?.email ?? 'User'}</span>
                   <ChevronDown size={13} className={`text-slate-400 transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -563,7 +565,7 @@ export default function VaultApp() {
                         {zh ? '我的资产' : 'My Assets'}
                     </button>
                     <button
-                      onClick={() => { setIsLoggedIn(false); setUserMenuOpen(false); }}
+                      onClick={() => { setUserMenuOpen(false); logout(); }}
                       className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors"
                     >
                       {zh ? '退出' : 'Sign Out'}
@@ -574,13 +576,13 @@ export default function VaultApp() {
             ) : (
               <>
                 <button
-                  onClick={() => setAuthModal({ open: true, mode: 'login' })}
+                  onClick={() => { window.location.href = getLoginUrl(); }}
                   className="px-4 py-1.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
                 >
                   {zh ? '登录' : 'Login'}
                 </button>
                 <button
-                  onClick={() => setAuthModal({ open: true, mode: 'register' })}
+                  onClick={() => { window.location.href = getLoginUrl(); }}
                   className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-sm font-semibold text-white transition-all duration-200 active:scale-95"
                 >
                   {zh ? '注册' : 'Register'}
@@ -916,7 +918,7 @@ export default function VaultApp() {
         open={authModal.open}
         initialMode={authModal.mode}
         onClose={() => setAuthModal(prev => ({ ...prev, open: false }))}
-        onLoginSuccess={() => { setAuthModal(prev => ({ ...prev, open: false })); setIsLoggedIn(true); }}
+        onLoginSuccess={() => { setAuthModal(prev => ({ ...prev, open: false })); }}
         zh={zh}
       />
     </div>
