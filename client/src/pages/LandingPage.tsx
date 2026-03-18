@@ -238,8 +238,10 @@ export default function LandingPage() {
         <div className="relative max-w-4xl mx-auto text-center">
 
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-indigo-200 bg-white/70 text-indigo-600 text-base font-semibold tracking-wider mb-8 uppercase backdrop-blur-sm shadow-sm">
+          <div className="inline-flex items-center gap-1.5 text-indigo-500 text-sm font-medium tracking-[0.2em] mb-8 uppercase">
+            <span className="w-4 h-px bg-indigo-300" />
             {T.badge}
+            <span className="w-4 h-px bg-indigo-300" />
           </div>
 
           {/* Title */}
