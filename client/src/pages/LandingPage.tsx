@@ -192,7 +192,7 @@ export default function LandingPage() {
             >
               🌐 {lang === 'zh' ? 'EN' : '中文'}
             </button>
-            <Link href="/dashboard">
+            <Link href="/vault">
               <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition-all duration-200 active:scale-95">
                 <Zap size={14} />
                 {lang === 'zh' ? '进入应用' : 'Launch App'}
@@ -269,7 +269,7 @@ export default function LandingPage() {
                 <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
               </button>
             </Link>
-            <Link href="/dashboard">
+            <Link href="/vault">
               <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-sm text-slate-700 border border-slate-200 bg-white/80 hover:bg-white hover:border-slate-300 transition-all duration-200 shadow-sm backdrop-blur-sm">
                 {T.cta2} <ChevronRight size={15} />
               </button>
@@ -364,7 +364,7 @@ export default function LandingPage() {
                 <Zap size={15} />{T.ctaBtn1}
               </button>
             </Link>
-            <Link href="/dashboard">
+            <Link href="/vault">
               <button className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm border border-slate-200 transition-all duration-200">
                 {T.ctaBtn2}
               </button>
