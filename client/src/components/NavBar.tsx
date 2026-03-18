@@ -154,6 +154,13 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
             {/* 关于 下拉 */}
             <AboutDropdown zh={zh} />
 
+            {/* 黄金代币 rGLD */}
+            <Link href="/vault/gold">
+              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-150 bg-gradient-to-r from-yellow-400 to-amber-500 text-white hover:from-yellow-500 hover:to-amber-600 shadow-sm">
+                <span className="w-4 h-4 rounded-full bg-white/30 flex items-center justify-center text-[9px] font-bold">Au</span>
+                {zh ? '黄金代币' : 'Gold Token'}
+              </button>
+            </Link>
 
           </nav>
         </div>
