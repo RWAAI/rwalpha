@@ -114,10 +114,10 @@ export default function GoldToken() {
 
       {/* ── 主体：左买卖 + 右Staking ──────────────────────────────────────── */}
       <div className="flex-1 max-w-5xl mx-auto w-full px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
 
           {/* ── 左侧：买卖框 ── */}
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
             <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-amber-400"></div>
@@ -305,52 +305,6 @@ export default function GoldToken() {
                   <p className="text-5xl font-extrabold text-amber-500 tracking-tight font-mono">
                     ~{STAKING_APY.toFixed(1)}%<sup className="text-lg font-normal ml-1">*</sup>
                   </p>
-                  <p className="text-xs text-slate-400 mt-2">
-                    {zh ? "以 USDT 结算，每月发放" : "Settled in USDT, distributed monthly"}
-                  </p>
-                </div>
-
-                {/* 三项说明 */}
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { label: zh ? "锁仓周期" : "Lock Period", value: `${STAKING_LOCK_DAYS}${zh ? " 天" : "D"}`, color: "text-slate-800" },
-                    { label: zh ? "结算币种" : "Settlement", value: "USDT", color: "text-blue-600" },
-                    { label: zh ? "发放频率" : "Frequency", value: zh ? "每月" : "Monthly", color: "text-emerald-600" },
-                  ].map(item => (
-                    <div key={item.label} className="bg-slate-50 rounded-2xl p-3 text-center">
-                      <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">{item.label}</p>
-                      <p className={`text-sm font-bold font-mono ${item.color}`}>{item.value}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* 收益说明列表 */}
-                <div className="space-y-2.5">
-                  {[
-                    {
-                      icon: "🥇",
-                      title: zh ? "黄金价格增值" : "Gold Price Appreciation",
-                      desc: zh ? "rGLD 100% 挂钩 GLD ETF，随黄金价格同步增值" : "rGLD tracks GLD ETF 1:1, appreciates with gold prices",
-                    },
-                    {
-                      icon: "💰",
-                      title: zh ? "Staking 额外收益" : "Extra Staking Yield",
-                      desc: zh ? "质押 rGLD 额外获得约 8% 年化 USDT 收益" : "Stake rGLD to earn ~8% additional annual USDT yield",
-                    },
-                    {
-                      icon: "🔒",
-                      title: zh ? "灵活锁仓" : "Flexible Lock",
-                      desc: zh ? "最短 30 天锁仓，到期自动解锁，随时可赎回" : "Minimum 30-day lock, auto-unlock on expiry, redeem anytime",
-                    },
-                  ].map(item => (
-                    <div key={item.title} className="flex items-start gap-3 p-3 rounded-2xl bg-amber-50/50 border border-amber-100/50">
-                      <span className="text-lg shrink-0 mt-0.5">{item.icon}</span>
-                      <div>
-                        <p className="text-xs font-bold text-slate-800 mb-0.5">{item.title}</p>
-                        <p className="text-[11px] text-slate-500 leading-relaxed">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
                 </div>
 
                 <p className="text-[10px] text-slate-400">
@@ -360,7 +314,7 @@ export default function GoldToken() {
             </div>
 
             {/* Staking 操作框 */}
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex-1">
               <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
                 <div className="flex items-center gap-2">
                   <Lock size={14} className="text-amber-500" />
