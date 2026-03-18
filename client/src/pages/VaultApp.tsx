@@ -663,42 +663,49 @@ export default function VaultApp() {
       {/* ── 体验金区域 ── */}
       <div className="max-w-5xl mx-auto px-6 pb-4">
         {isLoggedIn ? (
-          /* 登录态：显示体验金持仓信息 */
-          <div className="rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-2.5 border-b border-amber-100">
+          /* 登录态：体验金持仓信息（色块卡片风格） */
+          <div className="rounded-3xl border border-amber-200 bg-white shadow-sm overflow-hidden">
+            {/* 标题栏 */}
+            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-amber-700 tracking-wide uppercase">🎁 {zh ? "体验金" : "Trial Credit"}</span>
-                <span className="px-2 py-0.5 bg-amber-100 text-amber-600 text-[10px] font-semibold rounded-full">
+                <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                <span className="font-bold text-slate-800 text-base">{zh ? "体验金" : "Trial Credit"}</span>
+                <span className="px-2.5 py-0.5 bg-amber-100 text-amber-600 text-[11px] font-semibold rounded-full">
                   {zh ? "活跃中" : "Active"}
                 </span>
               </div>
               <button
                 onClick={() => setTrialModal(true)}
-                className="flex items-center gap-1 text-xs text-amber-500 hover:text-amber-700 transition-colors"
+                className="flex items-center gap-1 text-xs text-slate-400 hover:text-amber-600 transition-colors"
               >
-                <HelpCircle size={13} />
-                <span className="hidden sm:inline">{zh ? "体验金说明" : "What is this?"}</span>
+                <HelpCircle size={14} />
+                <span>{zh ? "体验金说明" : "What is this?"}</span>
               </button>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-amber-100 px-0">
-              <div className="px-5 py-3">
-                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "体验金代币" : "Token"}</p>
+
+            {/* 四个色块卡片 */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-6 py-5">
+              <div className="rounded-2xl bg-amber-50 px-4 py-3">
+                <p className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider mb-1.5">{zh ? "体验金代币" : "Token"}</p>
                 <p className="text-sm font-bold text-slate-800">500.00 <span className="text-indigo-600">rNDX</span></p>
               </div>
-              <div className="px-5 py-3">
-                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "市値" : "Value"}</p>
+              <div className="rounded-2xl bg-slate-50 px-4 py-3">
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1.5">{zh ? "市値" : "Value"}</p>
                 <p className="text-sm font-bold text-slate-800">~$65,495</p>
               </div>
-              <div className="px-5 py-3">
-                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "生成时间" : "Issued"}</p>
-                <p className="text-sm font-medium text-slate-700">2026-03-18</p>
+              <div className="rounded-2xl bg-slate-50 px-4 py-3">
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1.5">{zh ? "生成时间" : "Issued"}</p>
+                <p className="text-sm font-medium text-slate-700 font-mono">2026-03-18</p>
               </div>
-              <div className="px-5 py-3">
-                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "到期时间" : "Expires"}</p>
-                <p className="text-sm font-medium text-amber-600 font-mono">2026-03-25 <span className="text-[10px] text-amber-400">({zh ? "剩余 7 天" : "7 days"})</span></p>
+              <div className="rounded-2xl bg-amber-50 px-4 py-3">
+                <p className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider mb-1.5">{zh ? "到期时间" : "Expires"}</p>
+                <p className="text-sm font-medium text-amber-600 font-mono">2026-03-25</p>
+                <p className="text-[10px] text-amber-400 mt-0.5">{zh ? "剩余 7 天" : "7 days left"}</p>
               </div>
             </div>
-            <div className="px-5 py-2 bg-amber-50/60 border-t border-amber-100">
+
+            {/* 底部提示 */}
+            <div className="mx-6 mb-5 rounded-xl bg-amber-50/80 px-4 py-2.5">
               <p className="text-[10px] text-amber-600/80">
                 {zh
                   ? "ℹ️ 体验金不可提币，不可转让，到期由平台收回。有效期内产生的利息归您所有，可自由提取。"
