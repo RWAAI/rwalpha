@@ -21,18 +21,23 @@ const COPY = {
     aiHowTitle: 'AI 如何工作',
     aiSteps: [
       {
-        step: '01', title: 'AI 智能路由',
-        desc: '算法根据波动率和权利金自动匹配最优池。',
-        items: ['实时波动率分析', '权利金收益优化', '自动最优池匹配'],
+        step: '01', title: '波动性分析（Volatility Analysis）',
+        desc: '持续追踪底层资产的隐含波动率与历史波动率，识别最优期权执行时机。',
+        items: ['实时隐含波动率监控', '历史波动率对比分析', '最优执行时机识别'],
       },
       {
-        step: '02', title: 'AI 智能投顾',
-        desc: '结合当前市场环境的专业诊断：分析底层资产波动率、专业调仓建议、底层风险管理。',
-        items: ['底层资产波动率分析', '专业调仓建议', '底层风险管理'],
+        step: '02', title: '期权策略优化（Option Strategy Optimization）',
+        desc: '基于波动率模型，动态选择最优的期权策略（如备兑看涨期权），最大化期权费收入。',
+        items: ['动态策略选择', '备兑看涨期权优化', '期权费收入最大化'],
       },
       {
-        step: '03', title: 'AI 自动再平衡',
-        desc: 'AI 持续监控组合偏离度，当任一持仓权重超出目标阈值时自动触发再平衡，将分红收益按策略智能再投资。',
+        step: '03', title: '投资组合优化（Portfolio Optimization）',
+        desc: '综合多个资产的相关性与风险特征，优化整体投资组合的风险收益比。',
+        items: ['多资产相关性分析', '风险收益比优化', '动态权重调整'],
+      },
+      {
+        step: '04', title: '自动再平衡（Auto Rebalancing）',
+        desc: '当市场条件发生变化时，自动调整各资产权重，确保策略始终处于最优状态。',
         items: ['权重偏离实时预警', '分红智能再投资', '再平衡记录全程留档'],
       },
     ],
@@ -124,19 +129,24 @@ const COPY = {
     aiHowTitle: 'How AI Works',
     aiSteps: [
       {
-        step: '01', title: 'AI Smart Routing',
-        desc: 'Algorithm auto-matches the optimal pool based on volatility and premium.',
-        items: ['Real-time volatility analysis', 'Premium yield optimization', 'Auto optimal pool matching'],
+        step: '01', title: 'Volatility Analysis',
+        desc: 'Continuously tracks implied and historical volatility of underlying assets to identify optimal options execution timing.',
+        items: ['Real-time implied volatility monitoring', 'Historical volatility comparison', 'Optimal execution timing identification'],
       },
       {
-        step: '02', title: 'AI Investment Advisor',
-        desc: 'Professional diagnosis based on current market conditions: underlying asset volatility analysis, rebalancing recommendations, and risk management.',
-        items: ['Underlying asset volatility analysis', 'Professional rebalancing advice', 'Underlying risk management'],
+        step: '02', title: 'Option Strategy Optimization',
+        desc: 'Dynamically selects the optimal options strategy (e.g., covered calls) based on volatility models to maximize premium income.',
+        items: ['Dynamic strategy selection', 'Covered call optimization', 'Premium income maximization'],
       },
       {
-        step: '03', title: 'AI Auto-Rebalancing',
-        desc: 'AI continuously monitors portfolio drift. When any holding deviates from its target weight, it auto-triggers rebalancing and reinvests dividends per strategy.',
-        items: ['Weight deviation alerts', 'Smart dividend reinvestment', 'Full rebalancing audit trail'],
+        step: '03', title: 'Portfolio Optimization',
+        desc: 'Integrates correlation and risk characteristics across multiple assets to optimize the overall risk-return profile of the portfolio.',
+        items: ['Multi-asset correlation analysis', 'Risk-return ratio optimization', 'Dynamic weight adjustment'],
+      },
+      {
+        step: '04', title: 'Auto Rebalancing',
+        desc: 'Automatically adjusts asset weights when market conditions change, ensuring the strategy remains in optimal state at all times.',
+        items: ['Weight deviation real-time alerts', 'Smart dividend reinvestment', 'Full rebalancing audit trail'],
       },
     ],
     aiSignalTitle: 'AI Market Signals',
@@ -353,10 +363,10 @@ export default function HowItWorks() {
             </div>
             <h2 className="font-bold text-slate-900 text-lg">{T.aiHowTitle}</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-stretch">
             {T.aiSteps.map((step, i) => (
               <div key={step.step} className="relative flex flex-col">
-                {i < 2 && (
+                {i < 3 && (
                   <div
                     className="hidden md:block absolute top-8 h-px bg-violet-200 z-0"
                     style={{ left: 'calc(100% - 0.5rem)', width: 'calc(100% - 2rem)' }}
@@ -369,7 +379,9 @@ export default function HowItWorks() {
                         ? <Eye size={20} className="text-violet-400" />
                         : i === 1
                           ? <BrainCircuit size={20} className="text-violet-400" />
-                          : <CheckCircle2 size={20} className="text-violet-400" />}
+                          : i === 2
+                            ? <CheckCircle2 size={20} className="text-violet-400" />
+                            : <RefreshCw size={20} className="text-violet-400" />}
                     </div>
                     <div>
                       <div className="text-[10px] font-bold text-violet-400">STEP {step.step}</div>
