@@ -321,6 +321,11 @@ export default function LandingPage() {
             <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">{T.dualVaultTitle}</h2>
             <p className="text-slate-500 text-base">{T.dualVaultSub}</p>
           </div>
+          <div className="max-w-4xl mx-auto mb-4 text-center">
+            <h3 className="text-2xl md:text-3xl font-extrabold text-slate-900">
+              {lang === 'zh' ? 'RWAlpha 指数旗舰金库 1' : 'RWAlpha Index Prime Vault 1'}
+            </h3>
+          </div>
           <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-xl border border-slate-100 hover:scale-[1.01] transition-transform duration-300">
             <img
               key={lang}
