@@ -565,6 +565,15 @@ export default function VaultApp() {
 
       {/* ── 页面标题 ── */}
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
+        {/* 查看产品详情 — 标题正上方 */}
+        <div className="mb-2">
+          <Link href="/dashboard">
+            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
+              {zh ? "查看产品详情" : "View product details"}
+              <ChevronRight size={14} />
+            </button>
+          </Link>
+        </div>
         <div className="flex items-center gap-3 mb-1 flex-wrap">
           <h1 className="text-2xl font-bold text-slate-900">
             {zh ? "RWAlpha 指数旗舰金库 1" : "RWAlpha Index Prime Vault 1"}
@@ -573,11 +582,6 @@ export default function VaultApp() {
             {zh ? "AI 赋能" : "AI Powered"}
           </span>
           {summaryLoading && <Loader2 size={14} className="animate-spin text-slate-400" />}
-          {hasDbData && (
-            <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] rounded font-medium border border-blue-100">
-              {zh ? "实时数据" : "Live Data"}
-            </span>
-          )}
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={() => refetch()}
@@ -663,15 +667,9 @@ export default function VaultApp() {
         <div className="flex items-center gap-2">
           <p className="text-slate-500 text-sm">
             {zh
-              ? "AI 驱动管理 · 每周现金派息 · 指数底仓增值"
+              ? "AI 驱动管理 · 每周现金派息 · 指数底仓增値"
               : "AI-driven management · Weekly cash dividend · Index core appreciation"}
           </p>
-          <Link href="/dashboard">
-            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
-              {zh ? "查看产品详情" : "View product details"}
-              <ChevronRight size={14} />
-            </button>
-          </Link>
         </div>
       </div>
 
