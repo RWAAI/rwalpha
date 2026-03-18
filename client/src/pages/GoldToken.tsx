@@ -69,7 +69,7 @@ export default function GoldToken() {
                     {zh ? "100% 挂钩 GLD ETF" : "100% Pegged to GLD ETF"}
                   </span>
                 </div>
-                <p className="text-slate-500 text-sm max-w-xl">
+                <p className="text-slate-500 text-sm">
                   {zh
                     ? "rGLD 是 RWAlpha 发行的黄金代币，100% 由 SPDR Gold Shares（GLD）ETF 底层资产支撑，1 rGLD = 1 GLD ETF 份额，链上可验证，随时可赎回。"
                     : "rGLD is RWAlpha's gold token, 100% backed by SPDR Gold Shares (GLD) ETF. 1 rGLD = 1 GLD ETF share. On-chain verifiable, redeemable at any time."}
@@ -78,7 +78,7 @@ export default function GoldToken() {
           </div>
 
           {/* 特性标签 */}
-          <div className="flex flex-wrap gap-2 mt-6">
+          <div className="flex flex-wrap gap-2 mt-5 pl-[84px]">
             {[
               { icon: <Shield size={12} />, label: zh ? "底层资产完全支撑" : "Fully Asset Backed" },
               { icon: <TrendingUp size={12} />, label: zh ? "跟随黄金价格增值" : "Gold Price Appreciation" },
