@@ -466,23 +466,23 @@ export default function VaultApp() {
             </div>
             <div className="space-y-3 text-sm text-slate-600 leading-relaxed">
               {(zh ? [
-                { icon: "🎁", text: "体验金是平台对满足活动条件用户赠予的权益" },
-                { icon: "🔒", text: "不可提币、不可转让" },
-                { icon: "⏳", text: "体验金到期后由平台自动收回（仅保留历史记录）" },
-                { icon: "💰", text: "体验金有效期间产生的利息归客户所有，可自由提取" },
-                { icon: "📈", text: "利息比率随市场行情动态调整，不作固定承诺" },
-                { icon: "⚖️", text: "本体验金活动最终解释权归平台所有" },
+                "体验金是平台对满足活动条件用户赠予的权益",
+                "不可提币、不可转让",
+                "体验金到期后由平台自动收回（仅保留历史记录）",
+                "体验金有效期间产生的利息归客户所有，可自由提取",
+                "利息比率随市场行情动态调整，不作固定承诺",
+                "本体验金活动最终解释权归平台所有",
               ] : [
-                { icon: "🎁", text: "Trial credits are platform-granted rewards for users who meet activity requirements" },
-                { icon: "🔒", text: "Non-withdrawable and non-transferable" },
-                { icon: "⏳", text: "Upon expiry, trial credits are automatically reclaimed (records retained)" },
-                { icon: "💰", text: "Interest generated belongs to the client and may be freely withdrawn" },
-                { icon: "📈", text: "Interest rates fluctuate with market conditions and are not guaranteed" },
-                { icon: "⚖️", text: "The platform reserves the right of final interpretation" },
-              ]).map((item, i) => (
+                "Trial credits are platform-granted rewards for users who meet activity requirements",
+                "Non-withdrawable and non-transferable",
+                "Upon expiry, trial credits are automatically reclaimed (records retained)",
+                "Interest generated belongs to the client and may be freely withdrawn",
+                "Interest rates fluctuate with market conditions and are not guaranteed",
+                "The platform reserves the right of final interpretation",
+              ]).map((text, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <span className="text-base shrink-0 mt-0.5">{item.icon}</span>
-                  <p>{item.text}</p>
+                  <span className="text-xs font-bold text-slate-400 shrink-0 mt-0.5 w-4 text-right">{i + 1}.</span>
+                  <p>{text}</p>
                 </div>
               ))}
             </div>
