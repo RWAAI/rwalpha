@@ -805,13 +805,13 @@ export default function VaultApp() {
                 {[
                   { label: "rNDX NAV", value: `$${nav.toFixed(2)}`, green: false },
                   { label: zh ? "24H 变动" : "24H Change", value: `${nav24hChange >= 0 ? '+' : ''}${nav24hChange.toFixed(2)}%`, green: nav24hChange >= 0 },
-                  { label: zh ? "年化总回报（含股息）" : "Total Return (incl. Div)", value: `+${annualTotalReturn.toFixed(2)}%`, green: true },
+                  { label: zh ? "年化总回报（含股息）" : "Total Return (incl. Div)", value: `+${annualTotalReturn.toFixed(2)}%`, green: true, star: true },
                 ].map(item => (
                   <div key={item.label} className="bg-slate-50 rounded-2xl p-3">
                     <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">{item.label}</p>
                     <p className={`text-sm font-bold font-mono ${item.green ? "text-emerald-600" : "text-slate-800"}`}>
                       {item.green && <ArrowUpRight size={12} className="inline mr-0.5" />}
-                      {item.value}
+                      {item.value}{item.star && <sup className="text-[9px] font-normal ml-0.5">*</sup>}
                     </p>
                   </div>
                 ))}
@@ -967,7 +967,7 @@ export default function VaultApp() {
               <div className="text-center py-2">
                 <p className="text-xs text-slate-400 mb-1">{zh ? "年度股息收益率" : "Annual Dividend Yield"}</p>
                 <p className="text-5xl font-extrabold text-amber-500 tracking-tight font-mono">
-                  ~{annualYield.toFixed(2)}%
+                  ~{annualYield.toFixed(2)}%<sup className="text-lg font-normal ml-1">*</sup>
                 </p>
               </div>
 
@@ -1008,6 +1008,13 @@ export default function VaultApp() {
                   ? (zh ? "✓ 领取成功" : "✓ Claimed!")
                   : (zh ? "立即领取" : "Claim Now")}
               </button>
+
+              {/* 免责声明 */}
+              <p className="text-[10px] text-slate-400 leading-relaxed">
+                {zh
+                  ? "* 以上数据基于历史表现测算，业绩随市场行情波动，不作固定承诺，不构成投资建议。"
+                  : "* Figures based on historical performance. Returns fluctuate with market conditions and are not guaranteed. Not investment advice."}
+              </p>
 
               {/* 派息明细 */}
               <div className="space-y-0 border-t border-slate-50 pt-2">
