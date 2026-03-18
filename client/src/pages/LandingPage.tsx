@@ -321,8 +321,8 @@ export default function LandingPage() {
             <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">{T.dualVaultTitle}</h2>
             <p className="text-slate-500 text-base">{T.dualVaultSub}</p>
           </div>
-          <div className="max-w-4xl mx-auto mb-3 flex items-center gap-2">
-            <h3 className="text-lg font-extrabold text-slate-900">
+          <div className="max-w-4xl mx-auto mb-4 flex items-center justify-center gap-3">
+            <h3 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', serif" }}>
               {lang === 'zh' ? 'RWAlpha 指数旗舰金库 1' : 'RWAlpha Index Prime Vault 1'}
             </h3>
             <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-600 text-white text-xs font-bold tracking-wide">
