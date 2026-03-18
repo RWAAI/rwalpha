@@ -320,9 +320,7 @@ export default function GoldToken() {
                   <Lock size={14} className="text-amber-500" />
                   <span className="font-bold text-slate-800 text-base">{zh ? "质押 rGLD" : "Stake rGLD"}</span>
                 </div>
-                <span className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-100">
-                  {zh ? `锁仓 ${STAKING_LOCK_DAYS} 天` : `${STAKING_LOCK_DAYS}-Day Lock`}
-                </span>
+
               </div>
 
               <div className="px-6 py-5 space-y-4">
