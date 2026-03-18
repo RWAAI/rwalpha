@@ -14,7 +14,6 @@ import Profile from './pages/Profile';
 import Insights from './pages/Insights';
 import AIPortfolio from './pages/AIPortfolio';
 import About from './pages/About';
-import GoldVault from './pages/GoldVault';
 import LegalPage from './pages/LegalPage';
 
 function Router() {
@@ -24,7 +23,6 @@ function Router() {
       <Route path={"/"} component={LandingPage} />
       <Route path={"/dashboard"} component={Home} />
       <Route path={"/vault"} component={VaultApp} />
-      <Route path={"/vault/gold"} component={GoldVault} />
       <Route path={"/how-it-works"} component={HowItWorks} />
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/my-assets"} component={MyAssets} />
