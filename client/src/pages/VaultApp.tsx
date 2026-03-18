@@ -567,7 +567,7 @@ export default function VaultApp() {
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
         {/* 返回产品页 — 标题正上方 */}
         <div className="mb-2">
-          <Link href="/dashboard">
+          <Link href="/">
             <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
               <ChevronLeft size={14} />
               {zh ? "返回产品页" : "Back to Product"}
