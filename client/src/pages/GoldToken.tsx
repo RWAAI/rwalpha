@@ -54,8 +54,7 @@ export default function GoldToken() {
       {/* ── 头部说明 ─────────────────────────────────────────────────────── */}
       <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 border-b border-amber-100">
         <div className="max-w-5xl mx-auto px-6 py-10">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-center gap-5">
+          <div className="flex items-center gap-5">
               {/* 黄金图标 */}
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center shadow-lg shadow-amber-200 shrink-0">
                 <span className="text-3xl">🥇</span>
@@ -76,23 +75,6 @@ export default function GoldToken() {
                     : "rGLD is RWAlpha's gold token, 100% backed by SPDR Gold Shares (GLD) ETF. 1 rGLD = 1 GLD ETF share. On-chain verifiable, redeemable at any time."}
                 </p>
               </div>
-            </div>
-
-            {/* 右侧关键数据 */}
-            <div className="flex gap-4 shrink-0">
-              <div className="bg-white rounded-2xl px-4 py-3 border border-amber-100 shadow-sm text-center min-w-[90px]">
-                <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">rGLD Price</p>
-                <p className="text-lg font-extrabold text-slate-900 font-mono">${RGLD_NAV.toFixed(0)}</p>
-              </div>
-              <div className="bg-white rounded-2xl px-4 py-3 border border-amber-100 shadow-sm text-center min-w-[90px]">
-                <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">{zh ? "底层 ETF" : "Underlying"}</p>
-                <p className="text-lg font-extrabold text-amber-600 font-mono">GLD</p>
-              </div>
-              <div className="bg-white rounded-2xl px-4 py-3 border border-amber-100 shadow-sm text-center min-w-[90px]">
-                <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">{zh ? "Staking APY" : "Staking APY"}</p>
-                <p className="text-lg font-extrabold text-emerald-600 font-mono">~{STAKING_APY}%</p>
-              </div>
-            </div>
           </div>
 
           {/* 特性标签 */}
