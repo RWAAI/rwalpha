@@ -146,7 +146,7 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
                   : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
               }`;
               if (i === 0) return <Link key={tab} href="/"><button className={cls}>{tab}</button></Link>;
-              if (i === 1) return <Link key={tab} href="/dashboard"><button className={cls}>{tab}</button></Link>;
+              if (i === 1) return <Link key={tab} href="/vault"><button className={cls}>{tab}</button></Link>;
               if (i === 2) return (
                 <Link key={tab} href="/gold-token">
                   <button className={`${cls} flex items-center gap-1`}>
