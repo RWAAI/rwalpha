@@ -110,17 +110,34 @@ export default function MyAssets() {
               </div>
             </div>
 
-            {/* 时间进度条 */}
-            <div className="px-4 py-3">
-              <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5">
-                <span>{zh ? "生成" : "Issued"} 2026-03-01</span>
-                <span className="text-amber-500 font-medium">{zh ? "剩余 75 天" : "75 days left"}</span>
-                <span>{zh ? "到期" : "Expires"} 2026-06-01</span>
+            {/* 时间行 */}
+            <div className="grid grid-cols-2 divide-x divide-slate-100 px-0">
+              <div className="px-4 py-3">
+                <p className="text-xs text-slate-400 mb-1">{zh ? "生成时间" : "Issued At"}</p>
+                <p className="text-sm text-slate-700 font-medium">2026-03-01</p>
               </div>
-              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-amber-400 rounded-full" style={{ width: "17%" }} />
+              <div className="px-4 py-3">
+                <p className="text-xs text-slate-400 mb-1">{zh ? "到期时间" : "Expires At"}</p>
+                <p className="text-sm text-amber-600 font-medium">2026-06-01 <span className="text-xs text-amber-400">({zh ? "剩余 75 天" : "75 days left"})</span></p>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ── 体验金条款说明 ── */}
+        {tab === "holdings" && (
+          <div className="mb-6 px-1">
+            <p className="text-xs text-slate-400 leading-relaxed">
+              {zh ? (
+                <>
+                  <span className="text-slate-500 font-medium">体验金说明：</span>体验金为平台对满足活动条件用户赠予的权益，不可提币、不可转让。体验金到期后将由平台自动收回（仅保留历史记录）。体验金有效期间产生的利息归客户所有，可自由提取；利息比率随市场行情动态调整，不作固定承诺。本体验金活动最终解释权归平台所有。
+                </>
+              ) : (
+                <>
+                  <span className="text-slate-500 font-medium">Trial Credit Terms: </span>Trial credits are platform-granted rewards for users who meet activity requirements. They are non-withdrawable and non-transferable. Upon expiry, trial credits are automatically reclaimed by the platform (records retained). Any interest generated during the validity period belongs to the client and may be freely withdrawn; interest rates fluctuate with market conditions and are not guaranteed. The platform reserves the right of final interpretation.
+                </>
+              )}
+            </p>
           </div>
         )}
 
