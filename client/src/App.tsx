@@ -15,6 +15,7 @@ import Insights from './pages/Insights';
 import AIPortfolio from './pages/AIPortfolio';
 import About from './pages/About';
 import LegalPage from './pages/LegalPage';
+import GoldToken from './pages/GoldToken';
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -23,6 +24,7 @@ function Router() {
       <Route path={"/"} component={LandingPage} />
       <Route path={"/dashboard"} component={Home} />
       <Route path={"/vault"} component={VaultApp} />
+      <Route path={"/gold-token"} component={GoldToken} />
       <Route path={"/how-it-works"} component={HowItWorks} />
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/my-assets"} component={MyAssets} />

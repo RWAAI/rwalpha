@@ -13,7 +13,7 @@ function setLangStorage(zh: boolean) {
 
 // activeTab: optional override; defaults to auto-detect from current URL
 interface NavBarProps {
-  activeTab?: 'home' | 'dashboard' | 'vault' | 'how-it-works' | 'insights';
+  activeTab?: 'home' | 'dashboard' | 'vault' | 'gold-token' | 'how-it-works' | 'insights';
   /** 替换右侧默认「进入应用」按钮区域；不传则显示默认 Launch App */
   rightSlot?: ReactNode;
 }
@@ -100,8 +100,8 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
   };
 
   // tabs（不含「积分」）
-  const tabsZh = ['首页', '金库', '如何运作', '洞察'];
-  const tabsEn = ['Home', 'Vault', 'How It Works', 'Insights'];
+  const tabsZh = ['首页', '金库', '黄金代币', '如何运作', '洞察'];
+  const tabsEn = ['Home', 'Vault', 'Gold Token', 'How It Works', 'Insights'];
   const tabs = zh ? tabsZh : tabsEn;
 
   const [location] = useLocation();
@@ -110,13 +110,15 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
     '/': 0,
     '/dashboard': 1,
     '/vault': 1,
-    '/how-it-works': 2,
+    '/gold-token': 2,
+    '/how-it-works': 3,
   };
   const autoIdx = routeToIdx[location] ?? -1;
   const propIdx = activeTab === 'home' ? 0
     : activeTab === 'dashboard' || activeTab === 'vault' ? 1
-    : activeTab === 'how-it-works' ? 2
-    : activeTab === 'insights' ? 3
+    : activeTab === 'gold-token' ? 2
+    : activeTab === 'how-it-works' ? 3
+    : activeTab === 'insights' ? 4
     : -1;
   const activeIdx = propIdx !== -1 ? propIdx : autoIdx;
 
@@ -145,7 +147,14 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
               }`;
               if (i === 0) return <Link key={tab} href="/"><button className={cls}>{tab}</button></Link>;
               if (i === 1) return <Link key={tab} href="/dashboard"><button className={cls}>{tab}</button></Link>;
-              if (i === 2) return <Link key={tab} href="/how-it-works"><button className={cls}>{tab}</button></Link>;
+              if (i === 2) return (
+                <Link key={tab} href="/gold-token">
+                  <button className={`${cls} flex items-center gap-1`}>
+                    <span>🥇</span>{tab}
+                  </button>
+                </Link>
+              );
+              if (i === 3) return <Link key={tab} href="/how-it-works"><button className={cls}>{tab}</button></Link>;
               return (
                 <Link key={tab} href="/insights"><button className={cls}>{tab}</button></Link>
               );
