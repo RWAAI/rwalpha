@@ -663,12 +663,11 @@ export default function VaultApp() {
       {/* ── 体验金区域 ── */}
       <div className="max-w-5xl mx-auto px-6 pb-4">
         {isLoggedIn ? (
-          /* 登录态：左右两栏——左本金、右利息 */
+          /* 登录态：显示体验金持仓信息 */
           <div className="rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 overflow-hidden">
-            {/* 标题栏 */}
             <div className="flex items-center justify-between px-5 py-2.5 border-b border-amber-100">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-amber-700 tracking-wide">🎁 {zh ? "体验金" : "Trial Credit"}</span>
+                <span className="text-xs font-bold text-amber-700 tracking-wide uppercase">🎁 {zh ? "体验金" : "Trial Credit"}</span>
                 <span className="px-2 py-0.5 bg-amber-100 text-amber-600 text-[10px] font-semibold rounded-full">
                   {zh ? "活跃中" : "Active"}
                 </span>
@@ -678,63 +677,27 @@ export default function VaultApp() {
                 className="flex items-center gap-1 text-xs text-amber-500 hover:text-amber-700 transition-colors"
               >
                 <HelpCircle size={13} />
-                <span>{zh ? "体验金说明" : "What is this?"}</span>
+                <span className="hidden sm:inline">{zh ? "体验金说明" : "What is this?"}</span>
               </button>
             </div>
-
-            {/* 左右主体 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-amber-100">
-
-              {/* 左栏：本金 */}
-              <div className="px-5 py-4">
-                <p className="text-[10px] font-semibold text-amber-600/80 uppercase tracking-wider mb-3">
-                  {zh ? "本金" : "Principal"}
-                </p>
-                <div className="space-y-2.5">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-[11px] text-slate-400">{zh ? "体验金代币" : "Token"}</span>
-                    <span className="text-sm font-bold text-slate-800">500.00 <span className="text-indigo-600">rNDX</span></span>
-                  </div>
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-[11px] text-slate-400">{zh ? "市値" : "Value"}</span>
-                    <span className="text-sm font-semibold text-slate-700">~$65,495</span>
-                  </div>
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-[11px] text-slate-400">{zh ? "生成时间" : "Issued"}</span>
-                    <span className="text-sm text-slate-600 font-mono">2026-03-18</span>
-                  </div>
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-[11px] text-slate-400">{zh ? "到期时间" : "Expires"}</span>
-                    <span className="text-sm font-medium text-amber-600 font-mono">
-                      2026-03-25 <span className="text-[10px] text-amber-400">({zh ? "剩余 7 天" : "7 days left"})</span>
-                    </span>
-                  </div>
-                </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-amber-100 px-0">
+              <div className="px-5 py-3">
+                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "体验金代币" : "Token"}</p>
+                <p className="text-sm font-bold text-slate-800">500.00 <span className="text-indigo-600">rNDX</span></p>
               </div>
-
-              {/* 右栏：一次性利息 */}
-              <div className="px-5 py-4 flex flex-col justify-between">
-                <div>
-                  <p className="text-[10px] font-semibold text-amber-600/80 uppercase tracking-wider mb-3">
-                    {zh ? "利息（7 天预计）" : "Interest (7-day Est.)"}
-                  </p>
-                  <p className="text-2xl font-bold text-emerald-600 mb-1">~$24.82</p>
-                  <p className="text-[11px] text-slate-400 mb-4">
-                    {zh
-                      ? "基于年化派息率 ~19.93%，7 天期限内所得利息全部归您"
-                      : "Based on ~19.93% annual yield. All interest within 7 days is yours."}
-                  </p>
-                </div>
-                <button
-                  onClick={() => alert(zh ? '利息将在到期后可领取' : 'Interest will be claimable after expiry')}
-                  className="w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 active:scale-[0.98] text-slate-900 text-sm font-bold transition-all shadow-sm shadow-amber-200"
-                >
-                  {zh ? "⬇️ 领取利息" : "Claim Interest"}
-                </button>
+              <div className="px-5 py-3">
+                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "市値" : "Value"}</p>
+                <p className="text-sm font-bold text-slate-800">~$65,495</p>
+              </div>
+              <div className="px-5 py-3">
+                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "生成时间" : "Issued"}</p>
+                <p className="text-sm font-medium text-slate-700">2026-03-18</p>
+              </div>
+              <div className="px-5 py-3">
+                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "到期时间" : "Expires"}</p>
+                <p className="text-sm font-medium text-amber-600 font-mono">2026-03-25 <span className="text-[10px] text-amber-400">({zh ? "剩余 7 天" : "7 days"})</span></p>
               </div>
             </div>
-
-            {/* 底部提示 */}
             <div className="px-5 py-2 bg-amber-50/60 border-t border-amber-100">
               <p className="text-[10px] text-amber-600/80">
                 {zh
