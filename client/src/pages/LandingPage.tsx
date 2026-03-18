@@ -16,7 +16,7 @@ const COPY = {
     heroTitle1: '当 AI 遇上',
     heroTitle2: '真实世界资产',
     heroSub1: 'AI 驱动管理 · 每周现金派息 · 指数底仓增值',
-    cta1: '立即查看金库',
+    cta1: '查看金库',
     cta2: '进入应用',
     dualVaultLabel: '行业首创',
     dualVaultTitle: '行业首个创新双金库设计',
@@ -38,7 +38,7 @@ const COPY = {
     ctaTitle: '准备好进入这个世界了吗？',
     ctaTitleLine2: 'AI × RWA',
     ctaSub: '机构级策略，链上透明，每周派息。现在就开始。',
-    ctaBtn1: '立即查看金库',
+    ctaBtn1: '查看金库',
     ctaBtn2: '进入应用',
     chips: [
       { label: '年化派息率', value: '~19.93%', color: 'emerald' },
