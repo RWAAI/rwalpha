@@ -118,7 +118,7 @@ export default function MyAssets() {
               </div>
               <div className="px-4 py-3">
                 <p className="text-xs text-slate-400 mb-1">{zh ? "到期时间" : "Expires At"}</p>
-                <p className="text-sm text-amber-600 font-medium">2026-06-01 <span className="text-xs text-amber-400">({zh ? "剩余 75 天" : "75 days left"})</span></p>
+                <p className="text-sm text-amber-600 font-medium">2026-03-25 <span className="text-xs text-amber-400">({zh ? "剩余 7 天" : "7 days left"})</span></p>
               </div>
             </div>
           </div>
