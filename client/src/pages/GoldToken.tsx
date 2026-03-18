@@ -10,8 +10,8 @@ import Footer from "@/components/Footer";
 
 // ─── 静态数据 ────────────────────────────────────────────────────────────────
 
-const GLD_NAV = 236.48; // GLD ETF 价格（USD）
-const RGLD_NAV = 236.48; // rGLD 1:1 挂钩 GLD
+const GLD_NAV = 459.00; // GLD ETF 价格（USD）
+const RGLD_NAV = 459.00; // rGLD 1:1 挂钩 GLD
 const STAKING_APY = 8.0; // 年化 8%
 const STAKING_LOCK_DAYS = 30;
 
@@ -81,8 +81,8 @@ export default function GoldToken() {
             {/* 右侧关键数据 */}
             <div className="flex gap-4 shrink-0">
               <div className="bg-white rounded-2xl px-4 py-3 border border-amber-100 shadow-sm text-center min-w-[90px]">
-                <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">rGLD NAV</p>
-                <p className="text-lg font-extrabold text-slate-900 font-mono">${RGLD_NAV.toFixed(2)}</p>
+                <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">rGLD Price</p>
+                <p className="text-lg font-extrabold text-slate-900 font-mono">${RGLD_NAV.toFixed(0)}</p>
               </div>
               <div className="bg-white rounded-2xl px-4 py-3 border border-amber-100 shadow-sm text-center min-w-[90px]">
                 <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">{zh ? "底层 ETF" : "Underlying"}</p>
@@ -147,7 +147,7 @@ export default function GoldToken() {
               {/* 三指标 */}
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "rGLD NAV", value: `$${RGLD_NAV.toFixed(2)}`, color: "text-slate-800" },
+                  { label: "rGLD Price", value: `$${RGLD_NAV.toFixed(0)}`, color: "text-slate-800" },
                   { label: zh ? "底层 ETF" : "Underlying ETF", value: "GLD", color: "text-amber-600" },
                   { label: zh ? "挂钩比例" : "Peg Ratio", value: "1 : 1", color: "text-emerald-600" },
                 ].map(item => (
