@@ -660,7 +660,7 @@ export default function VaultApp() {
             </button>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <p className="text-slate-500 text-sm">
             {zh
               ? "AI 驱动管理 · 每周现金派息 · 指数底仓增值"
@@ -670,6 +670,13 @@ export default function VaultApp() {
             <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
               {zh ? "查看产品详情" : "View product details"}
               <ChevronRight size={14} />
+            </button>
+          </Link>
+          <span className="text-slate-200">|</span>
+          <Link href="/vault/gold">
+            <button className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 text-white text-xs font-bold shadow-sm hover:from-yellow-500 hover:to-amber-600 transition-all">
+              <span className="w-4 h-4 rounded-full bg-white/30 flex items-center justify-center text-[9px] font-bold">Au</span>
+              {zh ? "黄金代币 rGLD →" : "Gold Token rGLD →"}
             </button>
           </Link>
         </div>
