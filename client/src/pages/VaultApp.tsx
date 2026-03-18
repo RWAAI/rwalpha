@@ -611,13 +611,13 @@ export default function VaultApp() {
             ) : (
               <>
                 <button
-                  onClick={() => { window.location.href = getLoginUrl(); }}
+                  onClick={() => setAuthModal({ open: true, mode: 'login' })}
                   className="px-4 py-1.5 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
                 >
                   {zh ? '登录' : 'Login'}
                 </button>
                 <button
-                  onClick={() => { window.location.href = getLoginUrl(); }}
+                  onClick={() => setAuthModal({ open: true, mode: 'register' })}
                   className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-sm font-semibold text-white transition-all duration-200 active:scale-95"
                 >
                   {zh ? '注册' : 'Register'}
@@ -727,7 +727,7 @@ export default function VaultApp() {
                 {zh ? "了解详情" : "Learn more"}
               </button>
               <button
-                onClick={() => { window.location.href = getLoginUrl(); }}
+                onClick={() => setAuthModal({ open: true, mode: 'register' })}
                 className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-900 text-sm font-bold transition-all active:scale-95 shadow-sm shadow-amber-200"
               >
                 {zh ? "立即领取 →" : "Claim Now →"}
