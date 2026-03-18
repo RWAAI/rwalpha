@@ -49,7 +49,7 @@ export default function GoldToken() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      <NavBar activeTab="vault" />
+      <NavBar activeTab="gold-token" />
 
       {/* ── 头部说明 ─────────────────────────────────────────────────────── */}
       <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 border-b border-amber-100">
