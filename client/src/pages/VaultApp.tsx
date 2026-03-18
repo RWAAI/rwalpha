@@ -302,9 +302,17 @@ export default function VaultApp() {
   const [weeklyDivModal, setWeeklyDivModal] = useState(false);
   const [, navigate] = useLocation();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
-  // 真实登录状态（OAuth）
-  const { user, isAuthenticated, logout } = useAuth();
-  const isLoggedIn = isAuthenticated;
+  // 真实登录状态（OAuth）+ 模拟登录状态
+  const { user, isAuthenticated, logout: oauthLogout } = useAuth();
+  const [mockLoggedIn, setMockLoggedIn] = useState(() => localStorage.getItem('mock-logged-in') === '1');
+  const isLoggedIn = isAuthenticated || mockLoggedIn;
+  const mockUser = mockLoggedIn && !isAuthenticated ? { name: 'Demo User', email: 'demo@rwalpha.ai' } : null;
+  const displayUser = user ?? mockUser;
+  const logout = async () => {
+    localStorage.removeItem('mock-logged-in');
+    setMockLoggedIn(false);
+    if (isAuthenticated) await oauthLogout();
+  };
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const zh = lang === "zh";
@@ -578,9 +586,9 @@ export default function VaultApp() {
                 >
                   {/* 头像 */}
                   <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                    {user?.name ? user.name.slice(0, 2).toUpperCase() : 'U'}
+                    {displayUser?.name ? displayUser.name.slice(0, 2).toUpperCase() : 'U'}
                   </div>
-                  <span className="text-sm font-medium text-slate-700 max-w-[80px] truncate">{user?.name ?? user?.email ?? 'User'}</span>
+                  <span className="text-sm font-medium text-slate-700 max-w-[80px] truncate">{displayUser?.name ?? displayUser?.email ?? 'User'}</span>
                   <ChevronDown size={13} className={`text-slate-400 transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -1038,7 +1046,11 @@ export default function VaultApp() {
         open={authModal.open}
         initialMode={authModal.mode}
         onClose={() => setAuthModal(prev => ({ ...prev, open: false }))}
-        onLoginSuccess={() => { setAuthModal(prev => ({ ...prev, open: false })); }}
+        onLoginSuccess={() => {
+          localStorage.setItem('mock-logged-in', '1');
+          setMockLoggedIn(true);
+          setAuthModal(prev => ({ ...prev, open: false }));
+        }}
         zh={zh}
       />
     </div>
