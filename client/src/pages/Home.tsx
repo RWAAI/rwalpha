@@ -343,8 +343,15 @@ const App = () => {
           {T.sellingPoints.map((item, i) => (
             <div key={i} className={`flex items-start gap-3 p-4 rounded-2xl border ${t.sp[i].bg} transition-colors duration-300`}>
               <div className="mt-0.5 shrink-0">{sellingIcons[i]}</div>
-              <div>
-                <p className={`text-sm font-bold ${t.title}`}>{item.title}</p>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-1">
+                  <p className={`text-sm font-bold ${t.title}`}>{item.title}</p>
+                  {i === 2 && (
+                    <Link to="/how-it-works" className="shrink-0 text-[10px] text-violet-500 hover:text-violet-700 font-medium whitespace-nowrap">
+                      {lang === 'zh' ? '如何实现 →' : 'How? →'}
+                    </Link>
+                  )}
+                </div>
                 <p className={`text-[11px] ${t.sub} mt-0.5 leading-relaxed`}>{item.desc}</p>
               </div>
             </div>
