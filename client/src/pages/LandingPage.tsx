@@ -44,7 +44,7 @@ const COPY = {
       { label: '年化派息率', value: '~19.93%', color: 'emerald' },
       { label: '年化总回报', value: '+29.72%', color: 'indigo' },
       { label: 'AI 状态', value: '● 运行中', color: 'cyan' },
-      { label: '本周派息', value: '$0.502 / rINDEX', color: 'amber' },
+      { label: '本周派息', value: '$0.502 / rNDX', color: 'amber' },
     ],
   },
   en: {
@@ -80,7 +80,7 @@ const COPY = {
       { label: 'Annual Yield', value: '~19.93%', color: 'emerald' },
       { label: 'Total Return', value: '+29.72%', color: 'indigo' },
       { label: 'AI Status', value: '● Active', color: 'cyan' },
-      { label: 'Weekly Dist.', value: '$0.502 / rINDEX', color: 'amber' },
+      { label: 'Weekly Dist.', value: '$0.502 / rNDX', color: 'amber' },
     ],
   },
 } as const;
@@ -110,7 +110,7 @@ function Counter({ to, prefix = '', suffix = '', decimals = 0 }: { to: number; p
 
 // ── Scrolling data ticker ─────────────────────────────────────────
 function DataTicker() {
-  const items = ['NVDY +73.84%', 'QQQI +14.49%', 'QQQM +25.17%', 'VGT +28.97%', 'rINDEX NAV $130.99', 'AI Signal: HOLD', 'Weekly Dist: $0.502 USDT'];
+  const items = ['NVDY +73.84%', 'QQQI +14.49%', 'QQQM +25.17%', 'VGT +28.97%', 'rNDX NAV $130.99', 'AI Signal: HOLD', 'Weekly Dist: $0.502 USDT'];
   return (
     <div className="overflow-hidden w-full">
       <div className="flex gap-10 whitespace-nowrap" style={{ animation: 'ticker 20s linear infinite' }}>
@@ -283,7 +283,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-1 flex items-center justify-center gap-3 flex-wrap">
-              {lang === 'zh' ? 'RWAlpha 指数旗舰金库' : 'RWAlpha Index Prime Vault'}
+              {lang === 'zh' ? 'RWAlpha 指数旗舰金库 1' : 'RWAlpha Index Prime Vault 1'}
               <span className="inline-flex items-center px-3 py-1 rounded-md bg-emerald-600 text-white text-sm font-bold tracking-wide">{lang === 'zh' ? 'AI 赋能' : 'AI Powered'}</span>
             </h2>
             <p className="text-center text-xs font-bold tracking-widest text-slate-400 uppercase mt-3">{T.featuresLabel}</p>

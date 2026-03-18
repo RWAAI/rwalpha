@@ -181,8 +181,8 @@ export default function Insights() {
             </h2>
             <p className="text-indigo-200 text-sm mb-6">
               {zh
-                ? "rINDEX 金库已上线，AI 驱动管理 · 每周现金派息 · 指数底仓增值"
-                : "rINDEX Vault is live — AI management, weekly dividends, index core growth"}
+                ? "rNDX 金库已上线，AI 驱动管理 · 每周现金派息 · 指数底仓增值"
+                : "rNDX Vault is live — AI management, weekly dividends, index core growth"}
             </p>
             <a
               href="/vault"

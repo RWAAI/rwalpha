@@ -8,7 +8,7 @@ import { Wallet, TrendingUp, Calendar, AlertTriangle, ShieldCheck, DollarSign, A
 // ─── i18n ────────────────────────────────────────────────────────────────────
 const i18n = {
   zh: {
-    vaultTitle: 'RWAlpha 指数旗舰金库',
+    vaultTitle: 'RWAlpha 指数旗舰金库 1',
     vaultSub: 'AI 驱动管理 · 每周现金派息 · 指数底仓增值',
     aiEnabled: 'AI 赋能',
     principal: '本金计算器',
@@ -91,7 +91,7 @@ const i18n = {
     presets: (v: number) => `${v / 10000}万`,
   },
   en: {
-    vaultTitle: 'RWAlpha Index Prime Vault',
+    vaultTitle: 'RWAlpha Index Prime Vault 1',
     vaultSub: 'AI-Driven Management · Weekly Dividend · Index Core Position',
     aiEnabled: 'AI Powered',
     principal: 'Principal Calculator',

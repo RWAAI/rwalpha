@@ -2,7 +2,7 @@
  * VaultApp — Launch App 双金库页面
  * 设计风格：白色底色、简洁卡片、绿色/金色强调色
  * 布局：顶部导航（Logo + Connect Wallet）+ 双金库左右分栏
- *   左侧：本金金库（rINDEX 持仓、NAV、走势图、赎回/认购）
+ *   左侧：本金金库（rNDX 持仓、NAV、走势图、赎回/认购）
  *   右侧：收益金库（年度派息率、可领收益、立即领取、自动复利、派息明细）
  */
 
@@ -465,8 +465,8 @@ export default function VaultApp() {
             </div>
             <p className="text-slate-600 text-sm leading-relaxed mb-4">
               {zh
-                ? "每 1 枚 rINDEX token 对应 1 单位底层一篮子ETF的份额，底层资产持仓数据链上实时可查。"
-                : "Each rINDEX token corresponds to 1 unit of the underlying ETF basket. On-chain reserve data is publicly verifiable in real time."}
+                ? "每 1 枚 rNDX token 对应 1 单位底层一篮子ETF的份额，底层资产持仓数据链上实时可查。"
+                : "Each rNDX token corresponds to 1 unit of the underlying ETF basket. On-chain reserve data is publicly verifiable in real time."}
             </p>
             <a href="#" className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors" onClick={e => e.preventDefault()}>
               {zh ? "查看链上储备证明" : "View On-chain Reserve Proof"}
@@ -509,7 +509,7 @@ export default function VaultApp() {
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
         <div className="flex items-center gap-3 mb-1 flex-wrap">
           <h1 className="text-2xl font-bold text-slate-900">
-            {zh ? "RWAlpha 指数旗舰金库" : "RWAlpha Index Prime Vault"}
+            {zh ? "RWAlpha 指数旗舰金库 1" : "RWAlpha Index Prime Vault 1"}
           </h1>
           <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] rounded font-bold uppercase tracking-wider">
             {zh ? "AI 赋能" : "AI Powered"}
@@ -642,12 +642,12 @@ export default function VaultApp() {
               {/* 持仓 + 本金价值 */}
               <div className="flex items-end justify-between gap-2">
                 <div>
-                  <p className="text-xs text-slate-400 mb-1">{zh ? "rINDEX 持仓" : "rINDEX Holdings"}</p>
+                  <p className="text-xs text-slate-400 mb-1">{zh ? "rNDX 持仓" : "rNDX Holdings"}</p>
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
                       {holdings.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                     </span>
-                    <span className="text-slate-400 font-semibold text-lg">rINDEX</span>
+                    <span className="text-slate-400 font-semibold text-lg">rNDX</span>
                   </div>
                 </div>
                 <div className="text-right">
@@ -659,7 +659,7 @@ export default function VaultApp() {
               {/* 三指标 */}
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "rINDEX NAV", value: `$${nav.toFixed(2)}`, green: false },
+                  { label: "rNDX NAV", value: `$${nav.toFixed(2)}`, green: false },
                   { label: zh ? "24H 变动" : "24H Change", value: `${nav24hChange >= 0 ? '+' : ''}${nav24hChange.toFixed(2)}%`, green: nav24hChange >= 0 },
                   { label: zh ? "年化总回报（含股息）" : "Total Return (incl. Div)", value: `+${annualTotalReturn.toFixed(2)}%`, green: true },
                 ].map(item => (
@@ -730,7 +730,7 @@ export default function VaultApp() {
                       ) : (
                         <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-xl px-2.5 py-1">
                           <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[9px] text-white font-bold">R</div>
-                          <span className="text-sm font-bold text-emerald-700">rINDEX</span>
+                          <span className="text-sm font-bold text-emerald-700">rNDX</span>
                         </div>
                       )}
                       <div className="flex items-center gap-1 text-[10px] text-slate-400">
@@ -762,7 +762,7 @@ export default function VaultApp() {
                       {tradeMode === "buy" ? (
                         <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-xl px-2.5 py-1">
                           <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[9px] text-white font-bold">R</div>
-                          <span className="text-sm font-bold text-emerald-700">rINDEX</span>
+                          <span className="text-sm font-bold text-emerald-700">rNDX</span>
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5 bg-slate-100 rounded-xl px-2.5 py-1">
@@ -792,7 +792,7 @@ export default function VaultApp() {
                       : !spendAmt || parseFloat(spendAmt) <= 0
                         ? (zh ? "输入金额" : "Enter Amount")
                         : tradeMode === "buy"
-                          ? (zh ? `认购 ${(parseFloat(spendAmt)/nav).toFixed(4)} rINDEX` : `Buy ${(parseFloat(spendAmt)/nav).toFixed(4)} rINDEX`)
+                          ? (zh ? `认购 ${(parseFloat(spendAmt)/nav).toFixed(4)} rNDX` : `Buy ${(parseFloat(spendAmt)/nav).toFixed(4)} rNDX`)
                           : (zh ? `赎回 获得 ${(parseFloat(spendAmt)*nav).toFixed(2)} USDC` : `Redeem → ${(parseFloat(spendAmt)*nav).toFixed(2)} USDC`)
                     }
                   </button>
@@ -875,7 +875,7 @@ export default function VaultApp() {
                     valueClass: "text-emerald-600 font-mono font-bold",
                   },
                   {
-                    label: zh ? `每 rINDEX 派息（周度）` : "rINDEX Weekly Yield",
+                    label: zh ? `每 rNDX 派息（周度）` : "rNDX Weekly Yield",
                     value: `$${latestNvdyPerToken.toFixed(3)} USDT`,
                     sub: `+${((latestNvdyPerToken / nav) * 100).toFixed(2)}%`,
                     valueClass: "text-amber-500 font-mono font-bold",
