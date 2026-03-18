@@ -21,22 +21,22 @@ const COPY = {
     aiHowTitle: 'AI 如何工作',
     aiSteps: [
       {
-        step: '01', title: '波动性分析（Volatility Analysis）',
+        step: '01', title: '波动性分析',
         desc: '持续追踪底层资产的隐含波动率与历史波动率，识别最优期权执行时机。',
         items: ['实时隐含波动率监控', '历史波动率对比分析', '最优执行时机识别'],
       },
       {
-        step: '02', title: '期权策略优化（Option Strategy Optimization）',
+        step: '02', title: '期权策略优化',
         desc: '基于波动率模型，动态选择最优的期权策略（如备兑看涨期权），最大化期权费收入。',
         items: ['动态策略选择', '备兑看涨期权优化', '期权费收入最大化'],
       },
       {
-        step: '03', title: '投资组合优化（Portfolio Optimization）',
+        step: '03', title: '投资组合优化',
         desc: '综合多个资产的相关性与风险特征，优化整体投资组合的风险收益比。',
         items: ['多资产相关性分析', '风险收益比优化', '动态权重调整'],
       },
       {
-        step: '04', title: '自动再平衡（Auto Rebalancing）',
+        step: '04', title: '自动再平衡',
         desc: '当市场条件发生变化时，自动调整各资产权重，确保策略始终处于最优状态。',
         items: ['权重偏离实时预警', '分红智能再投资', '再平衡记录全程留档'],
       },
