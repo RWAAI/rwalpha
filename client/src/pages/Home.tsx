@@ -30,9 +30,9 @@ const i18n = {
     navNote: '包含 NAV 增长 + 现金派息',
     cashflowTitle: '现金流周历 (月度模拟)',
     week: (n: number) => `第 ${n} 周`,
-    nvdyDist: 'NVDY 派息',
-    nvdyQqqiDist: 'NVDY + QQQI 派息',
-    cashflowNote: '前三周仅 NVDY，第四周叠加 QQQI。',
+    nvdyDist: '收益资产 A 派息',
+    nvdyQqqiDist: '收益资产 A + B 派息',
+    cashflowNote: '前三周仅收益资产 A，第四周叠加收益资产 B。',
     volatility: '波动率: 低',
     allocationTitle: '资产配比 (NAV)',
     aiAdjustedLabel: 'AI 调仓后',
@@ -52,38 +52,38 @@ const i18n = {
     signalUpdated: '信号更新于 2026-03-14 22:00 · 下次更新 23:00',
     signals: [
       { label: '市场情绪', value: '谨慎偏多' },
-      { label: 'NVDY 波动风险', value: '中等' },
-      { label: 'QQQI 期权溢价', value: '偏高' },
-      { label: 'QQQM/VGT 动量', value: '偏强' },
+      { label: '收益资产 A 波动风险', value: '中等' },
+      { label: '收益资产 B 期权溢价', value: '偏高' },
+      { label: '指数底仓动量', value: '偏强' },
       { label: '建议调仓方向', value: '维持当前配比' },
     ],
     aiLogTitle: 'AI 调仓日志',
     logs: [
-      { date: '2026-03-10', icon: '⚖️', action: 'NVDY 波动率上升，权重从 25% 临时降至 22%，差额补入 QQQM', tag: '调仓' },
-      { date: '2026-03-07', icon: '💰', action: '本周派息 $283，AI 自动将 60% 再投入 QQQI', tag: '再投资' },
-      { date: '2026-03-03', icon: '📊', action: '期权溢价回升至历史均值 +1σ，NVDY 权重恢复至目标位 22%', tag: '调仓' },
-      { date: '2026-02-24', icon: '🛡️', action: '市场波动加剧，临时将 VGT 权重上调 2%，增强防御', tag: '风控' },
+      { date: '2026-03-10', icon: '⚖️', action: '收益资产 A 波动率上升，权重从 25% 临时降至 22%，差额补入指数底仓', tag: '调仓' },
+      { date: '2026-03-07', icon: '💰', action: '本周派息 $283，AI 自动将 60% 再投入收益资产 B', tag: '再投资' },
+      { date: '2026-03-03', icon: '📊', action: '期权溢价回升至历史均值 +1σ，收益资产 A 权重恢复至目标位 22%', tag: '调仓' },
+      { date: '2026-02-24', icon: '🛡️', action: '市场波动加剧，临时将科技底仓权重上调 2%，增强防御', tag: '风控' },
     ],
     logTags: { '调仓': '调仓', '再投资': '再投资', '风控': '风控' },
     aiHowTitle: 'AI 如何工作',
     aiSteps: [
-      { step: '01', title: '实时监控', desc: '持续追踪 NVDY/QQQI 隐含波动率与期权溢价，同步监控 QQQM/VGT 动量信号及全组合相关性变化', items: ['NVDY & QQQI IV 波动率', 'QQQM/VGT 动量指数', '全组合相关性矩阵'] },
-      { step: '02', title: '智能判断', desc: '当任一持仓指标偏离阈值时触发调仓信号，综合四个资产的历史数据评估最优配比', items: ['NVDY 波动率超阈值触发', 'QQQI 溢价偏离均值', 'QQQM/VGT 动量反转检测'] },
-      { step: '03', title: '自动执行', desc: '在风控框架内自动调整 NVDY/QQQI/QQQM/VGT 四个资产权重，并将派息收益按策略再分配', items: ['四资产仓位自动再平衡', '派息智能再投资', '风控边界强制执行'] },
+      { step: '01', title: '实时监控', desc: '持续追踪收益资产隐含波动率与期权溢价，同步监控指数底仓动量信号及全组合相关性变化', items: ['收益资产 A/B IV 波动率', '指数底仓动量指数', '全组合相关性矩阵'] },
+      { step: '02', title: '智能判断', desc: '当任一持仓指标偏离阈值时触发调仓信号，综合四个资产的历史数据评估最优配比', items: ['收益资产 A 波动率超阈值触发', '收益资产 B 溢价偏离均值', '指数底仓动量反转检测'] },
+      { step: '03', title: '自动执行', desc: '在风控框架内自动调整四个资产权重，并将派息收益按策略再分配', items: ['四资产仓位自动再平衡', '派息智能再投资', '风控边界强制执行'] },
     ],
-    fn1: { strong: '提示：', text: '本测算基于历史派息水平。NVDY 属于备兑期权 ETF，其分红受英伟达股价波动影响较大，金额并非固定。建议将多出的现金流用于再投资以抵御潜在净值侵蚀。' },
-    fn2: { strong: '风控：', text: '50% 底仓（QQQM+VGT）不参与期权卖出，保留了核心资产的上涨潜力，使组合更具韧性。' },
+    fn1: { strong: '提示：', text: '本测算基于历史派息水平。收益资产 A 属于备兑期权 ETF，其分红受底层科技龙头股价波动影响较大，金额并非固定。建议将多出的现金流用于再投资以抵御潜在净值侵蚀。' },
+    fn2: { strong: '风控：', text: '50% 指数底仓不参与期权卖出，保留了核心资产的上涨潜力，使组合更具韧性。' },
     sellingPoints: [
-      { title: '每周派息',     desc: 'NVDY 每周到账，英伟达期权收益化为稳定现金流' },
-      { title: '指数底仓',     desc: '纳指100底仓（50% QQQM+VGT）保留核心资产上涨潜力' },
+      { title: '每周派息',     desc: '科技期权收益 ETF 每周到账，科技龙头期权收益化为稳定现金流' },
+      { title: '指数底仓',     desc: '指数底仓（50% 核心资产）保留核心资产上涨潜力' },
       { title: 'AI 驱动管理', desc: 'AI 实时监控市场，自动优化仓位与再分配' },
       { title: '稳健增长',     desc: '派息 + NAV 双轨驱动，复利加速资产增长' },
     ],
     portfolio: [
-      { aiReason: 'NVDY 隐含波动率上升至历史高位，AI 触发减仓以降低尾部风险', tagline: '年化 73% 派息率，NVDA 期权收益每周直接落袋' },
-      { aiReason: 'QQQI 期权溢价扩大，AI 增配以捕获更高的权利金收益', tagline: '纳指底仓 + 月度派息，91.8 亿 AUM 背书稳健增收' },
-      { aiReason: '纳指动量信号转强，AI 小幅增配底仓以跟踪上涨弹性', tagline: '低费率纳指 ETF，712 亿规模底仓，25% 年化稳健增长' },
-      { aiReason: '科技板块走势平稳，AI 维持当前配比不作调整', tagline: '全美科技一键持有，1100 亿规模穿越周期的压舱底仓' },
+      { aiReason: '收益资产 A 隐含波动率上升至历史高位，AI 触发减仓以降低尾部风险', tagline: '年化 73% 派息率，科技龙头期权收益每周直接落袋' },
+      { aiReason: '收益资产 B 期权溢价扩大，AI 增配以捕获更高的权利金收益', tagline: '纳指底仓 + 月度派息，超大规模 AUM 背书稳健增收' },
+      { aiReason: '纳指动量信号转强，AI 小幅增配底仓以跟踪上涨弹性', tagline: '低费率纳指指数 ETF，超大规模底仓，25% 年化稳健增长' },
+      { aiReason: '科技板块走势平稳，AI 维持当前配比不作调整', tagline: '全美科技一键持有，超大规模穿越周期的压舱底仓' },
     ],
     darkBtn: '深色模式',
     lightBtn: '浅色模式',
@@ -113,9 +113,9 @@ const i18n = {
     navNote: 'Includes NAV Growth + Dividend',
     cashflowTitle: 'Cash Flow Calendar (Monthly)',
     week: (n: number) => `Week ${n}`,
-    nvdyDist: 'NVDY Dividend',
-    nvdyQqqiDist: 'NVDY + QQQI Dividend',
-    cashflowNote: 'Weeks 1–3: NVDY only. Week 4: NVDY + QQQI combined.',
+    nvdyDist: 'Tech Options Income ETF Dividend',
+    nvdyQqqiDist: 'Income ETF A + B Dividend',
+    cashflowNote: 'Weeks 1–3: Income ETF A only. Week 4: Income ETF A + B combined',
     volatility: 'Volatility: Low',
     allocationTitle: 'Asset Allocation (NAV)',
     aiAdjustedLabel: 'Post AI Rebalance',
@@ -135,38 +135,38 @@ const i18n = {
     signalUpdated: 'Updated 2026-03-14 22:00 · Next update 23:00',
     signals: [
       { label: 'Market Sentiment', value: 'Cautiously Bullish' },
-      { label: 'NVDY Vol. Risk', value: 'Moderate' },
-      { label: 'QQQI Options Premium', value: 'Elevated' },
-      { label: 'QQQM/VGT Momentum', value: 'Positive' },
+      { label: 'Income Asset A Vol. Risk', value: 'Moderate' },
+      { label: 'Income Asset B Options Premium', value: 'Elevated' },
+      { label: 'Index Core Momentum', value: 'Positive' },
       { label: 'Rebalance Signal', value: 'Hold Current' },
     ],
     aiLogTitle: 'AI Rebalancing Log',
     logs: [
-      { date: '2026-03-10', icon: '⚖️', action: 'NVDY vol. spiked; weight trimmed 25% → 22% temporarily, proceeds added to QQQM', tag: 'Rebalance' },
-      { date: '2026-03-07', icon: '💰', action: 'Weekly dist. $283 received; AI auto-reinvested 60% into QQQI', tag: 'Reinvest' },
-      { date: '2026-03-03', icon: '📊', action: 'Options premium rebounded to +1σ; NVDY weight restored to target 22%', tag: 'Rebalance' },
-      { date: '2026-02-24', icon: '🛡️', action: 'Market turbulence; VGT weight raised +2% temporarily for defense', tag: 'Risk Ctrl' },
+      { date: '2026-03-10', icon: '⚖️', action: 'Income Asset A vol. spiked; weight trimmed 25% → 22% temporarily, proceeds added to Index Core', tag: 'Rebalance' },
+      { date: '2026-03-07', icon: '💰', action: 'Weekly dist. $283 received; AI auto-reinvested 60% into Income Asset B', tag: 'Reinvest' },
+      { date: '2026-03-03', icon: '📊', action: 'Options premium rebounded to +1σ; Income Asset A weight restored to target 22%', tag: 'Rebalance' },
+      { date: '2026-02-24', icon: '🛡️', action: 'Market turbulence; Tech Core weight raised +2% temporarily for defense', tag: 'Risk Ctrl' },
     ],
     logTags: { 'Rebalance': 'Rebalance', 'Reinvest': 'Reinvest', 'Risk Ctrl': 'Risk Ctrl' },
     aiHowTitle: 'How AI Works',
     aiSteps: [
-      { step: '01', title: 'Monitor', desc: 'Continuously tracks NVDY/QQQI implied volatility & options premium, plus QQQM/VGT momentum signals and full-portfolio correlation matrix', items: ['NVDY & QQQI IV Volatility', 'QQQM/VGT Momentum Index', 'Portfolio Correlation Matrix'] },
-      { step: '02', title: 'Analyze', desc: 'Triggers rebalancing signals when any holding deviates from thresholds, evaluating optimal allocation across all four assets', items: ['NVDY Vol. Threshold Trigger', 'QQQI Premium Deviation Alert', 'QQQM/VGT Momentum Reversal'] },
-      { step: '03', title: 'Execute', desc: 'Automatically adjusts weights across NVDY/QQQI/QQQM/VGT within risk boundaries and redistributes dividend income per strategy', items: ['4-Asset Auto Rebalance', 'Smart Dividend Reinvest', 'Risk Boundary Enforcement'] },
+      { step: '01', title: 'Monitor', desc: 'Continuously tracks income assets implied volatility & options premium, plus index core momentum signals and full-portfolio correlation matrix', items: ['Income Asset A/B IV Volatility', 'Index Core Momentum Index', 'Portfolio Correlation Matrix'] },
+      { step: '02', title: 'Analyze', desc: 'Triggers rebalancing signals when any holding deviates from thresholds, evaluating optimal allocation across all four assets', items: ['Income Asset A Vol. Threshold Trigger', 'Income Asset B Premium Deviation Alert', 'Index Core Momentum Reversal'] },
+      { step: '03', title: 'Execute', desc: 'Automatically adjusts weights across four assets within risk boundaries and redistributes dividend income per strategy', items: ['4-Asset Auto Rebalance', 'Smart Dividend Reinvest', 'Risk Boundary Enforcement'] },
     ],
-    fn1: { strong: 'Disclaimer: ', text: 'Projections are based on historical dividend levels. NVDY is a covered-call ETF; dividends are subject to NVDA price volatility and are not guaranteed. Consider reinvesting excess cash flow to offset potential NAV erosion.' },
-    fn2: { strong: 'Risk Control: ', text: 'The 50% core position (QQQM+VGT) does not participate in options writing, preserving upside potential and making the portfolio more resilient.' },
+    fn1: { strong: 'Disclaimer: ', text: 'Projections are based on historical dividend levels. Income Asset A is a covered-call ETF; dividends are subject to underlying tech stock price volatility and are not guaranteed. Consider reinvesting excess cash flow to offset potential NAV erosion.' },
+    fn2: { strong: 'Risk Control: ', text: 'The 50% index core position does not participate in options writing, preserving upside potential and making the portfolio more resilient.' },
     sellingPoints: [
-      { title: 'Weekly Income',     desc: 'NVDY turns NVIDIA options premium into weekly cash flow, paid every week' },
-      { title: 'Index Core',        desc: 'Nasdaq 100 core (50% QQQM+VGT) preserves long-term capital appreciation' },
+      { title: 'Weekly Income',     desc: 'Tech Options Income ETF turns tech giant options premium into weekly cash flow, paid every week' },
+      { title: 'Index Core',        desc: 'Index core (50% core assets) preserves long-term capital appreciation' },
       { title: 'AI Rebalancing',    desc: 'AI monitors markets in real-time and auto-optimizes allocations' },
       { title: 'Steady Growth',     desc: 'Dual-engine: dividends + NAV growth compound over time' },
     ],
     portfolio: [
-      { aiReason: 'NVDY implied vol. hit historical high; AI triggered trim to reduce tail risk', tagline: '73% annualized yield — NVDA options premium paid weekly' },
-      { aiReason: 'QQQI options premium widened; AI added exposure to capture higher premium income', tagline: 'Nasdaq core + monthly div. — $9.18B AUM backs steady returns' },
-      { aiReason: 'Nasdaq momentum signal strengthened; AI slightly increased core position for upside capture', tagline: 'Low-cost Nasdaq ETF — $71.25B core, 25% annualized growth' },
-      { aiReason: 'Tech sector stable; AI maintains current allocation without adjustment', tagline: 'All-in US tech giants — $110.52B anchor position across cycles' },
+      { aiReason: 'Income Asset A implied vol. hit historical high; AI triggered trim to reduce tail risk', tagline: '73% annualized yield — tech giant options premium paid weekly' },
+      { aiReason: 'Income Asset B options premium widened; AI added exposure to capture higher premium income', tagline: 'Nasdaq core + monthly div. — large-scale AUM backs steady returns' },
+      { aiReason: 'Nasdaq momentum signal strengthened; AI slightly increased core position for upside capture', tagline: 'Low-cost Nasdaq Index ETF — large-scale core, 25% annualized growth' },
+      { aiReason: 'Tech sector stable; AI maintains current allocation without adjustment', tagline: 'All-in US tech giants — large-scale anchor position across cycles' },
     ],
     darkBtn: 'Dark Mode',
     lightBtn: 'Light Mode',
@@ -198,10 +198,10 @@ const App = () => {
   // ETF 自身费率已内含于净值，管理费 0.80%/年由金库额外收取
   const MGMT_FEE = 0.80; // RWAlpha 管理费 %
   const portfolioBase = [
-    { name: 'NVDY', weight: 0.22,   aum: '13.9亿', aumEn: '$1.39B',   price: 13.52, expenseRatio: 1.27, yield: 73.84, totalReturn: 50.38, freq: 'Weekly',    aiAdjust: +3.2 },
-    { name: 'QQQI', weight: 0.29,   aum: '91.8亿', aumEn: '$9.18B',   price: 51.47, expenseRatio: 0.68, yield: 14.49, totalReturn: 21.86, freq: 'Monthly',   aiAdjust: +1.5 },
-    { name: 'QQQM', weight: 0.29,  aum: '712.5亿', aumEn: '$71.25B', price: 244.45, expenseRatio: 0.15, yield: 0.52,  totalReturn: 25.17, freq: 'Quarterly', aiAdjust: +0.8 },
-    { name: 'VGT',  weight: 0.2000, aum: '1105.2亿', aumEn: '$110.52B', price: 714.44, expenseRatio: 0.09, yield: 0.43,  totalReturn: 28.97, freq: 'Quarterly', aiAdjust: 0.0  },
+    { name: lang === 'zh' ? '科技期权收益 ETF' : 'Tech Option Income ETF', weight: 0.22,   aum: '13.9亿', aumEn: '$1.39B',   price: 13.52, expenseRatio: 1.27, yield: 73.84, totalReturn: 50.38, freq: 'Weekly',    aiAdjust: +3.2 },
+    { name: lang === 'zh' ? '纳指期权增强 ETF' : 'Nasdaq Option Enhanced ETF', weight: 0.29,   aum: '91.8亿', aumEn: '$9.18B',   price: 51.47, expenseRatio: 0.68, yield: 14.49, totalReturn: 21.86, freq: 'Monthly',   aiAdjust: +1.5 },
+    { name: lang === 'zh' ? '纳指100指数 ETF' : 'Nasdaq 100 Index ETF', weight: 0.29,  aum: '712.5亿', aumEn: '$71.25B', price: 244.45, expenseRatio: 0.15, yield: 0.52,  totalReturn: 25.17, freq: 'Quarterly', aiAdjust: +0.8 },
+    { name: lang === 'zh' ? '科技板块指数 ETF' : 'Tech Sector Index ETF', weight: 0.2000, aum: '1105.2亿', aumEn: '$110.52B', price: 714.44, expenseRatio: 0.09, yield: 0.43,  totalReturn: 28.97, freq: 'Quarterly', aiAdjust: 0.0  },
   ];
 
   const portfolioData = portfolioBase.map((p, i) => ({
@@ -443,8 +443,8 @@ const App = () => {
                 {T.cashflowTitle}
               </h3>
               <div className="flex gap-2 text-[10px] font-bold">
-                <div className="flex items-center gap-1"><div className="w-2 h-2 bg-indigo-500 rounded-full"></div><span className={t.sub}>NVDY</span></div>
-                <div className="flex items-center gap-1"><div className="w-2 h-2 bg-blue-300 rounded-full"></div><span className={t.sub}>QQQI</span></div>
+                <div className="flex items-center gap-1"><div className="w-2 h-2 bg-indigo-500 rounded-full"></div><span className={t.sub}>{lang === 'zh' ? '收益资产 A' : 'Income Asset A'}</span></div>
+                <div className="flex items-center gap-1"><div className="w-2 h-2 bg-blue-300 rounded-full"></div><span className={t.sub}>{lang === 'zh' ? '收益资产 B' : 'Income Asset B'}</span></div>
               </div>
             </div>
             <div className="h-64 w-full">
@@ -556,9 +556,9 @@ const App = () => {
                         <div className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${t.muted} ${dark ? 'bg-white/5' : 'bg-slate-100'}`}>{T.weightLabel} {(item.weight * 100).toFixed(2)}%</div>
                       </div>
                       <div className={`inline-block mt-1 text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                        item.name === 'NVDY' ? (dark ? 'bg-amber-900/40 text-amber-300' : 'bg-amber-50 text-amber-700') :
-                        item.name === 'QQQI' ? (dark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-700') :
-                        item.name === 'QQQM' ? (dark ? 'bg-emerald-900/40 text-emerald-300' : 'bg-emerald-50 text-emerald-700') :
+                        item.yield > 50 ? (dark ? 'bg-amber-900/40 text-amber-300' : 'bg-amber-50 text-amber-700') :
+                        item.freq === 'Monthly' ? (dark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-700') :
+                        item.expenseRatio < 0.2 ? (dark ? 'bg-emerald-900/40 text-emerald-300' : 'bg-emerald-50 text-emerald-700') :
                         (dark ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-50 text-indigo-700')
                       }`}>{item.tagline}</div>
                     </td>
