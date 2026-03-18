@@ -1012,7 +1012,7 @@ export default function VaultApp() {
               {/* 免责声明 */}
               <p className="text-[10px] text-slate-400 leading-relaxed">
                 {zh
-                  ? "* 以上数据基于历史表现测算，业绩随市场行情波动，不作固定承诺，不构成投资建议。"
+                  ? "* 以上数据基于历史表现测算，业绩随市场行情波动。"
                   : "* Figures based on historical performance. Returns fluctuate with market conditions and are not guaranteed. Not investment advice."}
               </p>
 

@@ -437,7 +437,7 @@ const App = () => {
         {/* 免责声明 */}
         <p className={`text-[11px] ${t.muted} -mt-2`}>
           {lang === 'zh'
-            ? '* 以上数据基于历史表现测算，业绩随市场行情波动，不作固定承诺，不构成投资建议。'
+            ? '* 以上数据基于历史表现测算，业绩随市场行情波动。'
             : '* Figures based on historical performance. Returns fluctuate with market conditions and are not guaranteed. Not investment advice.'}
         </p>
 
