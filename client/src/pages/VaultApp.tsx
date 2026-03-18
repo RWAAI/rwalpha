@@ -288,7 +288,20 @@ function RebalanceLogSection({ zh, logs }: {
 
 export default function VaultApp() {
   const [connected, setConnected] = useState(false);
-  const [lang, setLang] = useState<"zh" | "en">("zh");
+  const [lang, setLang] = useState<"zh" | "en">(() => {
+    try { return localStorage.getItem('rwa-lang') === 'en' ? 'en' : 'zh'; } catch { return 'zh'; }
+  });
+  useEffect(() => {
+    const handler = () => {
+      try { setLang(localStorage.getItem('rwa-lang') === 'en' ? 'en' : 'zh'); } catch { /* noop */ }
+    };
+    window.addEventListener('rwa-lang-change', handler);
+    window.addEventListener('storage', handler);
+    return () => {
+      window.removeEventListener('rwa-lang-change', handler);
+      window.removeEventListener('storage', handler);
+    };
+  }, []);
   const [period, setPeriod] = useState<ChartPeriod>("1M");
   const [claimSuccess, setClaimSuccess] = useState(false);
   const [walletModal, setWalletModal] = useState(false);

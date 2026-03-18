@@ -185,7 +185,7 @@ export default function Insights() {
                 : "rNDX Vault is live — AI management, weekly dividends, index core growth"}
             </p>
             <a
-              href="/vault"
+              href="/dashboard"
               className="inline-flex items-center gap-2 bg-white text-indigo-600 font-semibold text-sm px-6 py-3 rounded-xl hover:bg-indigo-50 transition-colors"
             >
               {zh ? "查看金库" : "View Vault"}

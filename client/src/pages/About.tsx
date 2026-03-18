@@ -222,7 +222,21 @@ export default function About() {
     const next = zh ? "en" : "zh";
     setLang(next);
     localStorage.setItem("rwa-lang", next);
+    window.dispatchEvent(new Event('rwa-lang-change'));
   };
+
+  // 监听其他页面触发的语言切换
+  useEffect(() => {
+    const handler = () => {
+      try { setLang(localStorage.getItem('rwa-lang') === 'en' ? 'en' : 'zh'); } catch { /* noop */ }
+    };
+    window.addEventListener('rwa-lang-change', handler);
+    window.addEventListener('storage', handler);
+    return () => {
+      window.removeEventListener('rwa-lang-change', handler);
+      window.removeEventListener('storage', handler);
+    };
+  }, []);
 
   // 滚动到指定 section
   const scrollTo = (id: string) => {

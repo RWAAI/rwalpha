@@ -180,7 +180,7 @@ export default function NavBar({ activeTab = 'home', rightSlot }: NavBarProps) {
               >
                 🌐 {zh ? 'EN' : '中文'}
               </button>
-              <Link href="/vault">
+              <Link href="/dashboard">
                 <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold bg-[#38bdf8] hover:bg-[#0ea5e9] text-[#0d1117] shadow-md transition-all duration-200 active:scale-95">
                   <Zap size={14} />
                   {zh ? '进入应用' : 'Launch App'}
