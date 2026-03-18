@@ -411,9 +411,9 @@ export default function About() {
                   </thead>
                   <tbody>
                     {[
-                      { token: "rNDX", asset: zh ? "纳指100 (Nasdaq 100)" : "Nasdaq 100", freq: zh ? "每周" : "Weekly" },
-                      { token: "rSPX", asset: zh ? "标普500 (S&P 500)" : "S&P 500", freq: zh ? "每周" : "Weekly" },
-                      { token: "rGLD", asset: zh ? "实物黄金 (Gold ETF)" : "Physical Gold ETF", freq: zh ? "每周" : "Weekly" },
+                      { token: "rNDX", asset: zh ? "指数收益资产" : "Index Yield Asset", freq: zh ? "每周" : "Weekly" },
+                      { token: "rSPX", asset: zh ? "大盘指数资产" : "Broad Index Asset", freq: zh ? "每周" : "Weekly" },
+                      { token: "rGLD", asset: zh ? "避险资产" : "Safe-Haven Asset", freq: zh ? "每周" : "Weekly" },
                     ].map((row) => (
                       <tr key={row.token} className="border-b border-slate-50 hover:bg-slate-50">
                         <td className="py-3 px-3 font-mono font-bold text-indigo-600">{row.token}</td>
@@ -516,7 +516,7 @@ export default function About() {
                       zh ? "RWAlpha 智能合约" : "RWAlpha Smart Contract",
                       "FOMO Pay",
                       zh ? "传统券商" : "Broker",
-                      zh ? "底层资产 (ETF/黄金)" : "Underlying Asset (ETF/Gold)",
+                      zh ? "底层资产" : "Underlying Asset",
                     ].map((step, i, arr) => (
                       <span key={i} className="flex items-center gap-2">
                         <span className="bg-white border border-indigo-200 rounded-lg px-2 py-1">{step}</span>
@@ -813,9 +813,9 @@ export default function About() {
                 <div>
                   <p className="mb-2">{zh ? "目前 RWAlpha 提供三大核心生息产品：" : "RWAlpha currently offers three core yield products:"}</p>
                   <ul className="list-disc list-inside space-y-1">
-                    <li><strong>rNDX：</strong>{zh ? "挂钩纳指100（Nasdaq）资产表现的收益产品。" : "Yield product pegged to Nasdaq 100 performance."}</li>
-                    <li><strong>rSPX：</strong>{zh ? "挂钩标普 500（S&P 500）大盘股指数的收益产品。" : "Yield product pegged to S&P 500 large-cap index."}</li>
-                    <li><strong>rGLD：</strong>{zh ? "挂钩实物黄金（Gold）表现的生息产品，让原本不生息的避险资产也能每周产生收益。" : "Yield product pegged to physical Gold performance, enabling the traditionally non-yielding safe-haven asset to generate weekly returns."}</li>
+                    <li><strong>rNDX：</strong>{zh ? "挂钉指数资产表现的收益产品。" : "Yield product pegged to index asset performance."}</li>
+                    <li><strong>rSPX：</strong>{zh ? "挂钉大盘指数资产表现的收益产品。" : "Yield product pegged to broad market index performance."}</li>
+                    <li><strong>rGLD：</strong>{zh ? "挂钉避险资产表现的生息产品，让原本不生息的避险资产也能每周产生收益。" : "Yield product pegged to safe-haven asset performance, enabling the traditionally non-yielding asset to generate weekly returns."}</li>
                   </ul>
                 </div>
               }
