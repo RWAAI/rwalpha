@@ -77,8 +77,7 @@ const SECTIONS = [
       { id: "faq-2", zh: "双保险库如何运作？", en: "How does Dual Vault work?" },
       { id: "faq-3", zh: "收益分配频率？", en: "Yield Distribution Frequency?" },
       { id: "faq-4", zh: "提供哪些产品？", en: "What products are available?" },
-      { id: "faq-5", zh: "资金安全如何保障？", en: "How is fund safety ensured?" },
-      { id: "faq-6", zh: "AI 引擎的作用？", en: "What does the AI Engine do?" },
+
     ],
   },
 ];
@@ -820,30 +819,7 @@ export default function About() {
                 </div>
               }
             />
-            <FaqItem
-              id="faq-5"
-              question={zh ? "5. 协议的合规性与资金安全如何保障？" : "5. How is protocol compliance and fund safety ensured?"}
-              answer={
-                <div>
-                  <p className="mb-2">{zh ? "RWAlpha 依托强大的 DMZ 基础设施，构建了业界领先的双重伞型合规基金架构：" : "RWAlpha leverages powerful DMZ infrastructure to build an industry-leading dual umbrella compliance fund structure:"}</p>
-                  <ul className="list-disc list-inside space-y-1">
-                    <li><strong>{zh ? "迪拜架构" : "Dubai Structure"}：</strong>{zh ? "迪拜首个代币化基金（QCD Open-end PCC），由卡塔尔国家银行（QNB）担任基金管理人，渣打银行担任托管方。" : "Dubai's first tokenized fund (QCD Open-end PCC), with QNB as fund manager and Standard Chartered Bank as custodian."}</li>
-                    <li><strong>{zh ? "开曼架构" : "Cayman Structure"}：</strong>{zh ? "拥有完整的开曼基金会结构（RWAlpha Matrix SPC），由 DMZ 独家拥有。" : "Complete Cayman Foundation structure (RWAlpha Matrix SPC), exclusively owned by DMZ."}</li>
-                  </ul>
-                </div>
-              }
-            />
-            <FaqItem
-              id="faq-6"
-              question={zh ? "6. AI 引擎在协议中具体发挥什么作用？" : "6. What specific role does the AI Engine play?"}
-              answer={
-                <p>
-                  {zh
-                    ? "AI 引擎是驱动收益策略的大脑。它实时处理市场数据，并执行四大核心任务：波动性分析（Volatility Analysis）、期权策略优化（Option Strategy Optimization）、投资组合优化（Portfolio Optimization）以及自动再平衡（Auto Rebalancing），确保在不同市场环境下为您提供最优的资金效率与收益率。"
-                    : "The AI Engine is the brain driving yield strategies. It processes market data in real-time and executes four core tasks: Volatility Analysis, Option Strategy Optimization, Portfolio Optimization, and Auto Rebalancing — ensuring optimal capital efficiency and yield rates across different market conditions."}
-                </p>
-              }
-            />
+
 
             {/* 底部导航 */}
             <div className="mt-12 pt-6 border-t border-slate-100 flex items-center justify-between">
