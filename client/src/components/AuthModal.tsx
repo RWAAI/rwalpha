@@ -1,9 +1,10 @@
 // AuthModal.tsx
-// White-theme login/register modal matching the reference design:
-// White background, light gray input fields, teal CTA button
+// White-theme login/register modal matching the reference design.
+// All auth actions redirect to the real Manus OAuth flow.
 
-import { useState, useEffect } from 'react';
-import { Eye, EyeOff, X } from 'lucide-react';
+import { useEffect } from 'react';
+import { X } from 'lucide-react';
+import { getLoginUrl } from '@/const';
 
 type Mode = 'login' | 'register';
 
@@ -22,24 +23,17 @@ const COPY = {
     googleLogin: '使用 Google 登录',
     googleRegister: '使用 Google 注册',
     or: '或',
-    email: '邮箱',
-    emailPlaceholder: '输入您的邮箱',
-    password: '密码',
-    passwordPlaceholder: '输入密码',
-    passwordHint: '至少 8 位字符',
-    confirmPassword: '确认密码',
-    confirmPlaceholder: '再次输入密码',
-    forgotPassword: '忘记密码？',
-    terms: '我已阅读并同意',
-    termsLink: '服务条款',
-    and: '和',
-    privacyLink: '隐私政策',
-    loginBtn: '登录',
-    registerBtn: '创建账户',
+    emailLogin: '邮箱 / 账号登录',
+    emailRegister: '邮箱注册',
+    loginDesc: '点击下方按钮，通过安全的 OAuth 页面完成登录',
+    registerDesc: '点击下方按钮，通过安全的 OAuth 页面完成注册',
+    loginBtn: '前往登录',
+    registerBtn: '前往注册',
     noAccount: '还没有账户？',
     registerNow: '立即注册',
     hasAccount: '已有账户？',
     loginNow: '立即登录',
+    secureNote: '通过安全加密的 OAuth 2.0 协议保护您的账户',
   },
   en: {
     loginTitle: 'Sign In To Your Account',
@@ -47,24 +41,17 @@ const COPY = {
     googleLogin: 'Continue with Google',
     googleRegister: 'Sign up with Google',
     or: 'or',
-    email: 'Email',
-    emailPlaceholder: 'Enter your email',
-    password: 'Password',
-    passwordPlaceholder: 'Enter password',
-    passwordHint: 'At least 8 characters',
-    confirmPassword: 'Confirm Password',
-    confirmPlaceholder: 'Re-enter password',
-    forgotPassword: 'Forgot password?',
-    terms: 'I have read and agree to the',
-    termsLink: 'Terms of Service',
-    and: 'and',
-    privacyLink: 'Privacy Policy',
-    loginBtn: 'Sign In',
-    registerBtn: 'Create Account',
+    emailLogin: 'Sign in with Email',
+    emailRegister: 'Sign up with Email',
+    loginDesc: 'Click below to sign in securely via OAuth',
+    registerDesc: 'Click below to create your account securely via OAuth',
+    loginBtn: 'Go to Sign In',
+    registerBtn: 'Go to Sign Up',
     noAccount: "Don't have an account?",
     registerNow: 'Sign up',
     hasAccount: 'Already have an account?',
     loginNow: 'Sign in',
+    secureNote: 'Protected by OAuth 2.0 secure authentication',
   },
 };
 
@@ -78,66 +65,30 @@ const GoogleIcon = () => (
   </svg>
 );
 
-export default function AuthModal({ open, initialMode = 'login', onClose, onLoginSuccess, zh = true }: AuthModalProps) {
-  const [mode, setMode] = useState<Mode>(initialMode);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [agreed, setAgreed] = useState(false);
-  const [loading, setLoading] = useState(false);
+// Lock icon
+const LockIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </svg>
+);
 
-  // Sync mode when parent changes initialMode (e.g. clicking Login vs Register button)
-  useEffect(() => {
-    if (open) {
-      setMode(initialMode);
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-      setAgreed(false);
-      setShowPassword(false);
-      setShowConfirm(false);
-    }
-  }, [open, initialMode]);
-
+export default function AuthModal({ open, initialMode = 'login', onClose, zh = true }: AuthModalProps) {
   const T = zh ? COPY.zh : COPY.en;
+  const mode = initialMode;
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [open, onClose]);
 
   if (!open) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      } else {
-        onClose();
-      }
-    }, 800);
-  };
-
-  const handleGoogleAuth = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      } else {
-        onClose();
-      }
-    }, 1000);
-  };
-
-  const switchMode = (m: Mode) => {
-    setMode(m);
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setAgreed(false);
-    setShowPassword(false);
-    setShowConfirm(false);
+  const handleAuth = () => {
+    window.location.href = getLoginUrl();
   };
 
   return (
@@ -158,7 +109,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose, onLogi
           <X size={18} />
         </button>
 
-        {/* Title — spaced letters, small, muted, centered above card */}
+        {/* Title */}
         <div className="pt-8 pb-2 px-8 text-center">
           <p className="text-sm tracking-[0.22em] font-light text-slate-400">
             {mode === 'login' ? T.loginTitle : T.registerTitle}
@@ -168,177 +119,42 @@ export default function AuthModal({ open, initialMode = 'login', onClose, onLogi
         {/* Card inner */}
         <div className="mx-6 mb-6 mt-4 rounded-xl p-6 bg-white border border-slate-100 shadow-sm">
 
-          {/* Google Button */}
+          {/* Google / OAuth Button — primary CTA */}
           <button
-            onClick={handleGoogleAuth}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all duration-200 text-slate-700 font-medium text-sm mb-5 shadow-sm"
+            onClick={handleAuth}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all duration-200 text-slate-700 font-medium text-sm mb-4 shadow-sm"
           >
             <GoogleIcon />
             {mode === 'login' ? T.googleLogin : T.googleRegister}
           </button>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 mb-5">
+          <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-slate-200" />
             <span className="text-xs text-slate-400">{T.or}</span>
             <div className="flex-1 h-px bg-slate-200" />
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email / Password OAuth button */}
+          <button
+            onClick={handleAuth}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-[0.98] mb-5"
+            style={{ background: '#2dd4bf', color: 'white' }}
+          >
+            {mode === 'login' ? T.loginBtn : T.registerBtn}
+          </button>
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm mb-1.5 font-normal text-slate-500">
-                {T.email}
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder={T.emailPlaceholder}
-                required
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-sm mb-1.5 font-normal text-slate-500">
-                {T.password}
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder={mode === 'register' ? T.passwordHint : T.passwordPlaceholder}
-                  required
-                  minLength={mode === 'register' ? 8 : undefined}
-                  className="w-full px-4 py-3 pr-11 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Confirm Password (register only) */}
-            {mode === 'register' && (
-              <div>
-                <label className="block text-sm mb-1.5 font-normal text-slate-500">
-                  {T.confirmPassword}
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirm ? 'text' : 'password'}
-                    value={confirmPassword}
-                    onChange={e => setConfirmPassword(e.target.value)}
-                    placeholder={T.confirmPlaceholder}
-                    required
-                    className="w-full px-4 py-3 pr-11 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirm(!showConfirm)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                  >
-                    {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Forgot password (login only) */}
-            {mode === 'login' && (
-              <div className="flex justify-end -mt-1">
-                <button
-                  type="button"
-                  onClick={() => alert(zh ? '密码重置功能即将上线' : 'Password reset coming soon')}
-                  className="text-sm font-medium text-teal-500 hover:text-teal-600 transition-colors"
-                >
-                  {T.forgotPassword}
-                </button>
-              </div>
-            )}
-
-            {/* Terms checkbox (register only) */}
-            {mode === 'register' && (
-              <div className="flex items-start gap-3 pt-1">
-                <div className="relative mt-0.5 shrink-0">
-                  <div
-                    onClick={() => setAgreed(!agreed)}
-                    className="w-5 h-5 rounded cursor-pointer flex items-center justify-center transition-all border-2"
-                    style={{
-                      background: agreed ? '#2dd4bf' : 'white',
-                      borderColor: agreed ? '#2dd4bf' : '#cbd5e1',
-                    }}
-                  >
-                    {agreed && (
-                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    )}
-                  </div>
-                </div>
-                <label
-                  className="text-sm leading-relaxed cursor-pointer text-slate-500"
-                  onClick={() => setAgreed(!agreed)}
-                >
-                  {T.terms}{' '}
-                  <button
-                    type="button"
-                    className="font-semibold text-teal-500 hover:text-teal-600 transition-colors"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    {T.termsLink}
-                  </button>
-                  {' '}{T.and}{' '}
-                  <button
-                    type="button"
-                    className="font-semibold text-teal-500 hover:text-teal-600 transition-colors"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    {T.privacyLink}
-                  </button>
-                </label>
-              </div>
-            )}
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading || (mode === 'register' && !agreed)}
-              className="w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-[0.98] mt-2"
-              style={{
-                background: loading || (mode === 'register' && !agreed) ? '#99f6e4' : '#2dd4bf',
-                color: 'white',
-                cursor: loading || (mode === 'register' && !agreed) ? 'not-allowed' : 'pointer',
-              }}
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
-                  </svg>
-                  {zh ? '处理中...' : 'Processing...'}
-                </span>
-              ) : (
-                mode === 'login' ? T.loginBtn : T.registerBtn
-              )}
-            </button>
-          </form>
+          {/* Secure note */}
+          <div className="flex items-center justify-center gap-1.5 text-xs text-slate-400">
+            <LockIcon />
+            <span>{T.secureNote}</span>
+          </div>
 
           {/* Switch mode */}
           <p className="text-center text-sm text-slate-400 mt-5">
             {mode === 'login' ? T.noAccount : T.hasAccount}{' '}
             <button
-              onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
+              onClick={handleAuth}
               className="font-semibold text-teal-500 hover:text-teal-600 transition-colors"
             >
               {mode === 'login' ? T.registerNow : T.loginNow}
