@@ -367,7 +367,7 @@ const App = () => {
               <span className="text-xs font-medium bg-white/20 px-2 py-1 rounded">{T.annualYield}</span>
             </div>
             <div className="mt-4">
-              <p className="text-3xl font-bold">{metrics.yield}%</p>
+              <p className="text-3xl font-bold">{metrics.yield}%<sup className="text-base font-normal text-blue-200 ml-0.5">*</sup></p>
               <p className="text-blue-100 text-xs mt-1">{T.yieldTarget((parseFloat(metrics.yield)-18).toFixed(2))}</p>
               <p className="text-blue-200/70 text-[10px] mt-1">{T.mgmtFeeNote}</p>
             </div>
@@ -379,7 +379,7 @@ const App = () => {
               <span className={`text-xs font-medium ${t.muted}`}>{T.totalReturn}</span>
             </div>
             <div className="mt-4">
-              <p className={`text-3xl font-bold ${t.title}`}>{metrics.return}%</p>
+              <p className={`text-3xl font-bold ${t.title}`}>{metrics.return}%<sup className="text-base font-normal text-slate-400 ml-0.5">*</sup></p>
               <p className="text-green-500 text-sm font-bold mt-0.5">+${(principal * parseFloat(metrics.return) / 100).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
               <p className={`${t.sub} text-xs mt-1`}>{T.navNote}</p>
               <p className={`${t.muted} text-[10px] mt-0.5`}>{T.mgmtFeeNote}</p>
@@ -392,7 +392,7 @@ const App = () => {
               <span className={`text-xs font-medium ${t.muted}`}>{T.weeklyIncome}</span>
             </div>
             <div className="mt-3">
-              <p className={`text-3xl font-bold ${t.title}`}>${parseInt(metrics.totalWeekly).toLocaleString()}</p>
+              <p className={`text-3xl font-bold ${t.title}`}>${parseInt(metrics.totalWeekly).toLocaleString()}<sup className="text-base font-normal text-slate-400 ml-0.5">*</sup></p>
               <p className={`${t.sub} text-xs mt-1`}>{T.annualEst(parseInt(metrics.annualIncome).toLocaleString())}</p>
             </div>
             {/* 本金输入区 */}
@@ -433,6 +433,13 @@ const App = () => {
             </div>
           </div>
         </div>
+
+        {/* 免责声明 */}
+        <p className={`text-[11px] ${t.muted} leading-relaxed -mt-2`}>
+          * {lang === 'zh'
+            ? '以上数据基于历史表现测算，业绩随市场行情波动，不作固定承诺，不构成投资建议。'
+            : 'Figures are based on historical performance. Returns fluctuate with market conditions and are not guaranteed. Not investment advice.'}
+        </p>
 
         {/* Weekly Cash Flow + Pie */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
