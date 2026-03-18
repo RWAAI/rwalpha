@@ -144,20 +144,6 @@ export default function GoldToken() {
                 </div>
               </div>
 
-              {/* 三指标 */}
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { label: "rGLD Price", value: `$${RGLD_NAV.toFixed(0)}`, color: "text-slate-800" },
-                  { label: zh ? "底层 ETF" : "Underlying ETF", value: "GLD", color: "text-amber-600" },
-                  { label: zh ? "挂钩比例" : "Peg Ratio", value: "1 : 1", color: "text-emerald-600" },
-                ].map(item => (
-                  <div key={item.label} className="bg-slate-50 rounded-2xl p-3">
-                    <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">{item.label}</p>
-                    <p className={`text-sm font-bold font-mono ${item.color}`}>{item.value}</p>
-                  </div>
-                ))}
-              </div>
-
               {/* 交易框 */}
               <div className="rounded-2xl bg-slate-50 border border-slate-200 overflow-hidden">
                 <div className="flex items-center justify-between px-4 pt-3 pb-2">
