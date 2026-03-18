@@ -60,7 +60,7 @@ const COPY = {
     featuresLabel: 'Four Core Advantages',
     features: [
       { title: 'AI-Driven Management', desc: 'AI engine continuously monitors and drives position adjustment and reinvestment strategy.' },
-      { title: 'Core Index Position', desc: 'Nasdaq ETFs as core holding (QQQM + VGT). Principal grows with the market over the long term.' },
+      { title: 'Core Index Position', desc: 'Index ETFs as core holding (50% core assets). Principal grows with the market over the long term.' },
       { title: 'Weekly Dividend', desc: 'Options income distributed mechanically every week — stable cash flow, not market-dependent.' },
       { title: 'Steady Growth', desc: 'Dividend + NAV appreciation on dual tracks. Compounding drives continuous asset growth.' },
     ],
@@ -110,7 +110,7 @@ function Counter({ to, prefix = '', suffix = '', decimals = 0 }: { to: number; p
 
 // ── Scrolling data ticker ─────────────────────────────────────────
 function DataTicker() {
-  const items = ['NVDY +73.84%', 'QQQI +14.49%', 'QQQM +25.17%', 'VGT +28.97%', 'rNDX NAV $130.99', 'AI Signal: HOLD', 'Weekly Dist: $0.502 USDT'];
+  const items = ['科技期权收益 ETF +73.84%', '纳指期权增强 ETF +14.49%', '纳指100指数 ETF +25.17%', '科技板块指数 ETF +28.97%', 'rNDX NAV $130.99', 'AI Signal: HOLD', 'Weekly Dist: $0.502 USDT'];
   return (
     <div className="overflow-hidden w-full">
       <div className="flex gap-10 whitespace-nowrap" style={{ animation: 'ticker 20s linear infinite' }}>
