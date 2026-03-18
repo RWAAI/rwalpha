@@ -667,11 +667,14 @@ export default function VaultApp() {
           <div className="rounded-3xl border border-amber-200 bg-white shadow-sm overflow-hidden">
             {/* 标题栏 */}
             <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0"></div>
                 <span className="font-bold text-slate-800 text-base">{zh ? "体验金" : "Trial Credit"}</span>
-                <span className="px-2.5 py-0.5 bg-amber-100 text-amber-600 text-[11px] font-semibold rounded-full">
+                <span className="px-2.5 py-0.5 bg-amber-100 text-amber-600 text-[11px] font-semibold rounded-full shrink-0">
                   {zh ? "活跃中" : "Active"}
+                </span>
+                <span className="text-xs text-slate-400">
+                  {zh ? "体验金不可提币及转让，有效期内产生的利息归客户所有。" : "Non-withdrawable & non-transferable. All interest earned belongs to you."}
                 </span>
               </div>
               <button
@@ -704,14 +707,7 @@ export default function VaultApp() {
               </div>
             </div>
 
-            {/* 底部提示 */}
-            <div className="mx-6 mb-5 rounded-xl bg-amber-50/80 px-4 py-2.5">
-              <p className="text-[10px] text-amber-600/80">
-                {zh
-                  ? "ℹ️ 体验金不可提币，不可转让，到期由平台收回。有效期内产生的利息归您所有，可自由提取。"
-                  : "ℹ️ Trial credits are non-withdrawable and non-transferable. Interest earned during the validity period belongs to you and can be freely withdrawn."}
-              </p>
-            </div>
+
           </div>
         ) : (
           /* 未登录态：显示广告语 */
