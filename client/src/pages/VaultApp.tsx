@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { Zap, Wallet, Clock, ChevronRight, ArrowUpRight, HelpCircle, X, Loader2, RefreshCw, User, LogOut, Settings, ChevronDown } from "lucide-react";
+import { Zap, Wallet, Clock, ChevronRight, ChevronLeft, ArrowUpRight, HelpCircle, X, Loader2, RefreshCw, User, LogOut, Settings, ChevronDown } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -565,12 +565,12 @@ export default function VaultApp() {
 
       {/* ── 页面标题 ── */}
       <div className="max-w-5xl mx-auto px-6 pt-8 pb-4">
-        {/* 查看产品详情 — 标题正上方 */}
+        {/* 返回产品页 — 标题正上方 */}
         <div className="mb-2">
           <Link href="/dashboard">
             <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
-              {zh ? "查看产品详情" : "View product details"}
-              <ChevronRight size={14} />
+              <ChevronLeft size={14} />
+              {zh ? "返回产品页" : "Back to Product"}
             </button>
           </Link>
         </div>
