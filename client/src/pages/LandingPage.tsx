@@ -305,11 +305,17 @@ export default function LandingPage() {
               <div key={s.label} className="flex flex-col items-center gap-1">
                 <span className={`text-4xl font-extrabold tracking-tight ${statColors[i]}`}>
                   <Counter to={statsValues[i]} prefix={'prefix' in s ? s.prefix : ''} suffix={s.suffix} decimals={statsDecimals[i]} />
+                  {i < 2 && <sup className="text-base font-normal ml-0.5">*</sup>}
                 </span>
                 <span className="text-xs text-slate-400 font-medium">{s.label}</span>
               </div>
             ))}
           </div>
+          <p className="text-center text-[11px] text-slate-400 mt-8">
+            {lang === 'zh'
+              ? '* 以上数据基于历史表现测算，业绩随市场行情波动，不作固定承诺，不构成投资建议。'
+              : '* Figures based on historical performance. Returns fluctuate with market conditions and are not guaranteed. Not investment advice.'}
+          </p>
         </div>
       </section>
 

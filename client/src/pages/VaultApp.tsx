@@ -811,7 +811,7 @@ export default function VaultApp() {
                     <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">{item.label}</p>
                     <p className={`text-sm font-bold font-mono ${item.green ? "text-emerald-600" : "text-slate-800"}`}>
                       {item.green && <ArrowUpRight size={12} className="inline mr-0.5" />}
-                      {item.value}{item.star && <sup className="text-[9px] font-normal ml-0.5">*</sup>}
+                      {item.value}{item.star && <sup className="text-xs font-normal ml-0.5">*</sup>}
                     </p>
                   </div>
                 ))}
