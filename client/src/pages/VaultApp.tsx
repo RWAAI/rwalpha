@@ -716,13 +716,13 @@ export default function VaultApp() {
               <div>
                 <p className="text-sm font-bold text-slate-800">
                   {zh
-                    ? "新用户专属：免费体验金，利息全归您！"
-                    : "New User Exclusive: Free Trial Credit — All Interest is Yours!"}
+                    ? "新用户专属：免费 1000U 体验金，利息全归您！"
+                    : "New User Exclusive: Free $1,000 Trial Credit — All Interest is Yours!"}
                 </p>
                 <p className="text-xs text-slate-500 mt-0.5">
                   {zh
-                    ? "注册即送价値 $1,000 USDC 的 rNDX 体验金，7 天内产生的利息全部归您，无需任何本金投入"
-                    : "Sign up and get $1,000 USDC worth of rNDX trial credit. All interest earned in 7 days is yours — zero capital required."}
+                    ? "注册并绑定钱包即送价值 $1,000 USDC 的 rNDX 体验金，7 天内产生的利息全部归您，无需任何本金投入"
+                    : "Register and connect wallet to receive $1,000 USDC worth of rNDX trial credit. All interest earned in 7 days is yours — zero capital required."}
                 </p>
               </div>
             </div>
