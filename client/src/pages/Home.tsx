@@ -12,9 +12,9 @@ const i18n = {
     vaultSub: 'AI 驱动管理 · 每周现金派息 · 指数底仓增值',
     aiEnabled: 'AI 赋能',
     principal: '本金计算器',
-    annualYield: '年度净派息率',
+    annualYield: '年度派息率',
     yieldTarget: (excess: string) => `目标: 18.00% | 超额: +${excess}%`,
-    mgmtFeeNote: '已扣除 0.80% 管理费',
+    mgmtFeeNote: '',
     navTitle: '金库 NAV',
     navSince: '成立以来 · 基准 $100',
     navReturn: (r: string) => `总回报 +${r}%`,
@@ -95,9 +95,9 @@ const i18n = {
     vaultSub: 'AI-Driven Management · Weekly Dividend · Index Core Position',
     aiEnabled: 'AI Powered',
     principal: 'Principal Calculator',
-    annualYield: 'Net Annual Yield',
+    annualYield: 'Annual Yield',
     yieldTarget: (excess: string) => `Target: 18.00% | Excess: +${excess}%`,
-    mgmtFeeNote: 'After 0.80% mgmt. fee',
+    mgmtFeeNote: '',
     navTitle: 'Vault NAV',
     navSince: 'Since Inception · Base $100',
     navReturn: (r: string) => `Gross Return +${r}%`,
@@ -369,7 +369,7 @@ const App = () => {
             <div className="mt-4">
               <p className="text-3xl font-bold">{metrics.yield}%</p>
               <p className="text-blue-100 text-xs mt-1">{T.yieldTarget((parseFloat(metrics.yield)-18).toFixed(2))}</p>
-              <p className="text-blue-200/70 text-[10px] mt-1">{T.mgmtFeeNote}</p>
+              {T.mgmtFeeNote && <p className="text-blue-200/70 text-[10px] mt-1">{T.mgmtFeeNote}</p>}
             </div>
           </div>
 
@@ -382,7 +382,7 @@ const App = () => {
               <p className={`text-3xl font-bold ${t.title}`}>{metrics.return}%</p>
               <p className="text-green-500 text-sm font-bold mt-0.5">+${(principal * parseFloat(metrics.return) / 100).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
               <p className={`${t.sub} text-xs mt-1`}>{T.navNote}</p>
-              <p className={`${t.muted} text-[10px] mt-0.5`}>{T.mgmtFeeNote}</p>
+              {T.mgmtFeeNote && <p className={`${t.muted} text-[10px] mt-0.5`}>{T.mgmtFeeNote}</p>}
             </div>
           </div>
 
