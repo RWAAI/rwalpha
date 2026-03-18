@@ -81,63 +81,37 @@ export default function MyAssets() {
 
         {/* ── 体验金记录卡片 ── */}
         {tab === "holdings" && (
-          <div className="mb-4 rounded-xl border border-amber-200 bg-white overflow-hidden">
+          <div className="mb-6 rounded-2xl border border-amber-200 bg-white shadow-sm overflow-hidden">
             {/* 标题行 */}
-            <div className="flex items-center justify-between px-4 py-2.5 bg-amber-50 border-b border-amber-100">
-              <span className="text-xs font-bold text-amber-700 tracking-wide uppercase">
-                {zh ? "体验金" : "Trial Credit"}
-              </span>
-              <span className="text-xs text-amber-500">
-                * {zh
-                  ? "体验金不可提币，仅产生利息，利息归属客户"
-                  : "Non-withdrawable. Interest accrues and belongs to the client."}
-              </span>
+            <div className="flex items-center justify-between px-5 py-3.5 bg-amber-50">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                <span className="text-sm font-bold text-amber-700">{zh ? "体验金" : "Trial Credit"}</span>
+                <span className="px-2 py-0.5 bg-amber-100 text-amber-600 text-[10px] font-semibold rounded-full">{zh ? "活跃中" : "Active"}</span>
+              </div>
+              <span className="text-[11px] text-slate-400">{zh ? "不可提币及转让，利息归客户所有" : "Non-withdrawable · Interest belongs to you"}</span>
             </div>
 
-            {/* 主数据行 */}
-            <div className="grid grid-cols-3 divide-x divide-slate-100 border-b border-slate-100">
-              <div className="px-4 py-3">
-                <p className="text-xs text-slate-400 mb-1">{zh ? "代币 / 数量" : "Token / Amount"}</p>
-                <p className="text-sm font-semibold text-slate-800">500.00 <span className="text-indigo-600">rNDX</span></p>
+            {/* 色块数据区 */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4">
+              <div className="rounded-xl bg-amber-50 px-4 py-3">
+                <p className="text-[11px] text-slate-400 mb-1">{zh ? "体验金代币" : "Token"}</p>
+                <p className="text-sm font-bold text-slate-800">500.00 <span className="text-amber-600">rNDX</span></p>
               </div>
-              <div className="px-4 py-3">
-                <p className="text-xs text-slate-400 mb-1">NAV</p>
-                <p className="text-sm font-semibold text-slate-800">$130.99</p>
+              <div className="rounded-xl bg-slate-50 px-4 py-3">
+                <p className="text-[11px] text-slate-400 mb-1">{zh ? "市值" : "Value"}</p>
+                <p className="text-sm font-bold text-slate-800">~$65,495</p>
               </div>
-              <div className="px-4 py-3">
-                <p className="text-xs text-slate-400 mb-1">{zh ? "市值" : "Value"}</p>
-                <p className="text-sm font-semibold text-slate-800">$65,495.00</p>
+              <div className="rounded-xl bg-slate-50 px-4 py-3">
+                <p className="text-[11px] text-slate-400 mb-1">{zh ? "生成时间" : "Issued"}</p>
+                <p className="text-sm font-bold text-slate-800">2026-03-18</p>
               </div>
-            </div>
-
-            {/* 时间行 */}
-            <div className="grid grid-cols-2 divide-x divide-slate-100 px-0">
-              <div className="px-4 py-3">
-                <p className="text-xs text-slate-400 mb-1">{zh ? "生成时间" : "Issued At"}</p>
-                <p className="text-sm text-slate-700 font-medium">2026-03-01</p>
-              </div>
-              <div className="px-4 py-3">
-                <p className="text-xs text-slate-400 mb-1">{zh ? "到期时间" : "Expires At"}</p>
-                <p className="text-sm text-amber-600 font-medium">2026-03-25 <span className="text-xs text-amber-400">({zh ? "剩余 7 天" : "7 days left"})</span></p>
+              <div className="rounded-xl bg-amber-50 px-4 py-3">
+                <p className="text-[11px] text-slate-400 mb-1">{zh ? "到期时间" : "Expires"}</p>
+                <p className="text-sm font-bold text-amber-600">2026-03-25</p>
+                <p className="text-[10px] text-amber-400 mt-0.5">{zh ? "剩余 7 天" : "7 days left"}</p>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* ── 体验金条款说明 ── */}
-        {tab === "holdings" && (
-          <div className="mb-6 px-1">
-            <p className="text-xs text-slate-400 leading-relaxed">
-              {zh ? (
-                <>
-                  <span className="text-slate-500 font-medium">体验金说明：</span>体验金为平台对满足活动条件用户赠予的权益，不可提币、不可转让。体验金到期后将由平台自动收回（仅保留历史记录）。体验金有效期间产生的利息归客户所有，可自由提取；利息比率随市场行情动态调整，不作固定承诺。本体验金活动最终解释权归平台所有。
-                </>
-              ) : (
-                <>
-                  <span className="text-slate-500 font-medium">Trial Credit Terms: </span>Trial credits are platform-granted rewards for users who meet activity requirements. They are non-withdrawable and non-transferable. Upon expiry, trial credits are automatically reclaimed by the platform (records retained). Any interest generated during the validity period belongs to the client and may be freely withdrawn; interest rates fluctuate with market conditions and are not guaranteed. The platform reserves the right of final interpretation.
-                </>
-              )}
-            </p>
           </div>
         )}
 
