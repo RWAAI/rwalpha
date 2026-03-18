@@ -79,6 +79,52 @@ export default function MyAssets() {
           </button>
         </div>
 
+        {/* ── 体验金记录卡片 ── */}
+        {tab === "holdings" && (
+          <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 overflow-hidden">
+            {/* 标题行 */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-amber-100">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+                  {zh ? "体验金" : "Trial Credit"}
+                </span>
+                <span className="text-xs text-amber-600">
+                  {zh
+                    ? "体验金不可提币，仅产生利息，利息归属客户"
+                    : "Trial credit is non-withdrawable. Interest accrues and belongs to the client."}
+                </span>
+              </div>
+            </div>
+            {/* 数据行 */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 px-4 py-4">
+              <div>
+                <p className="text-xs text-slate-400 mb-1">{zh ? "代币" : "Token"}</p>
+                <p className="text-sm font-semibold text-slate-800">rNDX</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 mb-1">{zh ? "数量" : "Amount"}</p>
+                <p className="text-sm font-semibold text-slate-800">500.00 rNDX</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 mb-1">NAV</p>
+                <p className="text-sm font-semibold text-slate-800">$130.99</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 mb-1">{zh ? "市值" : "Value"}</p>
+                <p className="text-sm font-semibold text-slate-800">$65,495.00</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 mb-1">{zh ? "生成时间" : "Issued At"}</p>
+                <p className="text-sm text-slate-600">2026-03-01</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 mb-1">{zh ? "到期时间" : "Expires At"}</p>
+                <p className="text-sm text-slate-600">2026-06-01</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── 本金金库表格 ── */}
         {tab === "holdings" && (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
