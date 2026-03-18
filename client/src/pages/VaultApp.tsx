@@ -472,6 +472,21 @@ export default function VaultApp() {
               <h3 className="font-bold text-slate-900 text-base">{zh ? "体验金说明" : "Trial Credit Terms"}</h3>
               <button onClick={() => setTrialModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><X size={18} /></button>
             </div>
+            {/* 领取条件区块 */}
+            <div className="mb-5 rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
+              <p className="text-xs font-bold text-amber-700 mb-2">{zh ? "🎁 领取体验金条件" : "🎁 Eligibility"}</p>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2 text-sm text-slate-700">
+                  <span className="w-4 h-4 rounded-full bg-amber-400 text-white text-[10px] font-bold flex items-center justify-center shrink-0">1</span>
+                  <span>{zh ? "完成注册" : "Complete registration"}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-slate-700">
+                  <span className="w-4 h-4 rounded-full bg-amber-400 text-white text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
+                  <span>{zh ? "绑定钱包" : "Connect wallet"}</span>
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-3 text-sm text-slate-600 leading-relaxed">
               {(zh ? [
                 "体验金是平台对满足活动条件用户赠予的权益",
