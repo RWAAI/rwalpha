@@ -298,6 +298,7 @@ export default function VaultApp() {
   const [payToken, setPayToken] = useState<"USDC" | "USDT">("USDC");
   const [showPayDrop, setShowPayDrop] = useState(false);
   const [backedModal, setBackedModal] = useState(false);
+  const [trialModal, setTrialModal] = useState(false);
   const [weeklyDivModal, setWeeklyDivModal] = useState(false);
   const [, navigate] = useLocation();
   const [authModal, setAuthModal] = useState<{ open: boolean; mode: 'login' | 'register' }>({ open: false, mode: 'login' });
@@ -450,6 +451,40 @@ export default function VaultApp() {
             </div>
             <div className="px-6 py-3 bg-slate-50 text-xs text-slate-400 text-center">
               {zh ? '每周五派息，历史数据仅供参考' : 'Distributed every Friday. Historical data for reference only.'}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── 体验金说明弹层 ── */}
+      {trialModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setTrialModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-slate-900 text-base">{zh ? "体验金说明" : "Trial Credit Terms"}</h3>
+              <button onClick={() => setTrialModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><X size={18} /></button>
+            </div>
+            <div className="space-y-3 text-sm text-slate-600 leading-relaxed">
+              {(zh ? [
+                { icon: "🎁", text: "体验金是平台对满足活动条件用户赠予的权益" },
+                { icon: "🔒", text: "不可提币、不可转让" },
+                { icon: "⏳", text: "体验金到期后由平台自动收回（仅保留历史记录）" },
+                { icon: "💰", text: "体验金有效期间产生的利息归客户所有，可自由提取" },
+                { icon: "📈", text: "利息比率随市场行情动态调整，不作固定承诺" },
+                { icon: "⚖️", text: "本体验金活动最终解释权归平台所有" },
+              ] : [
+                { icon: "🎁", text: "Trial credits are platform-granted rewards for users who meet activity requirements" },
+                { icon: "🔒", text: "Non-withdrawable and non-transferable" },
+                { icon: "⏳", text: "Upon expiry, trial credits are automatically reclaimed (records retained)" },
+                { icon: "💰", text: "Interest generated belongs to the client and may be freely withdrawn" },
+                { icon: "📈", text: "Interest rates fluctuate with market conditions and are not guaranteed" },
+                { icon: "⚖️", text: "The platform reserves the right of final interpretation" },
+              ]).map((item, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <span className="text-base shrink-0 mt-0.5">{item.icon}</span>
+                  <p>{item.text}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -615,6 +650,91 @@ export default function VaultApp() {
             </button>
           </Link>
         </div>
+      </div>
+
+      {/* ── 体验金区域 ── */}
+      <div className="max-w-5xl mx-auto px-6 pb-4">
+        {isLoggedIn ? (
+          /* 登录态：显示体验金持仓信息 */
+          <div className="rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-2.5 border-b border-amber-100">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-amber-700 tracking-wide uppercase">🎁 {zh ? "体验金" : "Trial Credit"}</span>
+                <span className="px-2 py-0.5 bg-amber-100 text-amber-600 text-[10px] font-semibold rounded-full">
+                  {zh ? "活跃中" : "Active"}
+                </span>
+              </div>
+              <button
+                onClick={() => setTrialModal(true)}
+                className="flex items-center gap-1 text-xs text-amber-500 hover:text-amber-700 transition-colors"
+              >
+                <HelpCircle size={13} />
+                <span className="hidden sm:inline">{zh ? "体验金说明" : "What is this?"}</span>
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-amber-100 px-0">
+              <div className="px-5 py-3">
+                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "体验金代币" : "Token"}</p>
+                <p className="text-sm font-bold text-slate-800">500.00 <span className="text-indigo-600">rNDX</span></p>
+              </div>
+              <div className="px-5 py-3">
+                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "市値" : "Value"}</p>
+                <p className="text-sm font-bold text-slate-800">~$65,495</p>
+              </div>
+              <div className="px-5 py-3">
+                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "生成时间" : "Issued"}</p>
+                <p className="text-sm font-medium text-slate-700">2026-03-18</p>
+              </div>
+              <div className="px-5 py-3">
+                <p className="text-[10px] text-amber-600/70 uppercase tracking-wider mb-1">{zh ? "到期时间" : "Expires"}</p>
+                <p className="text-sm font-medium text-amber-600 font-mono">2026-03-25 <span className="text-[10px] text-amber-400">({zh ? "剩余 7 天" : "7 days"})</span></p>
+              </div>
+            </div>
+            <div className="px-5 py-2 bg-amber-50/60 border-t border-amber-100">
+              <p className="text-[10px] text-amber-600/80">
+                {zh
+                  ? "ℹ️ 体验金不可提币，不可转让，到期由平台收回。有效期内产生的利息归您所有，可自由提取。"
+                  : "ℹ️ Trial credits are non-withdrawable and non-transferable. Interest earned during the validity period belongs to you and can be freely withdrawn."}
+              </p>
+            </div>
+          </div>
+        ) : (
+          /* 未登录态：显示广告语 */
+          <div className="rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400 flex items-center justify-center text-xl shrink-0 shadow-sm shadow-amber-200">
+                🎁
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-800">
+                  {zh
+                    ? "新用户专属：免费体验金，利息全归您！"
+                    : "New User Exclusive: Free Trial Credit — All Interest is Yours!"}
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {zh
+                    ? "注册即送价値 $1,000 USDC 的 rNDX 体验金，7 天内产生的利息全部归您，无需任何本金投入"
+                    : "Sign up and get $1,000 USDC worth of rNDX trial credit. All interest earned in 7 days is yours — zero capital required."}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => setTrialModal(true)}
+                className="flex items-center gap-1 text-xs text-amber-600 hover:text-amber-800 transition-colors"
+              >
+                <HelpCircle size={13} />
+                {zh ? "了解详情" : "Learn more"}
+              </button>
+              <button
+                onClick={() => { window.location.href = getLoginUrl(); }}
+                className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-900 text-sm font-bold transition-all active:scale-95 shadow-sm shadow-amber-200"
+              >
+                {zh ? "立即领取 →" : "Claim Now →"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── 双金库主体 ── */}
