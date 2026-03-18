@@ -14,11 +14,11 @@ const i18n = {
     principal: '本金计算器',
     annualYield: '年度派息率',
     yieldTarget: (excess: string) => `目标: 18.00% | 超额: +${excess}%`,
-    mgmtFeeNote: '',
+    mgmtFeeNote: '（未扣除管理费及相关税费）',
     navTitle: '金库 NAV',
     navSince: '成立以来 · 基准 $100',
     navReturn: (r: string) => `总回报 +${r}%`,
-    navFeeNote: '',
+    navFeeNote: '（未扣除管理费及相关税费）',
     navDate: '截至 2026-03-14',
     navExpenseLabel: '管理费率',
     navExpenseValue: '0.80% / 年',
@@ -97,11 +97,11 @@ const i18n = {
     principal: 'Principal Calculator',
     annualYield: 'Annual Yield',
     yieldTarget: (excess: string) => `Target: 18.00% | Excess: +${excess}%`,
-    mgmtFeeNote: '',
+    mgmtFeeNote: '(Before mgmt. fee & taxes)',
     navTitle: 'Vault NAV',
     navSince: 'Since Inception · Base $100',
     navReturn: (r: string) => `Gross Return +${r}%`,
-    navFeeNote: '',
+    navFeeNote: '(Before mgmt. fee & taxes)',
     navDate: 'As of 2026-03-14',
     navExpenseLabel: 'Mgmt. Fee',
     navExpenseValue: '0.80% / yr',
@@ -332,7 +332,7 @@ const App = () => {
                 <span className={`text-2xl font-bold font-mono ${t.title}`}>${metrics.navValue}</span>
                 <span className="text-emerald-500 text-sm font-bold">▲ {T.navReturn(metrics.navReturn)}</span>
               </div>
-              {T.navFeeNote && <p className={`text-[10px] ${t.muted} mt-0.5`}>{T.navFeeNote}</p>}
+              <p className={`text-[10px] ${t.muted} mt-0.5`}>{T.navFeeNote}</p>
             </div>
           </div>
         </div>
@@ -369,7 +369,7 @@ const App = () => {
             <div className="mt-4">
               <p className="text-3xl font-bold">{metrics.yield}%</p>
               <p className="text-blue-100 text-xs mt-1">{T.yieldTarget((parseFloat(metrics.yield)-18).toFixed(2))}</p>
-              {T.mgmtFeeNote && <p className="text-blue-200/70 text-[10px] mt-1">{T.mgmtFeeNote}</p>}
+              <p className="text-blue-200/70 text-[10px] mt-1">{T.mgmtFeeNote}</p>
             </div>
           </div>
 
@@ -382,7 +382,7 @@ const App = () => {
               <p className={`text-3xl font-bold ${t.title}`}>{metrics.return}%</p>
               <p className="text-green-500 text-sm font-bold mt-0.5">+${(principal * parseFloat(metrics.return) / 100).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
               <p className={`${t.sub} text-xs mt-1`}>{T.navNote}</p>
-              {T.mgmtFeeNote && <p className={`${t.muted} text-[10px] mt-0.5`}>{T.mgmtFeeNote}</p>}
+              <p className={`${t.muted} text-[10px] mt-0.5`}>{T.mgmtFeeNote}</p>
             </div>
           </div>
 
