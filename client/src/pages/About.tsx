@@ -845,17 +845,6 @@ export default function About() {
               }
             />
 
-            {/* 底部导航 */}
-            <div className="mt-12 pt-6 border-t border-slate-100 flex items-center justify-between">
-              <div className="text-xs text-slate-400">
-                {zh ? "© 2026 RWAlpha. 保留所有权利。" : "© 2026 RWAlpha. All rights reserved."}
-              </div>
-              <div className="flex gap-4 text-xs">
-                <Link href="/privacy" className="text-slate-400 hover:text-slate-600 transition-colors">Privacy Policy</Link>
-                <Link href="/terms" className="text-slate-400 hover:text-slate-600 transition-colors">Terms of Use</Link>
-                <Link href="/risk-disclosure" className="text-slate-400 hover:text-slate-600 transition-colors">Risk Disclosure</Link>
-              </div>
-            </div>
 
           </div>
         </div>
