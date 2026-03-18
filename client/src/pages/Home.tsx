@@ -17,8 +17,8 @@ const i18n = {
     mgmtFeeNote: '已扣除 0.80% 管理费',
     navTitle: '金库 NAV',
     navSince: '成立以来 · 基准 $100',
-    navReturn: (r: string) => `净回报 +${r}%`,
-    navFeeNote: '已扣除 0.80%/年管理费',
+    navReturn: (r: string) => `总回报 +${r}%`,
+    navFeeNote: '',
     navDate: '截至 2026-03-14',
     navExpenseLabel: '管理费率',
     navExpenseValue: '0.80% / 年',
@@ -100,8 +100,8 @@ const i18n = {
     mgmtFeeNote: 'After 0.80% mgmt. fee',
     navTitle: 'Vault NAV',
     navSince: 'Since Inception · Base $100',
-    navReturn: (r: string) => `Net Return +${r}%`,
-    navFeeNote: '0.80%/yr mgmt. fee deducted',
+    navReturn: (r: string) => `Gross Return +${r}%`,
+    navFeeNote: '',
     navDate: 'As of 2026-03-14',
     navExpenseLabel: 'Mgmt. Fee',
     navExpenseValue: '0.80% / yr',
@@ -332,7 +332,7 @@ const App = () => {
                 <span className={`text-2xl font-bold font-mono ${t.title}`}>${metrics.navValue}</span>
                 <span className="text-emerald-500 text-sm font-bold">▲ {T.navReturn(metrics.navReturn)}</span>
               </div>
-              <p className={`text-[10px] ${t.muted} mt-0.5`}>{T.navFeeNote}</p>
+              {T.navFeeNote && <p className={`text-[10px] ${t.muted} mt-0.5`}>{T.navFeeNote}</p>}
             </div>
           </div>
         </div>
