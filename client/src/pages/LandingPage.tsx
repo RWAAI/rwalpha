@@ -297,7 +297,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Stats Row ─────────────────────────────────────────── */}
-      <section className="bg-white py-16 px-6 border-t border-slate-100">
+      <section className="bg-slate-50 py-16 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="text-center text-xs font-bold tracking-widest text-slate-400 uppercase mb-10">{T.statsLabel}</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
