@@ -32,7 +32,7 @@ export default function Footer() {
             >
               RWAlpha.ai
             </span>
-            <span className="text-slate-400 text-xs">a AI first company</span>
+            <span className="text-slate-400 text-xs">AI-First Company</span>
           </div>
           <div className="flex items-center gap-2">
             <a
