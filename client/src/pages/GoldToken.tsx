@@ -80,20 +80,16 @@ export default function GoldToken() {
               </div>
           </div>
 
-          {/* 右上角：Staking 计算器 */}
+          {/* 右上角：Staking 计算器小按鈕 */}
           <a
             href="https://rgld.manus.space"
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 bg-white border border-amber-200 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md hover:border-amber-300 transition-all group min-w-[180px]"
+            className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-amber-200 rounded-full shadow-sm hover:shadow-md hover:border-amber-400 transition-all group text-xs font-semibold text-amber-700"
           >
-            <div className="flex items-center gap-2 mb-2">
-              <Coins size={14} className="text-amber-500" />
-              <span className="text-xs font-bold text-slate-700">{zh ? "Staking 计算器" : "Staking Calculator"}</span>
-              <ArrowUpRight size={12} className="text-slate-400 group-hover:text-amber-500 transition-colors ml-auto" />
-            </div>
-            <p className="text-3xl font-extrabold text-amber-500 font-mono tracking-tight">~8%</p>
-            <p className="text-[10px] text-slate-400 mt-0.5">{zh ? "年化 · 每月结算 USDT" : "APY · Monthly USDT"}</p>
+            <Coins size={12} className="text-amber-500" />
+            {zh ? "Staking 计算器" : "Staking Calculator"}
+            <ArrowUpRight size={11} className="text-amber-400 group-hover:text-amber-600 transition-colors" />
           </a>
 
           </div>
