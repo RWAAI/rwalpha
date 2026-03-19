@@ -314,7 +314,7 @@ export default function LandingPage() {
           <p className="text-center text-[11px] text-slate-400 mt-8">
             {lang === 'zh'
               ? '* 以上数据基于历史表现测算，业绩随市场行情波动。'
-              : '* Figures based on historical performance. Returns fluctuate with market conditions and are not guaranteed. Not investment advice.'}
+              : '* Figures based on historical performance. Returns fluctuate with market conditions.'}
           </p>
         </div>
       </section>
