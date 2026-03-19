@@ -295,8 +295,8 @@ function FlowConnector({ label, reverse }: { label: string; reverse?: boolean })
       <div className="flex items-center gap-0.5">
         {reverse ? (
           <>
+            <ChevronRight size={10} className="text-indigo-300 rotate-180 -mr-1" />
             <div className="w-8 h-px bg-gradient-to-l from-indigo-300 to-slate-200" />
-            <ChevronRight size={10} className="text-indigo-300 rotate-180 -ml-1" />
           </>
         ) : (
           <>
