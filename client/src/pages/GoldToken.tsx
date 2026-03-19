@@ -55,7 +55,8 @@ export default function GoldToken() {
       {/* ── 头部说明 ─────────────────────────────────────────────────────── */}
       <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 border-b border-amber-100">
         <div className="max-w-5xl mx-auto px-6 py-10">
-          <div className="flex items-center gap-5">
+          <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-5 flex-1">
               {/* 黄金图标 */}
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center shadow-lg shadow-amber-200 shrink-0">
                 <span className="text-3xl">🥇</span>
@@ -77,6 +78,24 @@ export default function GoldToken() {
                   }
                 </p>
               </div>
+          </div>
+
+          {/* 右上角：Staking 计算器 */}
+          <a
+            href="https://rgld.manus.space"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 bg-white border border-amber-200 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md hover:border-amber-300 transition-all group min-w-[180px]"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <Coins size={14} className="text-amber-500" />
+              <span className="text-xs font-bold text-slate-700">{zh ? "Staking 计算器" : "Staking Calculator"}</span>
+              <ArrowUpRight size={12} className="text-slate-400 group-hover:text-amber-500 transition-colors ml-auto" />
+            </div>
+            <p className="text-3xl font-extrabold text-amber-500 font-mono tracking-tight">~8%</p>
+            <p className="text-[10px] text-slate-400 mt-0.5">{zh ? "年化 · 每月结算 USDT" : "APY · Monthly USDT"}</p>
+          </a>
+
           </div>
 
           {/* 特性标签 */}
