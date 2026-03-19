@@ -85,7 +85,7 @@ export default function GoldToken() {
             href="https://rgld.manus.space"
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800 transition-colors group"
+            className="shrink-0 inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800 transition-colors group border border-slate-300 hover:border-slate-400 rounded-full px-2.5 py-1"
           >
             <Coins size={12} className="text-slate-400" />
             {zh ? "Staking 计算器" : "Staking Calculator"}
