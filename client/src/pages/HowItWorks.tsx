@@ -543,7 +543,7 @@ export default function HowItWorks() {
             <div className="overflow-x-auto">
               <div className="flex items-center justify-between gap-2 min-w-[640px] px-8 py-8 rounded-2xl bg-gradient-to-br from-teal-50/60 via-white to-green-50/40 border border-teal-100" style={{alignItems:'center'}}>
                 <FlowCard iconKey="wallet" label={T.flowNodes.wallet} sub={T.flowNodes.walletSub} accent="border-indigo-200" />
-                <FlowConnector label="Stablecoin" reverse />
+                <FlowConnector label="USDT" reverse />
                 <FlowCard iconKey="rwalpha" label={T.flowNodes.rwalphaDist} sub={T.flowNodes.rwalphaDist2} accent="border-violet-200" />
                 <FlowConnector label="Transfer" reverse />
                 <FlowCard iconKey="fomo" label={T.flowNodes.fomoRev} sub={T.flowNodes.fomoRevSub} badge={T.flowNodes.masBadge} accent="border-teal-200" badgeColor="bg-teal-100 text-teal-700" />
