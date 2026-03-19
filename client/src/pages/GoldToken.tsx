@@ -73,8 +73,8 @@ export default function GoldToken() {
                 </div>
                 <p className="text-slate-500 text-sm">
                   {zh
-                    ? <>rGLD 是 RWAlpha 发行的黄金代币，100% 由 SPDR Gold Shares（GLD）ETF 底层资产支撑，1 rGLD = 1 GLD ETF 份额。<br />链上可验证，随时可赎回。</>
-                    : <>rGLD is RWAlpha's gold token, 100% backed by SPDR Gold Shares (GLD) ETF. 1 rGLD = 1 GLD ETF share.<br />On-chain verifiable, redeemable at any time.</>
+                    ? "rGLD 是 RWAlpha 发行的黄金代币，100% 由 SPDR Gold Shares（GLD）ETF 底层资产支撑，1 rGLD = 1 GLD ETF 份额。链上可验证，随时可赎回。"
+                    : "rGLD is RWAlpha's gold token, 100% backed by SPDR Gold Shares (GLD) ETF. 1 rGLD = 1 GLD ETF share. On-chain verifiable, redeemable at any time."
                   }
                 </p>
               </div>
