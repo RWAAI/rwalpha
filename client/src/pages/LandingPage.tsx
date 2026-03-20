@@ -91,20 +91,50 @@ type Lang = 'zh' | 'en';
 function Counter({ to, prefix = '', suffix = '', decimals = 0 }: { to: number; prefix?: string; suffix?: string; decimals?: number }) {
   const [val, setVal] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
+
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-      obs.disconnect();
-      let start = 0;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    let started = false;
+
+    const run = () => {
+      if (started) return;
+      started = true;
+      let current = 0;
       const step = to / 60;
-      const id = setInterval(() => {
-        start += step;
-        if (start >= to) { setVal(to); clearInterval(id); } else setVal(start);
+      intervalId = setInterval(() => {
+        current += step;
+        if (current >= to) {
+          setVal(to);
+          if (intervalId) clearInterval(intervalId);
+        } else {
+          setVal(current);
+        }
       }, 16);
-    }, { threshold: 0.3 });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
+    };
+
+    const el = ref.current;
+    if (!el) return;
+
+    // If already in viewport, start immediately
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      run();
+      return () => { if (intervalId) clearInterval(intervalId); };
+    }
+
+    const obs = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      obs.disconnect();
+      run();
+    }, { threshold: 0.1 });
+    obs.observe(el);
+
+    return () => {
+      obs.disconnect();
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [to]);
+
   return <span ref={ref}>{prefix}{val.toFixed(decimals)}{suffix}</span>;
 }
 
