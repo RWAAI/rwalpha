@@ -692,7 +692,7 @@ export default function VaultApp() {
           /* 登录态：体验金持仓信息（色块卡片风格） */
           <div className="rounded-3xl border border-amber-200 bg-white shadow-sm overflow-hidden">
             {/* 标题栏 */}
-            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
+            <div className="flex items-center justify-between px-6 pt-3 pb-3 border-b border-slate-50">
               <div className="flex items-center gap-2 flex-wrap">
                 <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0"></div>
                 <span className="font-bold text-slate-800 text-base">{zh ? "体验金" : "Trial Credit"}</span>
@@ -713,21 +713,21 @@ export default function VaultApp() {
             </div>
 
             {/* 四个色块卡片 */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-6 py-5">
-              <div className="rounded-2xl bg-amber-50 px-4 py-3">
-                <p className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider mb-1.5">{zh ? "体验金代币" : "Token"}</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 px-4 py-3">
+              <div className="rounded-xl bg-amber-50 px-3 py-2">
+                <p className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider mb-1">{zh ? "体验金代币" : "Token"}</p>
                 <p className="text-sm font-bold text-slate-800">500.00 <span className="text-indigo-600">rNDX</span></p>
               </div>
-              <div className="rounded-2xl bg-slate-50 px-4 py-3">
-                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1.5">{zh ? "市値" : "Value"}</p>
+              <div className="rounded-xl bg-slate-50 px-3 py-2">
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">{zh ? "市値" : "Value"}</p>
                 <p className="text-sm font-bold text-slate-800">1,000 USDT</p>
               </div>
-              <div className="rounded-2xl bg-slate-50 px-4 py-3">
-                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1.5">{zh ? "生成时间" : "Issued"}</p>
+              <div className="rounded-xl bg-slate-50 px-3 py-2">
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">{zh ? "生成时间" : "Issued"}</p>
                 <p className="text-sm font-medium text-slate-700 font-mono">2026-03-18</p>
               </div>
-              <div className="rounded-2xl bg-amber-50 px-4 py-3">
-                <p className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider mb-1.5">{zh ? "到期时间" : "Expires"}</p>
+              <div className="rounded-xl bg-amber-50 px-3 py-2">
+                <p className="text-[10px] text-amber-500 font-semibold uppercase tracking-wider mb-1">{zh ? "到期时间" : "Expires"}</p>
                 <p className="text-sm font-medium text-amber-600 font-mono">2026-03-25</p>
                 <p className="text-[10px] text-amber-400 mt-0.5">{zh ? "剩余 7 天" : "7 days left"}</p>
               </div>
@@ -780,7 +780,7 @@ export default function VaultApp() {
 
           {/* ── 左侧：本金金库 ── */}
           <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
+            <div className="flex items-center justify-between px-6 pt-3 pb-3 border-b border-slate-50">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                 <span className="font-bold text-slate-800 text-base">{zh ? "本金金库" : "Principal Vault"}</span>
@@ -960,7 +960,7 @@ export default function VaultApp() {
 
           {/* ── 右侧：收益金库 ── */}
           <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
+            <div className="flex items-center justify-between px-6 pt-3 pb-3 border-b border-slate-50">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-amber-400"></div>
                 <span className="font-bold text-slate-800 text-base">{zh ? "收益金库" : "Yield Vault"}</span>
