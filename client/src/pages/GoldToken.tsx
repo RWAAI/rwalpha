@@ -746,12 +746,12 @@ export default function GoldToken() {
               {stakingMode === "locked" && (
                 <div className="px-6 py-4 space-y-3">
                   {/* 锁仓说明 */}
-                  <div className="flex items-center justify-between bg-amber-50 rounded-2xl px-4 py-2.5 border border-amber-100">
+                  <div className="flex items-center justify-between px-1 py-1">
                     <div className="flex items-baseline gap-1.5">
                       <span className="text-xl font-extrabold text-emerald-600 font-mono">~{currentLockApy}%</span>
                       <span className="text-xs text-slate-500">{zh ? "年化 · 锁仓增强" : "APY · Lock Boost"}</span>
                     </div>
-                    <span className="text-[10px] bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] text-amber-600 font-medium">
                       {zh ? "提前解锁按活期结算" : "Early exit at flexible rate"}
                     </span>
                   </div>
