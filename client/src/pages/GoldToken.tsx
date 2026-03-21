@@ -1099,6 +1099,71 @@ const GOLD_FAQS: { q: { zh: string; en: string }; a: { zh: string; en: string } 
   },
 ];
 
+function FaqAnswer({ text }: { text: string }) {
+  // 将文本按行分割，检测 Markdown 表格块并单独渲染
+const lines = text.split('\n');
+  const blocks: { type: 'text' | 'table'; lines: string[] }[] = [];
+  let cur: { type: 'text' | 'table'; lines: string[] } | null = null;
+
+  for (const line of lines) {
+    const isTableRow = /^\s*\|/.test(line);
+    if (isTableRow) {
+      if (!cur || cur.type !== 'table') {
+        if (cur) blocks.push(cur);
+        cur = { type: 'table', lines: [] };
+      }
+      cur.lines.push(line);
+    } else {
+      if (!cur || cur.type !== 'text') {
+        if (cur) blocks.push(cur);
+        cur = { type: 'text', lines: [] };
+      }
+      cur.lines.push(line);
+    }
+  }
+  if (cur) blocks.push(cur);
+
+  return (
+    <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+      {blocks.map((block, bi) => {
+        if (block.type === 'text') {
+          return (
+            <p key={bi} className="whitespace-pre-line">
+              {block.lines.join('\n')}
+            </p>
+          );
+        }
+        // 表格渲染
+        const rows = block.lines.filter(l => !/^\s*\|[-\s|]+\|\s*$/.test(l));
+        const headers = rows[0]?.split('|').map(c => c.trim()).filter(Boolean) ?? [];
+        const dataRows = rows.slice(1).map(r => r.split('|').map(c => c.trim()).filter(Boolean));
+        return (
+          <div key={bi} className="overflow-x-auto rounded-xl border border-amber-100">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="bg-amber-50">
+                  {headers.map((h, hi) => (
+                    <th key={hi} className="px-3 py-2 text-left font-semibold text-amber-700 border-b border-amber-100">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {dataRows.map((row, ri) => (
+                  <tr key={ri} className={ri % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
+                    {row.map((cell, ci) => (
+                      <td key={ci} className="px-3 py-2 text-slate-600 border-b border-slate-50 last:border-b-0">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function GoldFAQ({ zh }: { zh: boolean }) {
   const [open, setOpen] = useState<number | null>(null);
   return (
@@ -1131,9 +1196,7 @@ function GoldFAQ({ zh }: { zh: boolean }) {
           {open === i && (
             <div className="px-6 pb-5">
               <div className="border-t border-amber-100 pt-4">
-                <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
-                  {zh ? faq.a.zh : faq.a.en}
-                </p>
+                <FaqAnswer text={zh ? faq.a.zh : faq.a.en} />
               </div>
             </div>
           )}
