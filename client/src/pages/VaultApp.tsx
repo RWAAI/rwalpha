@@ -32,8 +32,8 @@ const STATIC_YIELD_HISTORY = [
 const STATIC_VAULT = {
   nav: 129.72,
   nav24hChange: 0.38,
-  annualYield: 19.18,
-  annualTotalReturn: 29.02,
+  annualYield: 14.2,
+  annualTotalReturn: 23.8,
   navTrend: [
     { date: "Jan 20", value: 126.50 },
     { date: "Jan 27", value: 125.80 },
@@ -42,7 +42,7 @@ const STATIC_VAULT = {
     { date: "Feb 17", value: 129.10 },
     { date: "Feb 24", value: 129.72 },
   ],
-  lastYieldPerToken: 0.502,
+  lastYieldPerToken: 0.354,
   lastYieldDate: "2026-03-07",
 };
 

@@ -170,7 +170,7 @@ export default function GoldToken() {
   const [payToken, setPayToken] = useState<"USDC" | "USDT">("USDC");
   const [showPayDrop, setShowPayDrop] = useState(false);
   const [stakingAmt, setStakingAmt] = useState("");
-  const [stakingDays, setStakingDays] = useState(30);
+  const [stakingDays, setStakingDays] = useState(90);
   const [connected, setConnected] = useState(false);
   const [walletModal, setWalletModal] = useState(false);
   // 双档 Tab：flexible（活期）| locked（锁仓）

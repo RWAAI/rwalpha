@@ -175,7 +175,7 @@ function NavCsvImport({ onSuccess }: { onSuccess: () => void }) {
         <p>必须包含列：<code className="bg-slate-100 px-1 rounded">date</code>（YYYY-MM-DD）、<code className="bg-slate-100 px-1 rounded">navValue</code></p>
         <p className="mt-0.5">可选列：<code className="bg-slate-100 px-1 rounded">totalReturn</code>（年化总回报 %）</p>
         <p className="mt-1 text-slate-400">示例：<code className="bg-slate-100 px-1 rounded">date,navValue,totalReturn</code></p>
-        <p className="text-slate-400"><code className="bg-slate-100 px-1 rounded">2026-03-14,129.72,29.02</code></p>
+        <p className="text-slate-400"><code className="bg-slate-100 px-1 rounded">2026-03-14,129.72,23.8</code></p>
       </div>
 
       <div className="flex items-center gap-2">
@@ -445,7 +445,7 @@ function NavHistoryPanel() {
               </div>
               <div>
                 <label className="text-xs font-medium text-slate-500 mb-1 block">总回报 % (可选)</label>
-                <input type="number" step="0.0001" placeholder="29.02" value={form.totalReturn} onChange={e => setForm({ ...form, totalReturn: e.target.value })}
+                <input type="number" step="0.0001" placeholder="23.8" value={form.totalReturn} onChange={e => setForm({ ...form, totalReturn: e.target.value })}
                   className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
               </div>
             </div>

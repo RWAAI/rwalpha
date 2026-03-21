@@ -74,7 +74,7 @@ const COPY = {
       {
         icon: 'trending',
         title: '可信资产',
-        items: ['严选指数级 ETF 标的', '龙头科技股期权策略', '10亿美金+规模保障', '年化总回报 20%+'],
+        items: ['严选指数级 ETF 标的', '龙头科技股期权策略', '10亿美金+规模保障', '年化总回报 23.8%'],
       },
     ],
     // Why trust
@@ -181,7 +181,7 @@ const COPY = {
       {
         icon: 'trending',
         title: 'Trusted Assets',
-        items: ['Curated index-grade ETFs', 'Leading tech options strategy', '$1B+ AUM assurance', '20%+ annualized total return'],
+        items: ['Curated index-grade ETFs', 'Leading tech options strategy', '$1B+ AUM assurance', '23.8% annualized total return'],
       },
     ],
     whyTrustHeader: 'WHY TRUST RWALPHA',

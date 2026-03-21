@@ -41,8 +41,8 @@ const COPY = {
     ctaBtn1: '查看金库',
     ctaBtn2: '进入应用',
     chips: [
-      { label: '年化派息率', value: '~19.93%', color: 'emerald' },
-      { label: '年化总回报', value: '+29.72%', color: 'indigo' },
+      { label: '年化派息率', value: '~14.2%', color: 'emerald' },
+      { label: '年化总回报', value: '+23.8%', color: 'indigo' },
       { label: 'AI 状态', value: '● 运行中', color: 'cyan' },
       { label: '本周派息', value: '$0.502 / rNDX', color: 'amber' },
     ],
@@ -77,8 +77,8 @@ const COPY = {
     ctaBtn1: 'View Vault',
     ctaBtn2: 'Launch App',
     chips: [
-      { label: 'Annual Yield', value: '~19.93%', color: 'emerald' },
-      { label: 'Total Return', value: '+29.72%', color: 'indigo' },
+      { label: 'Annual Yield', value: '~14.2%', color: 'emerald' },
+      { label: 'Total Return', value: '+23.8%', color: 'indigo' },
       { label: 'AI Status', value: '● Active', color: 'cyan' },
       { label: 'Weekly Dist.', value: '$0.502 / rNDX', color: 'amber' },
     ],
@@ -199,7 +199,7 @@ export default function LandingPage() {
   };
 
   const T = COPY[lang];
-  const statsValues = [19.88, 29.72, 10, 100];
+  const statsValues = [14.2, 23.8, 10, 100];
   const statsDecimals = [2, 2, 0, 0];
   const featureIcons = [
     <Brain size={18} className="text-violet-600" />,
