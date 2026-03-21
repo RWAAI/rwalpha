@@ -410,35 +410,39 @@ export default function GoldToken() {
             </div>
 
             {/* ── rGLD 交易框 ── */}
-            <div className="flex items-center justify-between px-6 pt-4 pb-3 border-b border-slate-50">
+            {/* ── 卡片标题 ── */}
+            <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-amber-400"></div>
                 <span className="font-bold text-slate-800 text-base">{zh ? "rGLD 交易" : "rGLD Trade"}</span>
               </div>
-
             </div>
 
-            <div className="px-6 py-4 space-y-4 flex-1 flex flex-col">
-              {/* 持仓 */}
-              {/* 汇率和手续费 */}
-              <div className="flex items-center justify-between text-[10px] text-slate-400 mb-2">
-                <span>{zh ? "汇率：1 rGLD = $" + RGLD_NAV.toFixed(2) : "Rate: 1 rGLD = $" + RGLD_NAV.toFixed(2)}</span>
-                <span>{zh ? "手续费：0.25%" : "Fee: 0.25%"}</span>
+            {/* ── 四格数据卡片 ── */}
+            <div className="grid grid-cols-2 gap-px bg-slate-100 border-b border-slate-100">
+              <div className="bg-white px-5 py-3">
+                <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "rGLD 持仓" : "rGLD Holdings"}</p>
+                <p className="text-base font-extrabold text-amber-500 font-mono">0.0000 <span className="text-xs text-slate-400 font-semibold">rGLD</span></p>
+                <p className="text-[10px] text-slate-400 mt-0.5">{zh ? "持仓价值 $0.00" : "Value $0.00"}</p>
               </div>
+              <div className="bg-white px-5 py-3">
+                <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "当前汇率" : "Current Rate"}</p>
+                <p className="text-base font-extrabold text-slate-800 font-mono">${RGLD_NAV.toFixed(2)}</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">1 rGLD = ${RGLD_NAV.toFixed(2)}</p>
+              </div>
+              <div className="bg-white px-5 py-3">
+                <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "手续费" : "Fee"}</p>
+                <p className="text-base font-extrabold text-green-600 font-mono">0.25%</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">{zh ? "约 $0.00" : "≈ $0.00"}</p>
+              </div>
+              <div className="bg-white px-5 py-3">
+                <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "最小认购" : "Min. Invest"}</p>
+                <p className="text-base font-extrabold text-slate-800 font-mono">$100</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">≈ {(100 / RGLD_NAV).toFixed(3)} rGLD</p>
+              </div>
+            </div>
 
-              <div className="flex items-end justify-between gap-2">
-                <div>
-                  <p className="text-xs text-slate-400 mb-1">{zh ? "rGLD 持仓" : "rGLD Holdings"}</p>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-extrabold text-slate-900 tracking-tight font-mono">0.0000</span>
-                    <span className="text-amber-500 font-semibold text-base">rGLD</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">{zh ? "持仓价值" : "Holdings Value"}</p>
-                  <p className="text-sm font-bold font-mono text-slate-800">$0.00</p>
-                </div>
-              </div>
+            <div className="px-5 py-4 space-y-3 flex-1 flex flex-col">
 
               {/* 交易框 */}
               <div className="rounded-2xl bg-slate-50 border border-slate-200 overflow-hidden flex-1 flex flex-col">
