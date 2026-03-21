@@ -17,31 +17,33 @@ import { useAuth } from "@/_core/hooks/useAuth";
 
 // ─── 静态数据 ────────────────────────────────────────────────────────────────
 
-const GLD_PRICE = 296.45;      // GLD ETF 当前价格（USD）
-const GLD_CHANGE = +1.23;      // 24h 涨跌（USD）
-const GLD_CHANGE_PCT = +0.42;  // 24h 涨跌幅（%）
-const GLD_HIGH = 297.80;
-const GLD_LOW  = 294.20;
-const GLD_OPEN = 295.22;
-const GLD_AUM  = "746亿";
-const GLD_AUM_EN = "$74.6B";
-const RGLD_NAV = 296.45;       // rGLD 1:1 挂钩 GLD
+const GLD_PRICE = 413.38;      // GLD ETF 当前价格（USD）2026-03-21
+const GLD_CHANGE = -13.03;     // 24h 涨跌（USD）
+const GLD_CHANGE_PCT = -3.06;  // 24h 涨跌幅（%）
+const GLD_HIGH = 428.59;
+const GLD_LOW  = 411.23;
+const GLD_OPEN = 428.09;
+const GLD_AUM  = "1571亿";
+const GLD_AUM_EN = "$157.1B";
+const RGLD_NAV = 413.38;       // rGLD 1:1 挂钩 GLD
 const STAKING_APY_FLEXIBLE = 5.0;  // 活期年化
 const STAKING_APY_LOCKED   = 8.0;  // 锁仓年化
 const STAKING_APY = 8.0; // 保留兼容
 
-// GLD 近30天走势数据（模拟）
+// GLD 近30天走势数据（来源：TwelveData / WSJ 2026-03-21）
 const GLD_TREND = [
-  { date: "02-20", value: 278.50 },
-  { date: "02-24", value: 281.20 },
-  { date: "02-27", value: 284.80 },
-  { date: "03-03", value: 283.10 },
-  { date: "03-06", value: 287.40 },
-  { date: "03-10", value: 289.90 },
-  { date: "03-13", value: 291.60 },
-  { date: "03-17", value: 293.80 },
-  { date: "03-20", value: 295.20 },
-  { date: "03-21", value: 296.45 },
+  { date: "02-20", value: 441.20 },
+  { date: "02-24", value: 452.80 },
+  { date: "02-27", value: 465.50 },
+  { date: "03-03", value: 470.20 },
+  { date: "03-06", value: 469.04 },
+  { date: "03-09", value: 468.09 },
+  { date: "03-10", value: 479.74 },
+  { date: "03-13", value: 460.84 },
+  { date: "03-17", value: 459.27 },
+  { date: "03-18", value: 444.74 },
+  { date: "03-20", value: 426.41 },
+  { date: "03-21", value: 413.38 },
 ];
 
 // 模拟活期质押仓位
