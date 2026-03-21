@@ -1,0 +1,28 @@
+{
+  "query": "SELECT * FROM nav_history ORDER BY id DESC LIMIT 5; SELECT * FROM dividend_records ORDER BY id DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT * FROM nav_history ORDER BY id DESC LIMIT 5; SELECT * FROM dividend_records ORDER BY id DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "30002",
+      "date": "2026-03-14",
+      "navValue": "129.7200",
+      "totalReturn": "29.3000",
+      "createdAt": "2026-03-16 07:09:22"
+    },
+    {
+      "id": "1",
+      "date": "2026-03-17",
+      "navValue": "130.9900",
+      "totalReturn": "28.9900",
+      "createdAt": "2026-03-16 01:43:33"
+    }
+  ],
+  "messages": [
+    "id\tdate\tticker\tamountPerUnit\ttotalAmount\tfrequency\tcreatedAt",
+    "30001\t2026-03-07\tNVDY\t0.566000\t630.6600\tWeekly\t2026-03-17 07:01:29",
+    "1\t2026-03-14\tNVDY\t0.502000\t628.3000\tWeekly\t2026-03-16 07:11:29"
+  ],
+  "stdout": "id\tdate\tnavValue\ttotalReturn\tcreatedAt\n30002\t2026-03-14\t129.7200\t29.3000\t2026-03-16 07:09:22\n1\t2026-03-17\t130.9900\t28.9900\t2026-03-16 01:43:33\nid\tdate\tticker\tamountPerUnit\ttotalAmount\tfrequency\tcreatedAt\n30001\t2026-03-07\tNVDY\t0.566000\t630.6600\tWeekly\t2026-03-17 07:01:29\n1\t2026-03-14\tNVDY\t0.502000\t628.3000\tWeekly\t2026-03-16 07:11:29\n",
+  "stderr": "",
+  "execution_time_ms": 1793
+}

@@ -13,7 +13,7 @@ const i18n = {
     aiEnabled: 'AI 赋能',
     principal: '本金计算器',
     annualYield: '年度派息率',
-    yieldTarget: (excess: string) => `目标: 18.00% | 超额: +${excess}%`,
+    yieldTarget: (excess: string) => `目标: 12.00% | 超额: +${excess}%`,
     mgmtFeeNote: '（未扣除管理费及相关税费）',
     navTitle: '金库 NAV',
     navSince: '成立以来 · 基准 $100',
@@ -96,7 +96,7 @@ const i18n = {
     aiEnabled: 'AI Powered',
     principal: 'Principal Calculator',
     annualYield: 'Annual Yield',
-    yieldTarget: (excess: string) => `Target: 18.00% | Excess: +${excess}%`,
+    yieldTarget: (excess: string) => `Target: 12.00% | Excess: +${excess}%`,
     mgmtFeeNote: '(Before mgmt. fee & taxes)',
     navTitle: 'Vault NAV',
     navSince: 'Since Inception · Base $100',
@@ -198,7 +198,7 @@ const App = () => {
   // ETF 自身费率已内含于净值，管理费 0.80%/年由金库额外收取
   const MGMT_FEE = 0.80; // RWAlpha 管理费 %
   const portfolioBase = [
-    { name: lang === 'zh' ? '科技期权收益 ETF' : 'Tech Option Income ETF', weight: 0.22,   aum: '13.9亿', aumEn: '$1.39B',   price: 13.52, expenseRatio: 1.27, yield: 73.84, totalReturn: 50.38, freq: 'Weekly',    aiAdjust: +3.2 },
+    { name: lang === 'zh' ? '科技期权收益 ETF' : 'Tech Option Income ETF', weight: 0.22,   aum: '13.9亿', aumEn: '$1.39B',   price: 13.52, expenseRatio: 1.27, yield: 48.00, totalReturn: 23.49, freq: 'Weekly',    aiAdjust: +3.2 },
     { name: lang === 'zh' ? '纳指期权增强 ETF' : 'Nasdaq Option Enhanced ETF', weight: 0.29,   aum: '91.8亿', aumEn: '$9.18B',   price: 51.47, expenseRatio: 0.68, yield: 14.49, totalReturn: 21.86, freq: 'Monthly',   aiAdjust: +1.5 },
     { name: lang === 'zh' ? '纳指100指数 ETF' : 'Nasdaq 100 Index ETF', weight: 0.29,  aum: '712.5亿', aumEn: '$71.25B', price: 244.45, expenseRatio: 0.15, yield: 0.52,  totalReturn: 25.17, freq: 'Quarterly', aiAdjust: +0.8 },
     { name: lang === 'zh' ? '科技板块指数 ETF' : 'Tech Sector Index ETF', weight: 0.2000, aum: '1105.2亿', aumEn: '$110.52B', price: 714.44, expenseRatio: 0.09, yield: 0.43,  totalReturn: 28.97, freq: 'Quarterly', aiAdjust: 0.0  },

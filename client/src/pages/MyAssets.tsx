@@ -99,8 +99,8 @@ export default function MyAssets() {
                 <p className="text-sm font-bold text-slate-800">500.00 <span className="text-amber-600">rNDX</span></p>
               </div>
               <div className="rounded-xl bg-slate-50 px-4 py-3">
-                <p className="text-[11px] text-slate-400 mb-1">{zh ? "市值" : "Value"}</p>
-                <p className="text-sm font-bold text-slate-800">~$65,495</p>
+                <p className="text-[11px] text-slate-400 mb-1">{zh ? "市値" : "Value"}</p>
+                <p className="text-sm font-bold text-slate-800">1,000 USDT</p>
               </div>
               <div className="rounded-xl bg-slate-50 px-4 py-3">
                 <p className="text-[11px] text-slate-400 mb-1">{zh ? "生成时间" : "Issued"}</p>

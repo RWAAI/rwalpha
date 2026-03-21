@@ -720,7 +720,7 @@ export default function VaultApp() {
               </div>
               <div className="rounded-2xl bg-slate-50 px-4 py-3">
                 <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1.5">{zh ? "市値" : "Value"}</p>
-                <p className="text-sm font-bold text-slate-800">~$65,495</p>
+                <p className="text-sm font-bold text-slate-800">1,000 USDT</p>
               </div>
               <div className="rounded-2xl bg-slate-50 px-4 py-3">
                 <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1.5">{zh ? "生成时间" : "Issued"}</p>
@@ -982,6 +982,7 @@ export default function VaultApp() {
                 <p className="text-5xl font-extrabold text-amber-500 tracking-tight font-mono">
                   ~{annualYield.toFixed(2)}%<sup className="text-lg font-normal ml-1">*</sup>
                 </p>
+                <p className="text-xs text-slate-400 mt-1">{zh ? "目标收益 ~12%+" : "Target Yield ~12%+"}</p>
               </div>
 
               {/* 可领收益 */}

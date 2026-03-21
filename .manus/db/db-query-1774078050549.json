@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE nav_history SET totalReturn = 23.80 WHERE id IN (1, 30002); UPDATE dividend_records SET amountPerUnit = 0.354 WHERE ticker = 'NVDY';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute UPDATE nav_history SET totalReturn = 23.80 WHERE id IN (1, 30002); UPDATE dividend_records SET amountPerUnit = 0.354 WHERE ticker = 'NVDY';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1854
+}

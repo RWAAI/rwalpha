@@ -1,0 +1,43 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "ai_signals"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "dividend_records"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "kyc_records"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "nav_history"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "portfolios"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "rebalance_logs"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "user_dividend_history"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "user_holdings"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "users"
+    },
+    {
+      "Tables_in_asxYnytTefdYpzwe5Qg6qu": "wallet_bindings"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_asxYnytTefdYpzwe5Qg6qu\n__drizzle_migrations\nai_signals\ndividend_records\nkyc_records\nnav_history\nportfolios\nrebalance_logs\nuser_dividend_history\nuser_holdings\nusers\nwallet_bindings\n",
+  "stderr": "",
+  "execution_time_ms": 1627
+}

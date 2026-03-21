@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, date, navValue, totalReturn FROM nav_history ORDER BY date DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT id, date, navValue, totalReturn FROM nav_history ORDER BY date DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "1",
+      "date": "2026-03-17",
+      "navValue": "130.9900",
+      "totalReturn": "23.8000"
+    },
+    {
+      "id": "30002",
+      "date": "2026-03-14",
+      "navValue": "129.7200",
+      "totalReturn": "23.8000"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdate\tnavValue\ttotalReturn\n1\t2026-03-17\t130.9900\t23.8000\n30002\t2026-03-14\t129.7200\t23.8000\n",
+  "stderr": "",
+  "execution_time_ms": 1573
+}

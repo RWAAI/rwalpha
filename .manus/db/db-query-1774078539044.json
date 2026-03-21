@@ -1,0 +1,24 @@
+{
+  "query": "SELECT id, date, ticker, amountPerUnit, totalAmount FROM dividend_records ORDER BY date DESC LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT id, date, ticker, amountPerUnit, totalAmount FROM dividend_records ORDER BY date DESC LIMIT 10;",
+  "rows": [
+    {
+      "id": "1",
+      "date": "2026-03-14",
+      "ticker": "NVDY",
+      "amountPerUnit": "0.357700",
+      "totalAmount": "628.3000"
+    },
+    {
+      "id": "30001",
+      "date": "2026-03-07",
+      "ticker": "NVDY",
+      "amountPerUnit": "0.357700",
+      "totalAmount": "630.6600"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tdate\tticker\tamountPerUnit\ttotalAmount\n1\t2026-03-14\tNVDY\t0.357700\t628.3000\n30001\t2026-03-07\tNVDY\t0.357700\t630.6600\n",
+  "stderr": "",
+  "execution_time_ms": 1641
+}

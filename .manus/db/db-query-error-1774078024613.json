@@ -1,0 +1,8 @@
+{
+  "query": "SELECT * FROM vault_summary ORDER BY id DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2SRBfC8nY9zwgSE.root --database asxYnytTefdYpzwe5Qg6qu --execute SELECT * FROM vault_summary ORDER BY id DESC LIMIT 5;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 'asxynyttefdypzwe5qg6qu.vault_summary' doesn't exist"
+  ]
+}
