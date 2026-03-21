@@ -1083,8 +1083,8 @@ const GOLD_FAQS: { q: { zh: string; en: string }; a: { zh: string; en: string } 
       en: 'If RWAlpha has operational issues, can I still recover my assets?',
     },
     a: {
-      zh: '可以。RWAlpha 采用资产隔离架构，您的底层 GLD ETF 份额存放于持牌券商的独立托管账户，与 RWAlpha 运营资金完全隔离。\n\n即使 RWAlpha 平台停止运营，托管方仍会按照协议将底层 ETF 资产对应的价值返还给代币持有人。这是 RWA 产品区别于中心化交易所的核心安全优势——您的资产不在平台资产负债表上。',
-      en: 'Yes. RWAlpha uses an asset-segregation architecture. Your underlying GLD ETF shares are held in a segregated account at a licensed broker, fully isolated from RWAlpha\'s operational funds.\n\nEven if RWAlpha ceases operations, the custodian will return the value corresponding to the underlying ETF assets to token holders per the protocol. This is the core safety advantage of RWA products over centralized exchanges — your assets are off our balance sheet.',
+      zh: '可以。RWAlpha 采用资产隔离架构，您的底层 GLD ETF 份额存放于持牌券商的独立托管账户，与 RWAlpha 运营资金完全隔离。\n\n即使 RWAlpha 平台停止运营，托管方仍会按照协议将底层 ETF 资产对应的价值返还给代币持有人。这是 RWA 产品区别于其他平台的核心安全优势——您的资产不在平台资产负债表上。',
+      en: 'Yes. RWAlpha uses an asset-segregation architecture. Your underlying GLD ETF shares are held in a segregated account at a licensed broker, fully isolated from RWAlpha\'s operational funds.\n\nEven if RWAlpha ceases operations, the custodian will return the value corresponding to the underlying ETF assets to token holders per the protocol. This is the core safety advantage of RWA products over other platforms — your assets are off our balance sheet.',
     },
   },
   {
