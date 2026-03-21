@@ -32,21 +32,62 @@ const LOCK_APY: Record<number, number> = { 30: 7.8, 90: 8.0, 180: 8.2 };
 const STAKING_APY_LOCKED = 8.0; // 保留兼容
 const STAKING_APY = 8.0; // 保留兼容
 
-// GLD 近30天走势数据（来源：TwelveData / WSJ 2026-03-21）
-const GLD_TREND = [
-  { date: "02-20", value: 441.20 },
-  { date: "02-24", value: 452.80 },
-  { date: "02-27", value: 465.50 },
-  { date: "03-03", value: 470.20 },
-  { date: "03-06", value: 469.04 },
-  { date: "03-09", value: 468.09 },
-  { date: "03-10", value: 479.74 },
-  { date: "03-13", value: 460.84 },
-  { date: "03-17", value: 459.27 },
-  { date: "03-18", value: 444.74 },
-  { date: "03-20", value: 426.41 },
-  { date: "03-21", value: 413.38 },
-];
+// GLD 多时间维度走势数据（来源：TwelveData / WSJ / Digrin 2026-03-21）
+const GLD_DATA: Record<string, { date: string; value: number }[]> = {
+  "7D": [
+    { date: "03-14", value: 463.50 },
+    { date: "03-17", value: 459.27 },
+    { date: "03-18", value: 444.74 },
+    { date: "03-19", value: 438.20 },
+    { date: "03-20", value: 426.41 },
+    { date: "03-21", value: 413.38 },
+  ],
+  "1M": [
+    { date: "02-20", value: 441.20 },
+    { date: "02-24", value: 452.80 },
+    { date: "02-27", value: 465.50 },
+    { date: "03-03", value: 470.20 },
+    { date: "03-06", value: 469.04 },
+    { date: "03-09", value: 468.09 },
+    { date: "03-10", value: 479.74 },
+    { date: "03-13", value: 460.84 },
+    { date: "03-17", value: 459.27 },
+    { date: "03-18", value: 444.74 },
+    { date: "03-20", value: 426.41 },
+    { date: "03-21", value: 413.38 },
+  ],
+  "6M": [
+    { date: "09-21", value: 240.80 },
+    { date: "10-01", value: 252.40 },
+    { date: "10-15", value: 265.10 },
+    { date: "11-01", value: 271.55 },
+    { date: "11-15", value: 278.30 },
+    { date: "12-01", value: 285.60 },
+    { date: "12-15", value: 296.20 },
+    { date: "12-31", value: 396.31 },
+    { date: "01-15", value: 420.80 },
+    { date: "01-29", value: 509.70 },
+    { date: "02-15", value: 483.75 },
+    { date: "03-01", value: 476.13 },
+    { date: "03-21", value: 413.38 },
+  ],
+  "1Y": [
+    { date: "Mar'25", value: 280.50 },
+    { date: "Apr'25", value: 295.80 },
+    { date: "May'25", value: 310.20 },
+    { date: "Jun'25", value: 305.40 },
+    { date: "Jul'25", value: 318.60 },
+    { date: "Aug'25", value: 325.90 },
+    { date: "Sep'25", value: 340.80 },
+    { date: "Oct'25", value: 355.20 },
+    { date: "Nov'25", value: 371.55 },
+    { date: "Dec'25", value: 396.31 },
+    { date: "Jan'26", value: 444.95 },
+    { date: "Feb'26", value: 483.75 },
+    { date: "Mar'26", value: 413.38 },
+  ],
+};
+const GLD_TREND = GLD_DATA["1M"];
 
 // 模拟活期质押仓位
 const MOCK_FLEXIBLE_STAKE = { amount: 3.2000, accrued: 2.18, since: "2026-03-01" };
@@ -142,6 +183,7 @@ export default function GoldToken() {
   const [showApyTooltip, setShowApyTooltip] = useState(false);
   const [earlyUnstakeConfirm, setEarlyUnstakeConfirm] = useState(false);
   const [yieldHistoryOpen, setYieldHistoryOpen] = useState(false);
+  const [trendRange, setTrendRange] = useState<"7D" | "1M" | "6M" | "1Y">("1M");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -342,7 +384,23 @@ export default function GoldToken() {
 
               {/* 走势迷你图 */}
               <div className="mt-2 mb-1">
-                <GldSparkLine data={GLD_TREND} />
+                {/* 时间范围切换 */}
+                <div className="flex gap-1 mb-2">
+                  {(["7D", "1M", "6M", "1Y"] as const).map(r => (
+                    <button
+                      key={r}
+                      onClick={() => setTrendRange(r)}
+                      className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold transition-all ${
+                        trendRange === r
+                          ? "bg-amber-500 text-white shadow-sm"
+                          : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                      }`}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+                <GldSparkLine data={GLD_DATA[trendRange]} />
               </div>
 
               {/* 关键指标四格 */}
