@@ -516,8 +516,8 @@ export default function About() {
               <H2>{zh ? "资金流转路径" : "Fund Flow"}</H2>
               <P>
                 {zh
-                  ? "为了打通 DeFi 与 TradFi 的连接闭环，RWAlpha 联合 DMZ Finance、FOMO Group 以及中金公司（CICC）等合作伙伴，设计了严密的资金出入金智能路由。"
-                  : "To bridge the DeFi-TradFi gap, RWAlpha has designed a sophisticated fund routing system in partnership with DMZ Finance, FOMO Group, and CICC."}
+                  ? "为了打通 DeFi 与 TradFi 的连接闭环，RWAlpha 联合 DMZ Finance、OTC 以及中金公司（CICC）等合作伙伴，设计了严密的资金出入金智能路由。"
+                  : "To bridge the DeFi-TradFi gap, RWAlpha has designed a sophisticated fund routing system in partnership with DMZ Finance, OTC, and CICC."}
               </P>
               <div className="mt-4 space-y-3">
                 <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
@@ -528,7 +528,7 @@ export default function About() {
                     {[
                       zh ? "用户钱包 (USDT/USDC)" : "User Wallet (USDT/USDC)",
                       zh ? "RWAlpha 智能合约" : "RWAlpha Smart Contract",
-                      "FOMO Pay",
+                      "OTC",
                       zh ? "传统券商" : "Broker",
                       zh ? "底层资产" : "Underlying Asset",
                     ].map((step, i, arr) => (
@@ -547,7 +547,7 @@ export default function About() {
                     {[
                       zh ? "底层资产期权收益" : "Asset Options Premium",
                       zh ? "券商结算" : "Broker Settlement",
-                      "FOMO Pay",
+                      "OTC",
                       zh ? "收益保险库" : "Yield Vault",
                       zh ? "用户钱包 (USDT)" : "User Wallet (USDT)",
                     ].map((step, i, arr) => (

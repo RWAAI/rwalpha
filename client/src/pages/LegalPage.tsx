@@ -95,7 +95,7 @@ function PrivacyContent({ zh }: { zh: boolean }) {
       <H2>{zh ? "3. 我们如何共享您的信息" : "3. How We Share Your Information"}</H2>
       <UL items={[
         zh ? "基金管理人与托管方：包括迪拜 QCD Open-end PCC 基金的管理人卡塔尔国家银行（QNB）、资产托管方渣打银行（Standard Chartered Bank），以及开曼 RWAlpha Matrix SPC 架构下的 BVI 基金管理人。" : "Fund Managers & Custodians: Including QNB (fund manager of Dubai QCD Open-end PCC), Standard Chartered Bank (asset custodian), and the BVI fund manager under Cayman RWAlpha Matrix SPC.",
-        zh ? "支付与资金路由通道：FOMO Group、DMZ Finance、中金公司（CICC）以及对接底层资产的传统券商，以完成 USDT/USDC 与法币的兑换及底层 ETF 的配置。" : "Payment & Fund Routing Channels: FOMO Group, DMZ Finance, CICC, and traditional brokers for underlying asset access, to complete USDT/USDC-fiat conversion and underlying ETF allocation.",
+        zh ? "支付与资金路由通道：OTC、DMZ Finance、中金公司（CICC）以及对接底层资产的传统券商，以完成 USDT/USDC 与法币的兑换及底层 ETF 的配置。" : "Payment & Fund Routing Channels: OTC, DMZ Finance, CICC, and traditional brokers for underlying asset access, to complete USDT/USDC-fiat conversion and underlying ETF allocation.",
         zh ? "监管机构要求：在适用法律或政府监管机构的强制要求下，我们可能需要披露您的相关信息。" : "Regulatory Requirements: Under applicable laws or mandatory requirements from government regulators, we may need to disclose your relevant information.",
       ]} />
 
@@ -173,8 +173,8 @@ function TermsContent({ zh }: { zh: boolean }) {
           : "RWAlpha is committed to building a transparent trust framework, but the protocol's full operation is highly dependent on external traditional financial infrastructure:"}
       </P>
       <UL items={[
-        zh ? "资金路由：您明确知悉并同意，您存入的加密资产（USDT/USDC）以及后续的收益派发，将通过我们的合作伙伴（包括 FOMO Pay、DMZ Finance、中金公司 CICC 及传统券商）进行流转与法币兑换。" : "Fund Routing: You explicitly acknowledge and agree that your deposited crypto assets (USDT/USDC) and subsequent yield distributions will be processed through our partners (including FOMO Pay, DMZ Finance, CICC, and traditional brokers) for conversion.",
-        zh ? "资金链路：投资与收益结算均遵循「资产 ↔ 券商 ↔ FOMO Pay ↔ RWAlpha ↔ 用户钱包」的既定通道。我们不对第三方机构的系统延迟或单方面合规冻结承担直接责任。" : "Fund Channel: Investment and yield settlement follow the established channel 'Asset ↔ Broker ↔ FOMO Pay ↔ RWAlpha ↔ User Wallet'. We are not directly liable for system delays or unilateral compliance freezes by third-party institutions.",
+        zh ? "资金路由：您明确知悉并同意，您存入的加密资产（USDT/USDC）以及后续的收益派发，将通过我们的合作伙伴（包括 OTC、DMZ Finance、中金公司 CICC 及传统券商）进行流转与法币兑换。" : "Fund Routing: You explicitly acknowledge and agree that your deposited crypto assets (USDT/USDC) and subsequent yield distributions will be processed through our partners (including OTC, DMZ Finance, CICC, and traditional brokers) for conversion.",
+        zh ? "资金链路：投资与收益结算均遵循「资产 ↔ 券商 ↔ OTC ↔ RWAlpha ↔ 用户钱包」的既定通道。我们不对第三方机构的系统延迟或单方面合规冻结承担直接责任。" : "Fund Channel: Investment and yield settlement follow the established channel 'Asset ↔ Broker ↔ OTC ↔ RWAlpha ↔ User Wallet'. We are not directly liable for system delays or unilateral compliance freezes by third-party institutions.",
       ]} />
 
       <Divider />
@@ -229,8 +229,8 @@ function RiskContent({ zh }: { zh: boolean }) {
       <H2>{zh ? "2. 传统金融与第三方基础设施风险" : "2. Third-Party & TradFi Infrastructure Risk"}</H2>
       <P>
         {zh
-          ? "RWAlpha 的资金流转和收益结算高度依赖于第三方传统金融机构和支付网关建立的信任框架。用户的资金（USDT/USDC）和底层资产收益需要经过 FOMO Pay、传统券商以及我们的合作伙伴（如 DMZ Finance、FOMO Group、中金公司 CICC）进行法币兑换与流转。"
-          : "RWAlpha's fund flows and yield settlements are highly dependent on the trust framework established by third-party traditional financial institutions and payment gateways. Users' funds (USDT/USDC) and underlying asset yields need to be processed through FOMO Pay, traditional brokers, and our partners (such as DMZ Finance, FOMO Group, CICC) for fiat conversion and transfer."}
+          ? "RWAlpha 的资金流转和收益结算高度依赖于第三方传统金融机构和支付网关建立的信任框架。用户的资金（USDT/USDC）和底层资产收益需要经过 OTC、传统券商以及我们的合作伙伴（如 DMZ Finance、OTC、中金公司 CICC）进行法币兑换与流转。"
+          : "RWAlpha's fund flows and yield settlements are highly dependent on the trust framework established by third-party traditional financial institutions and payment gateways. Users' funds (USDT/USDC) and underlying asset yields need to be processed through OTC, traditional brokers, and our partners (such as DMZ Finance, OTC, CICC) for fiat conversion and transfer."}
       </P>
       <P>
         {zh
