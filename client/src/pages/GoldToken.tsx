@@ -288,9 +288,7 @@ export default function GoldToken() {
           <span className="px-2 py-0.5 bg-amber-500 text-white text-[10px] rounded font-bold uppercase tracking-wider">
             {zh ? "黄金代币" : "Gold Token"}
           </span>
-          <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] rounded font-semibold">
-            {zh ? "100% 挂钩 GLD ETF" : "100% Pegged to GLD ETF"}
-          </span>
+
 
           {/* 右侧操作区 */}
           <div className="ml-auto flex items-center gap-2">
@@ -341,8 +339,8 @@ export default function GoldToken() {
         {/* 副标题 */}
         <p className="text-slate-500 text-sm">
           {zh
-            ? "100% 由 SPDR Gold Shares（GLD）ETF 底层资产支撑 · 链上可验证 · Staking 年化 ~8%"
-            : "100% backed by SPDR Gold Shares (GLD) ETF · On-chain verifiable · ~8% Staking APY"}
+            ? "挂钩 SPDR Gold Shares（GLD）ETF 底层资产 · 链上可验证 · Staking 年化 ~8%"
+            : "Pegged to SPDR Gold Shares (GLD) ETF underlying assets · On-chain verifiable · ~8% Staking APY"}
         </p>
       </div>
 
@@ -425,13 +423,17 @@ export default function GoldToken() {
                 <div className="w-2 h-2 rounded-full bg-amber-400"></div>
                 <span className="font-bold text-slate-800 text-base">{zh ? "rGLD 交易" : "rGLD Trade"}</span>
               </div>
-              <span className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-100">
-                {zh ? "1 rGLD = 1 GLD ETF 份额" : "1 rGLD = 1 GLD ETF Share"}
-              </span>
+
             </div>
 
             <div className="px-6 py-4 space-y-4 flex-1 flex flex-col">
               {/* 持仓 */}
+              {/* 汇率和手续费 */}
+              <div className="flex items-center justify-between text-[10px] text-slate-400 mb-2">
+                <span>{zh ? "汇率：1 rGLD = $" + RGLD_NAV.toFixed(2) : "Rate: 1 rGLD = $" + RGLD_NAV.toFixed(2)}</span>
+                <span>{zh ? "手续费：0.25%" : "Fee: 0.25%"}</span>
+              </div>
+
               <div className="flex items-end justify-between gap-2">
                 <div>
                   <p className="text-xs text-slate-400 mb-1">{zh ? "rGLD 持仓" : "rGLD Holdings"}</p>
@@ -557,11 +559,7 @@ export default function GoldToken() {
                 </div>
               </div>
 
-              {/* 底部说明 */}
-              <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1">
-                <span>{zh ? "汇率：1 rGLD = $" + RGLD_NAV.toFixed(2) : "Rate: 1 rGLD = $" + RGLD_NAV.toFixed(2)}</span>
-                <span>{zh ? "手续费：0.10%" : "Fee: 0.10%"}</span>
-              </div>
+
             </div>
           </div>
 
@@ -909,12 +907,18 @@ export default function GoldToken() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
-                  <span className="font-bold text-slate-800 text-base">Yield Vault</span>
+                  <span className="font-bold text-slate-800 text-base">{zh ? "收益金库" : "Yield Vault"}</span>
                 </div>
                 <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-100">
                   {zh ? "可领收益" : "Claimable"}
                 </span>
               </div>
+              {/* 说明文字 */}
+              <p className="text-[11px] text-slate-400 leading-relaxed -mt-1">
+                {zh
+                  ? "Staking 解押后收益 T+3 自动进入此处，可随时提取至钱包"
+                  : "Staking yield credited T+3 after unstaking · Withdraw to wallet anytime"}
+              </p>
 
               {/* 可领收益大数字 */}
               <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl border border-amber-100 px-5 py-4">
@@ -923,7 +927,7 @@ export default function GoldToken() {
                   <span className="text-3xl font-extrabold text-slate-900 font-mono">$9.72</span>
                   <span className="text-emerald-600 font-semibold text-sm">USDT</span>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1">{zh ? "来源：rGLD Staking 收益 · 解押后自动入账" : "Source: rGLD Staking Yield · Auto-credited on unstake"}</p>
+                <p className="text-[10px] text-slate-400 mt-1">{zh ? "来源：rGLD Staking 收益 · T+3 到账" : "Source: rGLD Staking Yield · Credited T+3"}</p>
               </div>
 
               {/* 收益历史记录（可折叠） */}
