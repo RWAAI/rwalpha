@@ -418,40 +418,26 @@ export default function GoldToken() {
               </div>
             </div>
 
-            {/* ── 持仓大字区 ── */}
-            <div className="px-5 pt-4 pb-3 border-b border-slate-100">
-              <div className="flex items-end justify-between">
-                <div>
-                  <p className="text-xs text-slate-400 mb-1">{zh ? "rGLD 持仓" : "rGLD Holdings"}</p>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-extrabold text-slate-900 tracking-tight font-mono">0.0000</span>
-                    <span className="text-base font-bold text-slate-400">rGLD</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-slate-400 mb-0.5">{zh ? "本金价值" : "Principal Value"}</p>
-                  <p className="text-lg font-extrabold text-slate-800 font-mono">$0.00</p>
-                </div>
+            {/* ── 四格数据卡片 ── */}
+            <div className="grid grid-cols-2 gap-px bg-slate-100 border-b border-slate-100">
+              <div className="bg-white px-5 py-3">
+                <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "rGLD 持仓" : "rGLD Holdings"}</p>
+                <p className="text-base font-extrabold text-amber-500 font-mono">0.0000 <span className="text-xs text-slate-400 font-semibold">rGLD</span></p>
+                <p className="text-[10px] text-slate-400 mt-0.5">{zh ? "持仓价值 $0.00" : "Value $0.00"}</p>
               </div>
-            </div>
-
-            {/* ── 三格数据 ── */}
-            <div className="grid grid-cols-3 gap-px bg-slate-100 border-b border-slate-100">
-              <div className="bg-white px-4 py-3">
-                <p className="text-[10px] text-slate-400 font-medium mb-1">GLD NAV</p>
-                <p className="text-sm font-extrabold text-slate-800 font-mono">${RGLD_NAV.toFixed(2)}</p>
-                <p className="text-[10px] text-slate-400 mt-0.5">1 rGLD = $1 GLD</p>
+              <div className="bg-white px-5 py-3">
+                <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "当前汇率" : "Current Rate"}</p>
+                <p className="text-base font-extrabold text-slate-800 font-mono">${RGLD_NAV.toFixed(2)}</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">1 rGLD = ${RGLD_NAV.toFixed(2)}</p>
               </div>
-              <div className="bg-white px-4 py-3">
-                <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "24H 变动" : "24H Change"}</p>
-                <p className={`text-sm font-extrabold font-mono ${GLD_CHANGE_PCT >= 0 ? "text-emerald-600" : "text-red-500"}`}>
-                  {GLD_CHANGE_PCT >= 0 ? "↑" : "↓"} {GLD_CHANGE_PCT >= 0 ? "+" : ""}{GLD_CHANGE_PCT.toFixed(2)}%
-                </p>
-                <p className="text-[10px] text-slate-400 mt-0.5">{GLD_CHANGE >= 0 ? "+" : ""}{GLD_CHANGE.toFixed(2)} USD</p>
+              <div className="bg-white px-5 py-3">
+                <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "手续费" : "Fee"}</p>
+                <p className="text-base font-extrabold text-green-600 font-mono">0.25%</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">{zh ? "约 $0.00" : "≈ $0.00"}</p>
               </div>
-              <div className="bg-white px-4 py-3">
+              <div className="bg-white px-5 py-3">
                 <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "最小认购" : "Min. Invest"}</p>
-                <p className="text-sm font-extrabold text-slate-800 font-mono">$100</p>
+                <p className="text-base font-extrabold text-slate-800 font-mono">$100</p>
                 <p className="text-[10px] text-slate-400 mt-0.5">≈ {(100 / RGLD_NAV).toFixed(3)} rGLD</p>
               </div>
             </div>
