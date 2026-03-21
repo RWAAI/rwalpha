@@ -1075,7 +1075,7 @@ const GOLD_FAQS: { q: { zh: string; en: string }; a: { zh: string; en: string } 
       en: 'Is the Staking yield fixed?',
     },
     a: {
-      zh: '不固定。我们提供的是基于历史数据和模型测算的目标收益区间（5–8% 年化），实际收益会随市场表现有所波动。\n\n但有一点可以确定：RWAlpha 通过机构级风控体系严格控制 LTV 系数，使整体风险敎口（PMR）始终处于安全水位。我们的首要原则是确保资产安全，在此基础上再追求可观的 Staking 收益——这与高风险高收益的 DeFi 协议有本质区别。',
+      zh: '不固定。我们提供的是基于历史数据和模型测算的目标收益区间（5–8% 年化），实际收益会随市场表现有所波动。\n\n但有一点可以确定：RWAlpha 通过机构级风控体系严格控制 LTV 系数，使整体风险敞口（PMR 水平）始终处于安全水位。我们的首要原则是确保资产安全，在此基础上再追求可观的 Staking 收益——这与高风险高收益的 DeFi 协议有本质区别。',
       en: 'Not fixed. We provide a target yield range (5–8% annualized) based on historical data and model projections; actual returns will fluctuate with market performance.\n\nWhat is certain: RWAlpha strictly controls LTV ratios through institutional-grade risk management, keeping the overall risk exposure (PMR) at a safe level at all times. Our primary principle is to ensure asset safety first, then pursue meaningful Staking returns — fundamentally different from high-risk DeFi protocols.',
     },
   },
