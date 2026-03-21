@@ -419,7 +419,7 @@ export default function GoldToken() {
             </div>
 
             {/* ── 四格数据卡片 ── */}
-            <div className="grid grid-cols-2 gap-px bg-slate-100 border-b border-slate-100">
+            <div className="grid grid-cols-2 border-b border-slate-100">
               <div className="bg-white px-5 py-3">
                 <p className="text-[10px] text-slate-400 font-medium mb-1">{zh ? "rGLD 持仓" : "rGLD Holdings"}</p>
                 <p className="text-base font-extrabold text-amber-500 font-mono">0.0000 <span className="text-xs text-slate-400 font-semibold">rGLD</span></p>
