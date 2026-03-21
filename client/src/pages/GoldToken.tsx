@@ -382,7 +382,6 @@ export default function GoldToken() {
 
               {/* 走势迷你图 */}
               <div className="mt-2 mb-1">
-                {/* 时间范围切换 */}
                 <div className="flex gap-1 mb-2">
                   {(["7D", "1M", "6M", "1Y"] as const).map(r => (
                     <button
@@ -601,7 +600,7 @@ export default function GoldToken() {
               <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-amber-400"></div>
-                  <span className="font-bold text-slate-800 text-base">rGLD Staking</span>
+                  <span className="font-bold text-slate-800 text-base">{zh ? "rGLD 质押" : "rGLD Staking"}</span>
                 </div>
                 {/* 活期 / 锁仓 主 Tab */}
                 <div className="flex gap-0.5 bg-slate-100 rounded-xl p-0.5">
