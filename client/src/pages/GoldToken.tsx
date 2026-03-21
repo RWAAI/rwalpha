@@ -1013,7 +1013,7 @@ export default function GoldToken() {
 const GOLD_FAQS: { q: { zh: string; en: string }; a: { zh: string; en: string } }[] = [
   {
     q: {
-      zh: 'rGLD 代币价格挂钉 GLD ETF，为什么实际价格会有差异？',
+      zh: 'rGLD 代币价格挂钩 GLD ETF，为什么实际价格会有差异？',
       en: 'rGLD is pegged to GLD ETF — why is there a price difference?',
     },
     a: {
