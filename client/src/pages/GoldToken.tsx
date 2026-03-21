@@ -26,7 +26,8 @@ export default function GoldToken() {
   const [stakingAmt, setStakingAmt] = useState("");
   const [stakingDays, setStakingDays] = useState(30);
   const [connected] = useState(false);
-  const [stakingTab, setStakingTab] = useState<"info" | "stake">("info");
+  const [stakingTab, setStakingTab] = useState<"stake" | "unstake" | "vault">("stake");
+  const [unstakeAmt, setUnstakeAmt] = useState("");
 
   useEffect(() => {
     const handler = () => setZh(localStorage.getItem("rwa-lang") !== "en");
@@ -268,152 +269,206 @@ export default function GoldToken() {
             </div>
           </div>
 
-          {/* ── 右侧：合并为 Tab 卡片 ── */}
-          <div className="flex flex-col">
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full">
-              {/* 卡片头部 */}
-              <div className="flex items-center justify-between px-6 pt-5 pb-0 border-b border-slate-50">
-                <div className="flex gap-1 bg-slate-100 rounded-xl p-0.5">
-                  <button
-                    onClick={() => setStakingTab("info")}
-                    className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${
-                      stakingTab === "info" ? "bg-white text-slate-800 shadow" : "text-slate-500 hover:text-slate-700"
-                    }`}
-                  >
-                    {zh ? "Staking 收益" : "Staking Yield"}
-                  </button>
-                  <button
-                    onClick={() => setStakingTab("stake")}
-                    className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${
-                      stakingTab === "stake" ? "bg-white text-slate-800 shadow" : "text-slate-500 hover:text-slate-700"
-                    }`}
-                  >
-                    {zh ? "质押 rGLD" : "Stake rGLD"}
-                  </button>
-                </div>
-                <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-100 mb-4">
-                  {zh ? "年化收益" : "Annual Yield"}
-                </span>
+          {/* ── 右侧：Staking / Unstaking / Yield Vault ── */}
+          <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+            {/* 卡片头部 */}
+            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
+              <div className="flex gap-0.5 bg-slate-100 rounded-xl p-0.5">
+                {(["stake", "unstake", "vault"] as const).map(tab => {
+                  const labels: Record<string, string> = {
+                    stake: zh ? "质押" : "Stake",
+                    unstake: zh ? "解押" : "Unstake",
+                    vault: "Yield Vault",
+                  };
+                  return (
+                    <button
+                      key={tab}
+                      onClick={() => setStakingTab(tab)}
+                      className={`px-3.5 py-1.5 rounded-lg text-sm font-bold transition-all ${
+                        stakingTab === tab ? "bg-white text-slate-800 shadow" : "text-slate-500 hover:text-slate-700"
+                      }`}
+                    >{labels[tab]}</button>
+                  );
+                })}
               </div>
+              <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-100">
+                ~{STAKING_APY}% APY
+              </span>
+            </div>
 
-              {/* Tab: Staking 收益说明 */}
-              {stakingTab === "info" && (
-                <div className="px-6 py-5 space-y-4 flex-1">
-                  <div className="text-center py-6">
-                    <p className="text-xs text-slate-400 mb-2">{zh ? "年化 Staking 收益率" : "Annual Staking APY"}</p>
-                    <p className="text-6xl font-extrabold text-amber-500 tracking-tight font-mono">
-                      ~{STAKING_APY.toFixed(1)}%<sup className="text-xl font-normal ml-1">*</sup>
-                    </p>
+            {/* Tab: 质押 */}
+            {stakingTab === "stake" && (
+              <div className="px-6 py-5 space-y-4 flex-1">
+                {/* 质押数量输入 */}
+                <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-xs text-slate-400">{zh ? "质押数量" : "Stake Amount"}</p>
+                    <p className="text-[10px] text-slate-400">{zh ? "余额：0 rGLD" : "Balance: 0 rGLD"}</p>
                   </div>
-                  <div className="space-y-3">
-                    {[
-                      { label: zh ? "收益结算周期" : "Yield Settlement", value: zh ? "每月发放" : "Monthly" },
-                      { label: zh ? "结算币种" : "Settlement Token", value: "USDT" },
-                      { label: zh ? "最短锁仓周期" : "Min Lock Period", value: zh ? "30 天" : "30 Days" },
-                      { label: zh ? "底层支撑" : "Backed By", value: "GLD ETF" },
-                    ].map(row => (
-                      <div key={row.label} className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0">
-                        <span className="text-sm text-slate-500">{row.label}</span>
-                        <span className="text-sm font-semibold text-slate-800">{row.value}</span>
-                      </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number" min="0" placeholder="0"
+                      value={stakingAmt}
+                      onChange={e => setStakingAmt(e.target.value)}
+                      className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0"
+                    />
+                    <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
+                      <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
+                      <span className="text-sm font-bold text-amber-700">rGLD</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 锁仓周期选择 */}
+                <div>
+                  <p className="text-xs text-slate-400 mb-2">{zh ? "锁仓周期" : "Lock Period"}</p>
+                  <div className="flex gap-2">
+                    {[30, 60, 90].map(d => (
+                      <button
+                        key={d}
+                        onClick={() => setStakingDays(d)}
+                        className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
+                          stakingDays === d
+                            ? "bg-amber-500 text-white shadow-sm shadow-amber-200"
+                            : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                        }`}
+                      >
+                        {d}{zh ? " 天" : "D"}
+                      </button>
                     ))}
                   </div>
-                  <p className="text-[10px] text-slate-400">
-                    * {zh ? "以上数据基于历史表现测算，业绩随市场行情波动。" : "Figures based on historical performance. Returns fluctuate with market conditions."}
-                  </p>
-                  <button
-                    onClick={() => setStakingTab("stake")}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-200 transition-all duration-200 active:scale-95"
-                  >
-                    <Lock size={15} />
-                    {zh ? "开始质押" : "Start Staking"}
-                  </button>
                 </div>
-              )}
 
-              {/* Tab: 质押操作 */}
-              {stakingTab === "stake" && (
-                <div className="px-6 py-5 space-y-4 flex-1">
-                  {/* 质押数量输入 */}
-                  <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-xs text-slate-400">{zh ? "质押数量" : "Stake Amount"}</p>
-                      <p className="text-[10px] text-slate-400">{zh ? "余额：0 rGLD" : "Balance: 0 rGLD"}</p>
+                {/* 预估收益 */}
+                <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-slate-500 mb-0.5">{zh ? "预计收益（解押后进入 Yield Vault）" : "Est. Yield (to Yield Vault on unstake)"}</p>
+                      <p className="text-2xl font-extrabold text-slate-900 font-mono">${stakingEst}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number" min="0" placeholder="0"
-                        value={stakingAmt}
-                        onChange={e => setStakingAmt(e.target.value)}
-                        className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0"
-                      />
-                      <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
-                        <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
-                        <span className="text-sm font-bold text-amber-700">rGLD</span>
-                      </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-slate-400 mb-0.5">APY</p>
+                      <p className="text-lg font-extrabold text-emerald-600">~{STAKING_APY}%</p>
                     </div>
                   </div>
+                </div>
 
-                  {/* 锁仓周期选择 */}
+                {/* 质押按钮 */}
+                <button
+                  className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 active:scale-95 shadow-md ${
+                    !connected || !stakingAmt || parseFloat(stakingAmt) <= 0
+                      ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                      : "bg-amber-500 hover:bg-amber-600 text-white shadow-amber-200"
+                  }`}
+                  disabled={!connected || !stakingAmt || parseFloat(stakingAmt) <= 0}
+                >
+                  <Lock size={15} />
+                  {!connected
+                    ? (zh ? "请先连接钱包" : "Connect Wallet First")
+                    : !stakingAmt || parseFloat(stakingAmt) <= 0
+                      ? (zh ? "输入质押数量" : "Enter Stake Amount")
+                      : (zh ? `质押 ${stakingAmt} rGLD · ${stakingDays} 天` : `Stake ${stakingAmt} rGLD · ${stakingDays}D`)}
+                </button>
+                <p className="text-[10px] text-slate-400 text-center">
+                  {zh ? "锁仓期间不可赎回，解押后收益自动进入 Yield Vault" : "Locked during staking. Yield credited to Yield Vault on unstake."}
+                </p>
+              </div>
+            )}
+
+            {/* Tab: 解押 */}
+            {stakingTab === "unstake" && (
+              <div className="px-6 py-5 space-y-4 flex-1">
+                {/* 当前质押仓位 */}
+                <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
+                  <p className="text-xs text-slate-400 mb-2">{zh ? "当前质押仓位" : "Staked Position"}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-extrabold text-slate-900 font-mono">0.0000 <span className="text-amber-500 text-base">rGLD</span></span>
+                    <span className="text-xs text-slate-400">{zh ? "到期：—" : "Expires: —"}</span>
+                  </div>
+                </div>
+
+                {/* 解押数量 */}
+                <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-xs text-slate-400">{zh ? "解押数量" : "Unstake Amount"}</p>
+                    <p className="text-[10px] text-slate-400">{zh ? "已质押：0 rGLD" : "Staked: 0 rGLD"}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number" min="0" placeholder="0"
+                      value={unstakeAmt}
+                      onChange={e => setUnstakeAmt(e.target.value)}
+                      className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0"
+                    />
+                    <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
+                      <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
+                      <span className="text-sm font-bold text-amber-700">rGLD</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 解押后收益说明 */}
+                <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100 flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <TrendingUp size={15} className="text-emerald-600" />
+                  </div>
                   <div>
-                    <p className="text-xs text-slate-400 mb-2">{zh ? "锁仓周期" : "Lock Period"}</p>
-                    <div className="flex gap-2">
-                      {[30, 60, 90].map(d => (
-                        <button
-                          key={d}
-                          onClick={() => setStakingDays(d)}
-                          className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
-                            stakingDays === d
-                              ? "bg-amber-500 text-white shadow-sm shadow-amber-200"
-                              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                          }`}
-                        >
-                          {d}{zh ? " 天" : "D"}
-                        </button>
-                      ))}
-                    </div>
+                    <p className="text-sm font-semibold text-emerald-800 mb-0.5">{zh ? "收益自动进入 Yield Vault" : "Yield Auto-credited to Yield Vault"}</p>
+                    <p className="text-xs text-emerald-600">{zh ? "解押后，累计 Staking 收益将自动存入您的 Yield Vault，可随时提取。" : "Upon unstaking, accrued yield is automatically deposited into your Yield Vault for withdrawal anytime."}</p>
                   </div>
-
-                  {/* 预估收益 */}
-                  <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs text-slate-500 mb-0.5">{zh ? "预计 USDT 收益" : "Est. USDT Yield"}</p>
-                        <p className="text-2xl font-extrabold text-slate-900 font-mono">${stakingEst}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[10px] text-slate-400 mb-0.5">{zh ? "年化收益率" : "APY"}</p>
-                        <p className="text-lg font-extrabold text-emerald-600">~{STAKING_APY}%</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 质押按鈕 */}
-                  <button
-                    className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 active:scale-95 shadow-md ${
-                      stakingAmt && parseFloat(stakingAmt) > 0
-                        ? "bg-amber-500 hover:bg-amber-600 text-white shadow-amber-200"
-                        : "bg-slate-100 text-slate-400 cursor-not-allowed"
-                    }`}
-                    disabled={!stakingAmt || parseFloat(stakingAmt) <= 0}
-                  >
-                    <Lock size={15} />
-                    {!connected
-                      ? (zh ? "请先连接钉包" : "Connect Wallet First")
-                      : !stakingAmt || parseFloat(stakingAmt) <= 0
-                        ? (zh ? "输入质押数量" : "Enter Stake Amount")
-                        : (zh ? `质押 ${stakingAmt} rGLD · ${stakingDays} 天` : `Stake ${stakingAmt} rGLD · ${stakingDays}D`)
-                    }
-                  </button>
-
-                  <p className="text-[10px] text-slate-400 text-center">
-                    {zh
-                      ? `锁仓期间不可赎回，到期后自动解锁并发放收益`
-                      : `Tokens are locked during staking period. Auto-unlocked and yield distributed on expiry.`}
-                  </p>
                 </div>
-              )}
-            </div>
+
+                {/* 解押按钮 */}
+                <button
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm bg-slate-100 text-slate-400 cursor-not-allowed shadow-sm"
+                  disabled
+                >
+                  {zh ? "暂无可解押仓位" : "No Staked Position"}
+                </button>
+                <p className="text-[10px] text-slate-400 text-center">
+                  {zh ? "提前解押将损失全部 Staking 收益" : "Early unstaking forfeits all accrued yield."}
+                </p>
+              </div>
+            )}
+
+            {/* Tab: Yield Vault */}
+            {stakingTab === "vault" && (
+              <div className="px-6 py-5 space-y-4 flex-1">
+                {/* Vault 余额 */}
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100 px-5 py-4">
+                  <p className="text-xs text-slate-400 mb-1">{zh ? "Yield Vault 余额" : "Yield Vault Balance"}</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-extrabold text-slate-900 font-mono">$0.00</span>
+                    <span className="text-emerald-600 font-semibold">USDT</span>
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1">{zh ? "来源：rGLD Staking 收益" : "Source: rGLD Staking Yield"}</p>
+                </div>
+
+                {/* 收益记录 */}
+                <div>
+                  <p className="text-xs text-slate-400 mb-2">{zh ? "收益记录" : "Yield History"}</p>
+                  <div className="rounded-2xl border border-slate-100 overflow-hidden">
+                    <div className="flex items-center justify-center py-8 text-slate-300">
+                      <div className="text-center">
+                        <Coins size={28} className="mx-auto mb-2 opacity-40" />
+                        <p className="text-sm">{zh ? "暂无收益记录" : "No yield history yet"}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 提取按钮 */}
+                <button
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm bg-slate-100 text-slate-400 cursor-not-allowed shadow-sm"
+                  disabled
+                >
+                  {zh ? "暂无可提取收益" : "No Yield to Withdraw"}
+                </button>
+                <p className="text-[10px] text-slate-400 text-center">
+                  {zh ? "Staking 收益解押后自动进入此处，可随时提取至钱包" : "Staking yield flows here on unstake. Withdraw to wallet anytime."}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
