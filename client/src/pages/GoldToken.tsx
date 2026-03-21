@@ -989,7 +989,160 @@ export default function GoldToken() {
         </div>
       </div>
 
+      {/* ── FAQ ─────────────────────────────────────────────────────── */}
+      <section className="bg-white border-t border-slate-100 py-16 px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="inline-block text-xs font-semibold tracking-widest text-amber-600 uppercase mb-3">FAQ</span>
+            <h2 className="text-2xl font-bold text-slate-900">
+              {zh ? '常见问题' : 'Frequently Asked Questions'}
+            </h2>
+            <p className="text-slate-500 text-sm mt-2">
+              {zh ? '关于 rGLD 黄金代币的一切，您想知道的都在这里' : 'Everything you need to know about rGLD Gold Token'}
+            </p>
+          </div>
+          <GoldFAQ zh={zh} />
+        </div>
+      </section>
       <Footer />
+    </div>
+  );
+}
+
+// ─── FAQ Data & Component ────────────────────────────────────────────────────────
+const GOLD_FAQS: { q: { zh: string; en: string }; a: { zh: string; en: string } }[] = [
+  {
+    q: {
+      zh: 'rGLD 代币价格挂钉 GLD ETF，为什么实际价格会有差异？',
+      en: 'rGLD is pegged to GLD ETF — why is there a price difference?',
+    },
+    a: {
+      zh: 'rGLD 采用 1:1 锚定 GLD ETF 净值（NAV）的机制，但市场交易价格可能因以下原因出现短暂偏差：\n\n① Oracle 报价延迟：GLD ETF 收盘后更新，链上 Oracle 最长 15 分钟刷新一次；\n② 买卖价差：链上流动性池存在正常的 Spread，通常在 0.1%–0.3% 以内；\n③ 综合运营成本：包含券商交易手续费、OTC 换汇磨损、平台运营及审计费用等，已在管理费中统一计提，不会额外向用户收取；\n④ 汇率微波动：GLD 以美元计价，稳定币兑换时存在微小汇差。\n\n长期来看，套利机制会将价格拉回锚定值；若偏差超过 1%，系统将自动触发再平衡。',
+      en: 'rGLD is pegged 1:1 to GLD ETF NAV, but short-term price deviations can occur due to:\n\n① Oracle latency: GLD ETF price updates after market close; on-chain Oracle refreshes within 15 minutes;\n② Bid-ask spread: On-chain liquidity pools have a normal Spread of 0.1%–0.3%;\n③ Operational costs: Broker commissions, OTC conversion slippage, platform operations and audit fees are all included in the management fee — no extra charges to users;\n④ FX micro-fluctuation: GLD is USD-denominated; minor variance occurs during stablecoin conversion.\n\nArbitrage mechanisms keep the price anchored long-term. If deviation exceeds 1%, the system triggers automatic rebalancing.',
+    },
+  },
+  {
+    q: {
+      zh: 'rGLD Staking 为什么能获得收益？这安全吗？',
+      en: 'Why does rGLD Staking generate yield? Is it safe?',
+    },
+    a: {
+      zh: 'rGLD Staking 的收益来源于真实的资产运作，而非增发代币：\n\n① 收益来源：您质押的 rGLD 背后对应 GLD ETF 份额，合作銀行以非常有竞争力的固定利率为这部分资产提供杠杆，资金由 AI 智能路由，投入一篮子指数级 ETF 组合并动态调仓，在稳健风控框架下创造丰厚收益，扣除平台费后分配给 Staker；\n② 安全保障：采用机构级风控体系，严格控制 LTV（贷款价值比）系数，确保 Staking 整体处于极低风险水位；底层资产由持牌券商托管，合约经第三方独立审计；\n③ 风险提示：活期随时可赎回，锁仓期内资产不可动用，请根据自身流动性需求选择档位。',
+      en: 'rGLD Staking yield comes from real asset operations, not token inflation:\n\n① Yield source: Your staked rGLD corresponds to GLD ETF shares. Partner banks provide highly competitive fixed-rate leverage against these assets. The capital is AI-routed into a basket of index ETFs with dynamic rebalancing, generating strong returns within a robust risk framework — distributed to Stakers after platform fees;\n② Safety: Institutional-grade risk controls strictly manage LTV (Loan-to-Value) ratios, keeping the overall Staking risk at a very low level; underlying assets are held by licensed brokers in custody; contracts are independently audited by third parties;\n③ Risk note: Flexible staking is redeemable anytime; locked positions are illiquid during the term. Choose based on your liquidity needs.',
+    },
+  },
+  {
+    q: {
+      zh: 'rGLD 与直接持有实物黄金或 GLD ETF 有什么区别？',
+      en: 'How is rGLD different from holding physical gold or GLD ETF directly?',
+    },
+    a: {
+      zh: '| 对比维度 | 实物黄金 | GLD ETF | rGLD |\n|---|---|---|---|\n| 持有方式 | 实物存储 | 券商账户 | 链上钱包 |\n| 流动性 | 低 | 交易时段 | 24/7 |\n| 额外收益 | 无 | 无 | Staking 5–8% |\n| 最低门槛 | 较高 | 约 $400/股 | 约 $100 |\n| 链上可组合 | 否 | 否 | 是（DeFi）|\n\nrGLD 最大的差异化优势：在完整保留黄金价格敞口的同时，通过 Staking 获得额外年化收益，并可在 DeFi 生态中自由组合使用。',
+      en: '| Dimension | Physical Gold | GLD ETF | rGLD |\n|---|---|---|---|\n| Custody | Physical storage | Brokerage account | On-chain wallet |\n| Liquidity | Low | Trading hours | 24/7 |\n| Extra Yield | None | None | Staking 5–8% |\n| Min. Entry | High | ~$400/share | ~$100 |\n| DeFi Composable | No | No | Yes |\n\nrGLD\'s key differentiator: full gold price exposure + Staking yield + DeFi composability — all in one token.',
+    },
+  },
+  {
+    q: {
+      zh: '如何铸造（Mint）和赎回（Redeem）rGLD？需要多长时间？',
+      en: 'How do I mint and redeem rGLD? How long does it take?',
+    },
+    a: {
+      zh: '铸造流程：用户存入 USDC/USDT → RWAlpha 通过持牌 OTC 通道换汇 → 通过持牌券商购入 GLD ETF 份额 → 链上铸造等额 rGLD，全程约 T+1 个工作日。\n\n赎回流程：用户提出赎回请求，合约锁定 rGLD → 券商出售对应 GLD ETF 份额 → OTC 换汇为稳定币 → 到账钱包，同时销毁 rGLD，全程约 T+3 个工作日。\n\n注意：Staking 锁仓期间的 rGLD 需先解押（Unstake）后方可发起赎回，解押后收益 T+3 自动结算。',
+      en: 'Minting: User deposits USDC/USDT → RWAlpha converts via licensed OTC channel → Licensed broker purchases GLD ETF shares → Mints equivalent rGLD on-chain. Total time: ~T+1 business day.\n\nRedemption: User submits redemption request, contract locks rGLD → Broker sells corresponding GLD ETF shares → OTC converts to stablecoin → Credited to wallet, rGLD burned simultaneously. Total time: ~T+3 business days.\n\nNote: rGLD in a locked Staking position must be unstaked first. Yield is auto-settled T+3 after unstaking.',
+    },
+  },
+  {
+    q: {
+      zh: '底层资产 GLD ETF 真实存在吗？如何验证？',
+      en: 'Do the underlying GLD ETF assets actually exist? How can I verify?',
+    },
+    a: {
+      zh: '是的，每一枚 rGLD 均由真实的 GLD ETF 份额 1:1 支撑。验证方式：\n\n① 链上储备证明：RWAlpha 定期将持牌券商对账单哈希上链，任何人可公开核查；\n② 券商托管报告：底层资产存放于持牌券商独立托管账户，定期第三方审计。\n\n我们承诺：储备率始终 ≥ 100%，任何时候赎回均有足额资产支撑。',
+      en: 'Yes, every rGLD is backed 1:1 by real GLD ETF shares. Verification methods:\n\n① On-chain Proof of Reserves: RWAlpha regularly publishes licensed broker statement hashes on-chain, publicly verifiable by anyone;\n② Broker Custody Report: Underlying assets are held in segregated licensed broker accounts, subject to regular third-party audits.\n\nOur commitment: Reserve ratio always ≥ 100%. Every redemption is fully backed.',
+    },
+  },
+  {
+    q: {
+      zh: 'Staking 的收益是固定的吗？',
+      en: 'Is the Staking yield fixed?',
+    },
+    a: {
+      zh: '不固定。我们提供的是基于历史数据和模型测算的目标收益区间（5–8% 年化），实际收益会随市场表现有所波动。\n\n但有一点可以确定：RWAlpha 通过机构级风控体系严格控制 LTV 系数，使整体风险敎口（PMR）始终处于安全水位。我们的首要原则是确保资产安全，在此基础上再追求可观的 Staking 收益——这与高风险高收益的 DeFi 协议有本质区别。',
+      en: 'Not fixed. We provide a target yield range (5–8% annualized) based on historical data and model projections; actual returns will fluctuate with market performance.\n\nWhat is certain: RWAlpha strictly controls LTV ratios through institutional-grade risk management, keeping the overall risk exposure (PMR) at a safe level at all times. Our primary principle is to ensure asset safety first, then pursue meaningful Staking returns — fundamentally different from high-risk DeFi protocols.',
+    },
+  },
+  {
+    q: {
+      zh: '锁仓 Staking 到期后会自动续期吗？',
+      en: 'Does locked Staking auto-renew after the term ends?',
+    },
+    a: {
+      zh: '不会自动续期。锁仓到期后，您的 rGLD 将自动转入活期状态（享受活期 5% 年化），收益继续累积，直到您主动操作解押或再次选择锁仓档位。\n\n我们不会在未经您确认的情况下自动锁定资产，您随时保有对资产的完全控制权。',
+      en: 'No auto-renewal. After the lock period ends, your rGLD automatically converts to flexible staking (5% APY), and yield continues to accrue until you manually unstake or choose a new lock tier.\n\nWe will never lock your assets without your confirmation. You retain full control of your assets at all times.',
+    },
+  },
+  {
+    q: {
+      zh: '如果 RWAlpha 平台出现问题，我的资产还能取回吗？',
+      en: 'If RWAlpha has operational issues, can I still recover my assets?',
+    },
+    a: {
+      zh: '可以。RWAlpha 采用资产隔离架构，您的底层 GLD ETF 份额存放于持牌券商的独立托管账户，与 RWAlpha 运营资金完全隔离。\n\n即使 RWAlpha 平台停止运营，托管方仍会按照协议将底层 ETF 资产对应的价值返还给代币持有人。这是 RWA 产品区别于中心化交易所的核心安全优势——您的资产不在平台资产负债表上。',
+      en: 'Yes. RWAlpha uses an asset-segregation architecture. Your underlying GLD ETF shares are held in a segregated account at a licensed broker, fully isolated from RWAlpha\'s operational funds.\n\nEven if RWAlpha ceases operations, the custodian will return the value corresponding to the underlying ETF assets to token holders per the protocol. This is the core safety advantage of RWA products over centralized exchanges — your assets are off our balance sheet.',
+    },
+  },
+  {
+    q: {
+      zh: 'rGLD 目前支持哪些区块链网络？',
+      en: 'Which blockchains does rGLD currently support?',
+    },
+    a: {
+      zh: '目前 rGLD 支持 Ethereum 主网和 BNB Chain，更多网络（如 Solana、Arbitrum）正在规划中。\n\n跨链转账通过官方桥接合约完成，合约经过多轮安全审计。请务必通过 RWAlpha 官方渠道进行跨链操作，切勿使用第三方非官方桥接，以避免资产损失风险。',
+      en: 'rGLD currently supports Ethereum Mainnet and BNB Chain. More networks (Solana, Arbitrum, etc.) are in the roadmap.\n\nCross-chain transfers are handled through official bridge contracts, which have undergone multiple security audits. Always use official RWAlpha channels for cross-chain operations — never use unofficial third-party bridges to avoid asset loss.',
+    },
+  },
+];
+
+function GoldFAQ({ zh }: { zh: boolean }) {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <div className="space-y-3">
+      {GOLD_FAQS.map((faq, i) => (
+        <div
+          key={i}
+          className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+            open === i ? 'border-amber-200 bg-amber-50/40' : 'border-slate-100 bg-white hover:border-amber-100'
+          }`}
+        >
+          <button
+            className="w-full flex items-center justify-between px-6 py-4 text-left gap-4"
+            onClick={() => setOpen(open === i ? null : i)}
+          >
+            <span className={`font-semibold text-sm leading-snug ${
+              open === i ? 'text-amber-700' : 'text-slate-800'
+            }`}>
+              <span className="text-amber-400 font-bold mr-2">Q{i + 1}.</span>
+              {zh ? faq.q.zh : faq.q.en}
+            </span>
+            <span className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
+              open === i ? 'bg-amber-400 text-white rotate-180' : 'bg-slate-100 text-slate-400'
+            }`}>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+          </button>
+          {open === i && (
+            <div className="px-6 pb-5">
+              <div className="border-t border-amber-100 pt-4">
+                <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
+                  {zh ? faq.a.zh : faq.a.en}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
