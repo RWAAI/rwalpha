@@ -27,7 +27,9 @@ const GLD_AUM  = "1571亿";
 const GLD_AUM_EN = "$157.1B";
 const RGLD_NAV = 413.38;       // rGLD 1:1 挂钩 GLD
 const STAKING_APY_FLEXIBLE = 5.0;  // 活期年化
-const STAKING_APY_LOCKED   = 8.0;  // 锁仓年化
+// 锁仓三档年化
+const LOCK_APY: Record<number, number> = { 30: 7.8, 90: 8.0, 180: 8.2 };
+const STAKING_APY_LOCKED = 8.0; // 保留兼容
 const STAKING_APY = 8.0; // 保留兼容
 
 // GLD 近30天走势数据（来源：TwelveData / WSJ 2026-03-21）
@@ -139,6 +141,7 @@ export default function GoldToken() {
   const [flexUnstakeAmt, setFlexUnstakeAmt] = useState("");
   const [showApyTooltip, setShowApyTooltip] = useState(false);
   const [earlyUnstakeConfirm, setEarlyUnstakeConfirm] = useState(false);
+  const [yieldHistoryOpen, setYieldHistoryOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -179,8 +182,9 @@ export default function GoldToken() {
       : (parseFloat(spendAmt) * RGLD_NAV).toFixed(2)
     : "0";
 
+  const currentLockApy = LOCK_APY[stakingDays] ?? 8.0;
   const stakingEstLocked = stakingAmt && parseFloat(stakingAmt) > 0
-    ? ((parseFloat(stakingAmt) * RGLD_NAV * STAKING_APY_LOCKED / 100) * (stakingDays / 365)).toFixed(2)
+    ? ((parseFloat(stakingAmt) * RGLD_NAV * currentLockApy / 100) * (stakingDays / 365)).toFixed(2)
     : "0.00";
   const stakingEstFlex = stakingAmt && parseFloat(stakingAmt) > 0
     ? ((parseFloat(stakingAmt) * RGLD_NAV * STAKING_APY_FLEXIBLE / 100) * (30 / 365)).toFixed(2)
@@ -518,8 +522,8 @@ export default function GoldToken() {
                   <h3 className="font-bold text-slate-900 text-base text-center mb-2">{zh ? "确认提前解押？" : "Confirm Early Unstake?"}</h3>
                   <p className="text-slate-500 text-sm text-center leading-relaxed mb-5">
                     {zh
-                      ? "提前解押将损失全部累计 Staking 收益（$14.58 USDT），本金将完整返还至您的钱包。"
-                      : "Early unstaking forfeits all accrued yield ($14.58 USDT). Your principal will be returned in full."}
+                      ? `提前解锁将按活期年化（${STAKING_APY_FLEXIBLE}%）重新结算已累计收益，本金完整返还。预计实得 $9.72 USDT。`
+                      : `Early unlock recalculates yield at flexible rate (${STAKING_APY_FLEXIBLE}%). Principal returned in full. Est. receive $9.72 USDT.`}
                   </p>
                   <div className="flex gap-3">
                     <button onClick={() => setEarlyUnstakeConfirm(false)}
@@ -680,11 +684,11 @@ export default function GoldToken() {
                   {/* 锁仓说明 */}
                   <div className="flex items-center justify-between bg-amber-50 rounded-2xl px-4 py-2.5 border border-amber-100">
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-xl font-extrabold text-emerald-600 font-mono">~{STAKING_APY_LOCKED}%</span>
+                      <span className="text-xl font-extrabold text-emerald-600 font-mono">~{currentLockApy}%</span>
                       <span className="text-xs text-slate-500">{zh ? "年化 · 锁仓增强" : "APY · Lock Boost"}</span>
                     </div>
                     <span className="text-[10px] bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">
-                      {zh ? "提前解押罚没收益" : "Penalty on early exit"}
+                      {zh ? "提前解锁按活期结算" : "Early exit at flexible rate"}
                     </span>
                   </div>
 
@@ -723,7 +727,7 @@ export default function GoldToken() {
                       <div>
                         <p className="text-xs text-slate-400 mb-2">{zh ? "锁仓周期" : "Lock Period"}</p>
                         <div className="flex gap-2">
-                          {[30, 60, 90].map(d => (
+                          {[30, 90, 180].map(d => (
                             <button key={d} onClick={() => setStakingDays(d)}
                               className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
                                 stakingDays === d ? "bg-amber-500 text-white shadow-sm shadow-amber-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
@@ -738,7 +742,7 @@ export default function GoldToken() {
                       <div className="bg-amber-50 rounded-2xl p-3.5 border border-amber-100">
                         <div className="flex items-center justify-between">
                           <div className="flex items-baseline gap-1.5">
-                            <span className="text-xl font-extrabold text-emerald-600 font-mono">~{STAKING_APY_LOCKED}%</span>
+                            <span className="text-xl font-extrabold text-emerald-600 font-mono">~{currentLockApy}%</span>
                             <span className="text-xs text-slate-500">{zh ? "年化" : "APY"}</span>
                             <div className="relative">
                               <button onClick={() => setShowApyTooltip(v => !v)}
@@ -746,11 +750,12 @@ export default function GoldToken() {
                               {showApyTooltip && (
                                 <div className="absolute left-0 top-6 z-30 w-64 bg-slate-900 text-white text-xs rounded-2xl p-4 shadow-xl">
                                   <p className="font-bold mb-1.5">{zh ? "锁仓收益机制" : "Locked Yield"}</p>
-                                  <p className="text-slate-300 leading-relaxed">
-                                    {zh
-                                      ? "锁仓期间 RWAlpha 将 GLD ETF 出借收益按 ~8% 年化分配。到期自动解锁，收益进入 Yield Vault。提前解押将损失全部累计收益，本金完整返还。"
-                                      : "During lock period, RWAlpha distributes GLD ETF securities lending income at ~8% APY. Auto-unlocks at maturity. Early exit forfeits all accrued yield; principal returned in full."}
-                                  </p>
+                              <p className="text-slate-300 leading-relaxed">
+                                  {zh
+                                      ? `锁仓期间 RWAlpha 将 GLD ETF 出借收益按 ~${currentLockApy}% 年化分配。到期自动解锁，收益进入 Yield Vault。提前解锁将按活期年化（${STAKING_APY_FLEXIBLE}%）重新结算已累计收益。`
+                                      : `During lock period, RWAlpha distributes GLD ETF securities lending income at ~${currentLockApy}% APY. Auto-unlocks at maturity. Early exit recalculates yield at flexible rate (${STAKING_APY_FLEXIBLE}%).`
+                                  }
+                              </p>
                                   <button onClick={() => setShowApyTooltip(false)} className="mt-2 text-slate-400 hover:text-white text-[10px]">✕ {zh ? "关闭" : "Close"}</button>
                                 </div>
                               )}
@@ -783,7 +788,13 @@ export default function GoldToken() {
                     <>
                       {/* 锁仓仓位列表 */}
                       <div className="space-y-2">
-                        {MOCK_LOCKED_STAKES.map(s => (
+                        {MOCK_LOCKED_STAKES.map(s => {
+                          // 提前解锁按活期利率重算已累计收益
+                          const lockApy = LOCK_APY[s.lockDays] ?? 8.0;
+                          const daysHeld = Math.floor((new Date().getTime() - new Date(s.startDate).getTime()) / 86400000);
+                          const earlyYield = parseFloat((s.amount * RGLD_NAV * STAKING_APY_FLEXIBLE / 100 * daysHeld / 365).toFixed(2));
+                          const diff = parseFloat((s.accrued - earlyYield).toFixed(2));
+                          return (
                           <div key={s.id} className={`rounded-2xl border px-4 py-3 ${
                             s.status === "expired" ? "bg-slate-50 border-slate-200" : "bg-amber-50 border-amber-100"
                           }`}>
@@ -791,21 +802,22 @@ export default function GoldToken() {
                               <div className="flex items-baseline gap-1.5">
                                 <span className="text-base font-extrabold text-slate-900 font-mono">{s.amount.toFixed(4)}</span>
                                 <span className="text-amber-500 text-xs font-bold">rGLD</span>
+                                <span className="text-[10px] text-slate-400">@{lockApy}% APY</span>
                               </div>
                               <div className="flex items-center gap-1.5">
                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                                   s.status === "expired" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
                                 }`}>
-                                  {s.status === "expired" ? (zh ? "✓ 可解押" : "✓ Unlocked") : (zh ? "锁仓中" : "Locked")}
+                                  {s.status === "expired" ? (zh ? "✓ 可解锁" : "✓ Unlocked") : (zh ? "锁仓中" : "Locked")}
                                 </span>
                                 <button
                                   onClick={() => s.status === "active" ? setEarlyUnstakeConfirm(true) : undefined}
                                   className={`text-xs font-bold px-2.5 py-1 rounded-xl transition-all ${
                                     s.status === "expired"
                                       ? "bg-slate-800 text-white hover:bg-slate-900"
-                                      : "bg-red-50 text-red-500 hover:bg-red-100 border border-red-100"
+                                      : "bg-orange-50 text-orange-500 hover:bg-orange-100 border border-orange-100"
                                   }`}>
-                                  {s.status === "expired" ? (zh ? "解押" : "Unstake") : (zh ? "提前解押" : "Early Exit")}
+                                  {s.status === "expired" ? (zh ? "解锁提取" : "Unlock") : (zh ? "提前解锁" : "Early Unlock")}
                                 </button>
                               </div>
                             </div>
@@ -813,11 +825,19 @@ export default function GoldToken() {
                               <span>{zh ? `锁仓 ${s.lockDays} 天 · 到期 ${s.endDate}` : `${s.lockDays}D Lock · Expires ${s.endDate}`}</span>
                               <span className="text-emerald-600 font-semibold">{zh ? `累计 +$${s.accrued}` : `+$${s.accrued} accrued`}</span>
                             </div>
+                            {s.status === "active" && (
+                              <div className="mt-1.5 bg-orange-50 rounded-xl px-3 py-1.5 text-[10px] text-orange-600">
+                                {zh
+                                  ? `提前解锁将按活期利率结算：实得 $${earlyYield}${diff > 0 ? `（少得 $${diff}` : ""}）`
+                                  : `Early unlock recalculates at flexible rate: receive $${earlyYield}${diff > 0 ? ` (lose $${diff})` : ""}`}
+                              </div>
+                            )}
                           </div>
-                        ))}
+                          );
+                        })}
                       </div>
                       <p className="text-[10px] text-slate-400 text-center">
-                        {zh ? "到期仓位可直接解押；提前解押将损失全部累计收益，本金完整返还" : "Expired stakes can be unstaked freely. Early exit forfeits yield; principal returned in full."}
+                        {zh ? "到期可直接解锁提取；提前解锁按活期年化（5%）重新结算已累计收益" : "Expired: unlock freely. Early unlock: yield recalculated at flexible rate (5%)."}
                       </p>
                     </>
                   )}
@@ -848,25 +868,41 @@ export default function GoldToken() {
                 <p className="text-[10px] text-slate-400 mt-1">{zh ? "来源：rGLD Staking 收益 · 解押后自动入账" : "Source: rGLD Staking Yield · Auto-credited on unstake"}</p>
               </div>
 
-              {/* 收益历史记录 */}
-              <div className="flex-1">
-                <p className="text-xs text-slate-400 mb-2">{zh ? "收益记录" : "Yield History"}</p>
-                <div className="rounded-2xl border border-slate-100 overflow-hidden">
-                  <div className="grid grid-cols-3 px-4 py-2 bg-slate-50 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                    <span>{zh ? "日期" : "Date"}</span>
-                    <span className="text-right">{zh ? "金额" : "Amount"}</span>
-                    <span className="text-right">{zh ? "来源" : "Source"}</span>
+              {/* 收益历史记录（可折叠） */}
+              <div>
+                <button
+                  onClick={() => setYieldHistoryOpen(v => !v)}
+                  className="w-full flex items-center justify-between py-2 group"
+                >
+                  <span className="text-xs text-slate-400 group-hover:text-slate-600 transition-colors">
+                    {zh ? "收益记录" : "Yield History"}
+                    <span className="ml-1.5 text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full">{MOCK_YIELD_HISTORY.length}</span>
+                  </span>
+                  <svg
+                    className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${yieldHistoryOpen ? "rotate-180" : ""}`}
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {yieldHistoryOpen && (
+                  <div className="rounded-2xl border border-slate-100 overflow-hidden mt-1">
+                    <div className="grid grid-cols-3 px-4 py-2 bg-slate-50 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                      <span>{zh ? "日期" : "Date"}</span>
+                      <span className="text-right">{zh ? "金额" : "Amount"}</span>
+                      <span className="text-right">{zh ? "来源" : "Source"}</span>
+                    </div>
+                    <div className="divide-y divide-slate-50">
+                      {MOCK_YIELD_HISTORY.map((row, i) => (
+                        <div key={i} className="grid grid-cols-3 px-4 py-2.5 text-xs hover:bg-slate-50 transition-colors">
+                          <span className="text-slate-500 font-mono">{row.date.slice(5)}</span>
+                          <span className="text-right font-semibold text-emerald-600">+${row.amount.toFixed(2)}</span>
+                          <span className="text-right text-slate-400 truncate">{row.source}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="divide-y divide-slate-50">
-                    {MOCK_YIELD_HISTORY.map((row, i) => (
-                      <div key={i} className="grid grid-cols-3 px-4 py-2.5 text-xs hover:bg-slate-50 transition-colors">
-                        <span className="text-slate-500 font-mono">{row.date.slice(5)}</span>
-                        <span className="text-right font-semibold text-emerald-600">+${row.amount.toFixed(2)}</span>
-                        <span className="text-right text-slate-400 truncate">{row.source}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* 领取按钮 */}
