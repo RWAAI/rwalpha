@@ -1,37 +1,141 @@
 /**
  * GoldToken — rGLD 黄金代币页面
- * 布局：头部说明 + 左侧买卖框 + 右侧年化8%说明 + Staking框
+ * 头部：VaultApp 风格（返回产品页 + 产品名 + 语言/用户/钱包按钮）
+ * 左侧：GLD 走势信息 + rGLD 交易框（填满）
+ * 右侧：rGLD Staking（Stake/Unstake Tab + 我的质押仓位）+ Yield Vault（收益历史）
  */
 
-import { useState, useEffect } from "react";
-import { HelpCircle, ArrowUpRight, Zap, Lock, TrendingUp, Shield, Coins } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import {
+  ArrowUpRight, Zap, Lock, TrendingUp, Shield, Coins,
+  ChevronLeft, ChevronDown, Wallet, RefreshCw, TrendingDown,
+} from "lucide-react";
+import { Link } from "wouter";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 // ─── 静态数据 ────────────────────────────────────────────────────────────────
 
-const GLD_NAV = 459.00; // GLD ETF 价格（USD）
-const RGLD_NAV = 459.00; // rGLD 1:1 挂钩 GLD
-const STAKING_APY = 8.0; // 年化 8%
-const STAKING_LOCK_DAYS = 30;
+const GLD_PRICE = 296.45;      // GLD ETF 当前价格（USD）
+const GLD_CHANGE = +1.23;      // 24h 涨跌（USD）
+const GLD_CHANGE_PCT = +0.42;  // 24h 涨跌幅（%）
+const GLD_HIGH = 297.80;
+const GLD_LOW  = 294.20;
+const GLD_OPEN = 295.22;
+const GLD_AUM  = "746亿";
+const GLD_AUM_EN = "$74.6B";
+const RGLD_NAV = 296.45;       // rGLD 1:1 挂钩 GLD
+const STAKING_APY = 8.0;
+
+// GLD 近30天走势数据（模拟）
+const GLD_TREND = [
+  { date: "02-20", value: 278.50 },
+  { date: "02-24", value: 281.20 },
+  { date: "02-27", value: 284.80 },
+  { date: "03-03", value: 283.10 },
+  { date: "03-06", value: 287.40 },
+  { date: "03-10", value: 289.90 },
+  { date: "03-13", value: 291.60 },
+  { date: "03-17", value: 293.80 },
+  { date: "03-20", value: 295.20 },
+  { date: "03-21", value: 296.45 },
+];
+
+// 模拟质押仓位
+const MOCK_STAKES = [
+  { id: 1, amount: 2.5000, lockDays: 60, startDate: "2026-01-20", endDate: "2026-03-20", accrued: 9.72, status: "expired" },
+  { id: 2, amount: 5.0000, lockDays: 90, startDate: "2026-02-01", endDate: "2026-05-02", accrued: 14.58, status: "active" },
+];
+
+// 模拟收益历史
+const MOCK_YIELD_HISTORY = [
+  { date: "2026-03-20", amount: 9.72, source: "rGLD Staking · 60D" },
+  { date: "2026-02-28", amount: 6.44, source: "rGLD Staking · 30D" },
+  { date: "2026-01-31", amount: 5.89, source: "rGLD Staking · 30D" },
+];
+
+// ─── 迷你折线图 ──────────────────────────────────────────────────────────────
+
+function GldSparkLine({ data }: { data: { date: string; value: number }[] }) {
+  const W = 480, H = 96;
+  const pad = { top: 10, bottom: 22, left: 40, right: 12 };
+  if (!data || data.length < 2) return null;
+  const vals = data.map(d => d.value);
+  const minV = Math.min(...vals);
+  const maxV = Math.max(...vals);
+  const range = maxV - minV || 1;
+  const px = (i: number) => pad.left + (i / (data.length - 1)) * (W - pad.left - pad.right);
+  const py = (v: number) => pad.top + (1 - (v - minV) / range) * (H - pad.top - pad.bottom);
+  const pathD = data.map((d, i) => `${i === 0 ? "M" : "L"} ${px(i)} ${py(d.value)}`).join(" ");
+  const areaD = pathD + ` L ${px(data.length - 1)} ${H - pad.bottom} L ${px(0)} ${H - pad.bottom} Z`;
+  const lx = px(data.length - 1);
+  const ly = py(data[data.length - 1].value);
+  const isUp = data[data.length - 1].value >= data[0].value;
+  const color = isUp ? "#f59e0b" : "#ef4444";
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 96 }}>
+      <defs>
+        <linearGradient id="gldGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.20" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {[0, 0.5, 1].map(t => {
+        const y = pad.top + t * (H - pad.top - pad.bottom);
+        const v = maxV - t * range;
+        return (
+          <g key={t}>
+            <line x1={pad.left} y1={y} x2={W - pad.right} y2={y} stroke="#f1f5f9" strokeWidth="1" />
+            <text x={pad.left - 4} y={y + 3.5} textAnchor="end" fontSize="8" fill="#94a3b8">${v.toFixed(0)}</text>
+          </g>
+        );
+      })}
+      <path d={areaD} fill="url(#gldGrad)" />
+      <path d={pathD} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      {data.filter((_, i) => i % 3 === 0 || i === data.length - 1).map((d, _, arr) => {
+        const origIdx = data.indexOf(d);
+        return (
+          <text key={origIdx} x={px(origIdx)} y={H - 4} textAnchor="middle" fontSize="8" fill="#94a3b8">
+            {d.date}
+          </text>
+        );
+      })}
+      <circle cx={lx} cy={ly} r="3.5" fill={color} />
+      <circle cx={lx} cy={ly} r="6" fill={color} fillOpacity="0.18" />
+    </svg>
+  );
+}
 
 // ─── 主组件 ──────────────────────────────────────────────────────────────────
 
 export default function GoldToken() {
-  const [zh, setZh] = useState(() => localStorage.getItem("rwa-lang") !== "en");
+  const [lang, setLang] = useState<"zh" | "en">(() =>
+    localStorage.getItem("rwa-lang") === "en" ? "en" : "zh"
+  );
+  const zh = lang === "zh";
+
   const [tradeMode, setTradeMode] = useState<"buy" | "sell">("buy");
   const [spendAmt, setSpendAmt] = useState("");
   const [payToken, setPayToken] = useState<"USDC" | "USDT">("USDC");
   const [showPayDrop, setShowPayDrop] = useState(false);
   const [stakingAmt, setStakingAmt] = useState("");
   const [stakingDays, setStakingDays] = useState(30);
-  const [connected] = useState(false);
+  const [connected, setConnected] = useState(false);
+  const [walletModal, setWalletModal] = useState(false);
   const [stakingTab, setStakingTab] = useState<"stake" | "unstake">("stake");
   const [unstakeAmt, setUnstakeAmt] = useState("");
   const [showApyTooltip, setShowApyTooltip] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  const { user, isAuthenticated, logout: oauthLogout } = useAuth();
+  const isLoggedIn = isAuthenticated;
+  const displayUser = user;
+  const logout = async () => { if (isAuthenticated) await oauthLogout(); };
 
   useEffect(() => {
-    const handler = () => setZh(localStorage.getItem("rwa-lang") !== "en");
+    const handler = () => setLang(localStorage.getItem("rwa-lang") === "en" ? "en" : "zh");
     window.addEventListener("rwa-lang-change", handler);
     window.addEventListener("storage", handler);
     return () => {
@@ -39,6 +143,22 @@ export default function GoldToken() {
       window.removeEventListener("storage", handler);
     };
   }, []);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node))
+        setUserMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const toggleLang = () => {
+    const next = zh ? "en" : "zh";
+    localStorage.setItem("rwa-lang", next);
+    window.dispatchEvent(new Event("rwa-lang-change"));
+    setLang(next);
+  };
 
   const receiveAmt = spendAmt && RGLD_NAV > 0
     ? tradeMode === "buy"
@@ -50,93 +170,194 @@ export default function GoldToken() {
     ? ((parseFloat(stakingAmt) * RGLD_NAV * STAKING_APY / 100) * (stakingDays / 365)).toFixed(2)
     : "0.00";
 
+  const isUp = GLD_CHANGE_PCT >= 0;
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <NavBar activeTab="gold-token" />
+    <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
 
-      {/* ── 头部说明 ─────────────────────────────────────────────────────── */}
-      <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 border-b border-amber-100">
-        <div className="max-w-5xl mx-auto px-6 py-10">
-          <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-5 flex-1">
-              {/* 黄金图标 */}
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center shadow-lg shadow-amber-200 shrink-0">
-                <span className="text-3xl">🥇</span>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">rGLD</h1>
-                  <span className="px-2.5 py-0.5 rounded-md bg-amber-500 text-white text-xs font-bold tracking-wide">
-                    {zh ? "黄金代币" : "Gold Token"}
-                  </span>
-                  <span className="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-xs font-semibold">
-                    {zh ? "100% 挂钩 GLD ETF" : "100% Pegged to GLD ETF"}
-                  </span>
-                </div>
-                <p className="text-slate-500 text-sm">
-                  {zh
-                    ? "rGLD 是 RWAlpha 发行的黄金代币，100% 由 SPDR Gold Shares（GLD）ETF 底层资产支撑，1 rGLD = 1 GLD ETF 份额。链上可验证，随时可赎回。"
-                    : "rGLD is RWAlpha's gold token, 100% backed by SPDR Gold Shares (GLD) ETF. 1 rGLD = 1 GLD ETF share. On-chain verifiable, redeemable at any time."
-                  }
-                </p>
-              </div>
-          </div>
-
-          {/* 右上角：Staking 计算器小按鈕 */}
-          <a
-            href="https://rgld.manus.space"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="shrink-0 inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-800 transition-colors group border border-slate-300 hover:border-slate-400 rounded-full px-2.5 py-1"
-          >
-            <Coins size={12} className="text-slate-400" />
-            {zh ? "Staking 计算器" : "Staking Calculator"}
-            <ArrowUpRight size={11} className="text-slate-400" />
-          </a>
-
-          </div>
-
-          {/* 特性标签 */}
-          <div className="flex flex-wrap gap-2 mt-5 pl-[84px]">
-            {[
-              { icon: <Shield size={12} />, label: zh ? "底层资产完全支撑" : "Fully Asset Backed" },
-              { icon: <TrendingUp size={12} />, label: zh ? "跟随黄金价格增值" : "Gold Price Appreciation" },
-              { icon: <Coins size={12} />, label: zh ? "Staking 年化 ~8%" : "~8% Staking APY" },
-              { icon: <ArrowUpRight size={12} />, label: zh ? "随时赎回" : "Redeem Anytime" },
-            ].map(f => (
-              <span key={f.label} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-amber-100 text-slate-600 text-xs font-medium shadow-sm">
-                <span className="text-amber-500">{f.icon}</span>
-                {f.label}
-              </span>
-            ))}
+      {/* ── 钱包连接弹层 ── */}
+      {walletModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: "rgba(0,0,0,0.45)" }} onClick={() => setWalletModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <h2 className="text-base font-bold text-slate-900">{zh ? "连接钱包" : "Connect Wallet"}</h2>
+              <button onClick={() => setWalletModal(false)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">×</button>
+            </div>
+            <div className="px-4 py-3 space-y-2">
+              {[
+                { name: zh ? "币安 Web3 钱包" : "Binance Web3 Wallet", icon: "🟡" },
+                { name: "OKX Wallet", icon: "⬤" },
+                { name: "Trust Wallet", icon: "🛡️" },
+                { name: "MetaMask", icon: "🦊" },
+                { name: "WalletConnect", icon: "🔗" },
+              ].map(w => (
+                <button key={w.name} onClick={() => { setConnected(true); setWalletModal(false); }}
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-xl border border-slate-100 hover:border-amber-200 hover:bg-amber-50 transition-all text-left">
+                  <span className="text-2xl">{w.icon}</span>
+                  <span className="text-sm font-semibold text-slate-800">{w.name}</span>
+                  <ArrowUpRight size={14} className="ml-auto text-slate-300" />
+                </button>
+              ))}
+            </div>
+            <p className="text-center text-xs text-slate-400 pb-4 px-6">{zh ? "连接即表示同意服务条款与隐私政策" : "By connecting you agree to our Terms & Privacy Policy"}</p>
           </div>
         </div>
+      )}
+
+      {/* ── 页面标题栏（VaultApp 风格）── */}
+      <div className="max-w-5xl mx-auto w-full px-6 pt-8 pb-4">
+        {/* 返回产品页 */}
+        <div className="mb-2">
+          <Link href="/">
+            <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
+              <ChevronLeft size={14} />
+              {zh ? "返回产品页" : "Back to Product"}
+            </button>
+          </Link>
+        </div>
+
+        {/* 标题行 */}
+        <div className="flex items-center gap-3 mb-1 flex-wrap">
+          <h1 className="text-2xl font-bold text-slate-900">
+            {zh ? "rGLD 黄金代币" : "rGLD Gold Token"}
+          </h1>
+          <span className="px-2 py-0.5 bg-amber-500 text-white text-[10px] rounded font-bold uppercase tracking-wider">
+            {zh ? "黄金代币" : "Gold Token"}
+          </span>
+          <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] rounded font-semibold">
+            {zh ? "100% 挂钩 GLD ETF" : "100% Pegged to GLD ETF"}
+          </span>
+
+          {/* 右侧操作区 */}
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              onClick={toggleLang}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all"
+            >
+              🌐 {zh ? "EN" : "中文"}
+            </button>
+
+            {/* 用户菜单 */}
+            {isLoggedIn ? (
+              <div className="relative" ref={userMenuRef}>
+                <button onClick={() => setUserMenuOpen(v => !v)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-all">
+                  <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    {displayUser?.name ? displayUser.name.slice(0, 2).toUpperCase() : "U"}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700 max-w-[80px] truncate">{displayUser?.name ?? "User"}</span>
+                  <ChevronDown size={13} className={`text-slate-400 transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
+                </button>
+                {userMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-40 rounded-2xl border border-slate-100 bg-white shadow-xl z-50 overflow-hidden py-2">
+                    <button onClick={() => { setUserMenuOpen(false); logout(); }}
+                      className="w-full text-center px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50 transition-colors">
+                      {zh ? "退出" : "Sign Out"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : null}
+
+            {/* 连接钱包 */}
+            <button
+              onClick={() => connected ? setConnected(false) : setWalletModal(true)}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all active:scale-95 ${
+                connected
+                  ? "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100"
+                  : "bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"
+              }`}
+            >
+              <Wallet size={14} />
+              {connected ? "0x3f...a8c2" : (zh ? "连接钱包" : "Connect Wallet")}
+            </button>
+          </div>
+        </div>
+
+        {/* 副标题 */}
+        <p className="text-slate-500 text-sm">
+          {zh
+            ? "100% 由 SPDR Gold Shares（GLD）ETF 底层资产支撑 · 链上可验证 · Staking 年化 ~8%"
+            : "100% backed by SPDR Gold Shares (GLD) ETF · On-chain verifiable · ~8% Staking APY"}
+        </p>
       </div>
 
-      {/* ── 主体：左买卖 + 右Staking ──────────────────────────────────────── */}
-      <div className="flex-1 max-w-5xl mx-auto w-full px-6 py-8">
+      {/* ── 主体：左侧 + 右侧 ──────────────────────────────────────────────── */}
+      <div className="flex-1 max-w-5xl mx-auto w-full px-6 pb-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
 
-          {/* ── 左侧：买卖框 ── */}
+          {/* ════════════════════════════════════════
+              左侧：GLD 走势 + rGLD 交易框
+          ════════════════════════════════════════ */}
           <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
+
+            {/* ── GLD 价格走势区域 ── */}
+            <div className="px-6 pt-5 pb-4 border-b border-slate-50">
+              {/* 标题行 */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-sm shadow-sm shadow-amber-200">🥇</div>
+                  <div>
+                    <span className="font-bold text-slate-800 text-sm">GLD ETF</span>
+                    <span className="ml-1.5 text-[10px] text-slate-400">SPDR Gold Shares</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-slate-400">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                  {zh ? "实时行情" : "Live"}
+                </div>
+              </div>
+
+              {/* 价格大数字 */}
+              <div className="flex items-baseline gap-3 mb-1">
+                <span className="text-3xl font-extrabold text-slate-900 font-mono">${GLD_PRICE.toFixed(2)}</span>
+                <div className={`flex items-center gap-0.5 text-sm font-bold ${isUp ? "text-emerald-600" : "text-red-500"}`}>
+                  {isUp ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                  {isUp ? "+" : ""}{GLD_CHANGE.toFixed(2)} ({isUp ? "+" : ""}{GLD_CHANGE_PCT.toFixed(2)}%)
+                </div>
+                <span className="text-[10px] text-slate-400 ml-auto">{zh ? "24h 涨跌" : "24h Change"}</span>
+              </div>
+
+              {/* 走势迷你图 */}
+              <div className="mt-2 mb-1">
+                <GldSparkLine data={GLD_TREND} />
+              </div>
+
+              {/* 关键指标四格 */}
+              <div className="grid grid-cols-4 gap-2 mt-2">
+                {[
+                  { label: zh ? "今开" : "Open",  value: `$${GLD_OPEN.toFixed(2)}` },
+                  { label: zh ? "最高" : "High",   value: `$${GLD_HIGH.toFixed(2)}`, color: "text-emerald-600" },
+                  { label: zh ? "最低" : "Low",    value: `$${GLD_LOW.toFixed(2)}`,  color: "text-red-500" },
+                  { label: zh ? "AUM" : "AUM",     value: zh ? GLD_AUM : GLD_AUM_EN },
+                ].map(item => (
+                  <div key={item.label} className="bg-slate-50 rounded-xl px-2.5 py-2 text-center">
+                    <p className="text-[9px] text-slate-400 mb-0.5">{item.label}</p>
+                    <p className={`text-xs font-bold font-mono ${item.color ?? "text-slate-800"}`}>{item.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── rGLD 交易框 ── */}
+            <div className="flex items-center justify-between px-6 pt-4 pb-3 border-b border-slate-50">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-amber-400"></div>
                 <span className="font-bold text-slate-800 text-base">{zh ? "rGLD 交易" : "rGLD Trade"}</span>
               </div>
               <span className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-100">
-                {zh ? "底层资产完全支撑" : "Fully Asset Backed"}
+                {zh ? "1 rGLD = 1 GLD ETF 份额" : "1 rGLD = 1 GLD ETF Share"}
               </span>
             </div>
 
-            <div className="px-6 py-5 space-y-5">
+            <div className="px-6 py-4 space-y-4 flex-1 flex flex-col">
               {/* 持仓 */}
               <div className="flex items-end justify-between gap-2">
                 <div>
                   <p className="text-xs text-slate-400 mb-1">{zh ? "rGLD 持仓" : "rGLD Holdings"}</p>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-extrabold text-slate-900 tracking-tight font-mono">0.0000</span>
-                    <span className="text-amber-500 font-semibold text-lg">rGLD</span>
+                    <span className="text-3xl font-extrabold text-slate-900 tracking-tight font-mono">0.0000</span>
+                    <span className="text-amber-500 font-semibold text-base">rGLD</span>
                   </div>
                 </div>
                 <div className="text-right">
@@ -146,21 +367,17 @@ export default function GoldToken() {
               </div>
 
               {/* 交易框 */}
-              <div className="rounded-2xl bg-slate-50 border border-slate-200 overflow-hidden">
+              <div className="rounded-2xl bg-slate-50 border border-slate-200 overflow-hidden flex-1 flex flex-col">
                 <div className="flex items-center justify-between px-4 pt-3 pb-2">
                   <div className="flex gap-1 bg-white rounded-xl p-0.5 border border-slate-200 shadow-sm">
-                    <button
-                      onClick={() => setTradeMode("buy")}
-                      className={`px-4 py-1 rounded-lg text-sm font-bold transition-all ${
-                        tradeMode === "buy" ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-700"
-                      }`}
-                    >{zh ? "认购" : "Buy"}</button>
-                    <button
-                      onClick={() => setTradeMode("sell")}
-                      className={`px-4 py-1 rounded-lg text-sm font-bold transition-all ${
-                        tradeMode === "sell" ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-700"
-                      }`}
-                    >{zh ? "赎回" : "Sell"}</button>
+                    <button onClick={() => setTradeMode("buy")}
+                      className={`px-4 py-1 rounded-lg text-sm font-bold transition-all ${tradeMode === "buy" ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-700"}`}>
+                      {zh ? "认购" : "Buy"}
+                    </button>
+                    <button onClick={() => setTradeMode("sell")}
+                      className={`px-4 py-1 rounded-lg text-sm font-bold transition-all ${tradeMode === "sell" ? "bg-slate-900 text-white shadow" : "text-slate-500 hover:text-slate-700"}`}>
+                      {zh ? "赎回" : "Sell"}
+                    </button>
                   </div>
                   <select className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm outline-none cursor-pointer hover:border-slate-300 transition-colors" defaultValue="eth">
                     <option value="eth">🔵 Ethereum</option>
@@ -172,18 +389,14 @@ export default function GoldToken() {
                 <div className="mx-3 mb-0 bg-white rounded-2xl border border-slate-100 px-4 py-3">
                   <p className="text-xs text-slate-400 mb-1">{zh ? "支付" : "Spend"}</p>
                   <div className="flex items-center gap-2">
-                    <input
-                      type="number" min="0" placeholder="0" value={spendAmt}
+                    <input type="number" min="0" placeholder="0" value={spendAmt}
                       onChange={e => setSpendAmt(e.target.value)}
-                      className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0"
-                    />
+                      className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0" />
                     <div className="flex flex-col items-end gap-0.5 shrink-0">
                       {tradeMode === "buy" ? (
                         <div className="relative">
-                          <button
-                            onClick={() => setShowPayDrop(p => !p)}
-                            className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl px-2.5 py-1 transition-colors"
-                          >
+                          <button onClick={() => setShowPayDrop(p => !p)}
+                            className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl px-2.5 py-1 transition-colors">
                             <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-[9px] text-white font-bold">$</div>
                             <span className="text-sm font-bold text-slate-700">{payToken}</span>
                             <svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -207,8 +420,7 @@ export default function GoldToken() {
                         </div>
                       )}
                       <div className="flex items-center gap-1 text-[10px] text-slate-400">
-                        {zh ? "余额：" : "Balance: "}
-                        <span>0</span>
+                        {zh ? "余额：" : "Balance: "}<span>0</span>
                         <button className="text-amber-500 font-bold hover:underline ml-1">Max</button>
                       </div>
                     </div>
@@ -239,9 +451,7 @@ export default function GoldToken() {
                           <span className="text-sm font-bold text-slate-700">{payToken}</span>
                         </div>
                       )}
-                      <div className="text-[10px] text-slate-400">
-                        {zh ? "余额：" : "Balance: "}<span>0</span>
-                      </div>
+                      <div className="text-[10px] text-slate-400">{zh ? "余额：" : "Balance: "}<span>0</span></div>
                     </div>
                   </div>
                 </div>
@@ -262,54 +472,57 @@ export default function GoldToken() {
                         ? (zh ? "输入金额" : "Enter Amount")
                         : tradeMode === "buy"
                           ? (zh ? `认购 ${receiveAmt} rGLD` : `Buy ${receiveAmt} rGLD`)
-                          : (zh ? `赎回 获得 ${receiveAmt} ${payToken}` : `Redeem → ${receiveAmt} ${payToken}`)
-                    }
+                          : (zh ? `赎回 获得 ${receiveAmt} ${payToken}` : `Redeem → ${receiveAmt} ${payToken}`)}
                   </button>
                 </div>
+              </div>
+
+              {/* 底部说明 */}
+              <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1">
+                <span>{zh ? "汇率：1 rGLD = $" + RGLD_NAV.toFixed(2) : "Rate: 1 rGLD = $" + RGLD_NAV.toFixed(2)}</span>
+                <span>{zh ? "手续费：0.10%" : "Fee: 0.10%"}</span>
               </div>
             </div>
           </div>
 
-          {/* ── 右侧：Staking 金库（上半操作 + 下半 Yield Vault）── */}
+          {/* ════════════════════════════════════════
+              右侧：Staking 金库 + Yield Vault
+          ════════════════════════════════════════ */}
           <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
 
             {/* ── 上半：Stake / Unstake Tab ── */}
-            <div className="flex-1 flex flex-col border-b border-slate-100">
+            <div className="flex flex-col border-b border-slate-100">
               {/* Tab 头部 */}
               <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-amber-400"></div>
-                  <span className="font-bold text-slate-800 text-base">{zh ? "rGLD Staking" : "rGLD Staking"}</span>
+                  <span className="font-bold text-slate-800 text-base">rGLD Staking</span>
                 </div>
                 <div className="flex gap-0.5 bg-slate-100 rounded-xl p-0.5">
                   {(["stake", "unstake"] as const).map(tab => (
-                    <button
-                      key={tab}
-                      onClick={() => setStakingTab(tab)}
+                    <button key={tab} onClick={() => setStakingTab(tab)}
                       className={`px-3.5 py-1.5 rounded-lg text-sm font-bold transition-all ${
                         stakingTab === tab ? "bg-white text-slate-800 shadow" : "text-slate-500 hover:text-slate-700"
-                      }`}
-                    >{tab === "stake" ? (zh ? "质押" : "Stake") : (zh ? "解押" : "Unstake")}</button>
+                      }`}>
+                      {tab === "stake" ? (zh ? "质押" : "Stake") : (zh ? "解押" : "Unstake")}
+                    </button>
                   ))}
                 </div>
               </div>
 
               {/* Tab: 质押 */}
               {stakingTab === "stake" && (
-                <div className="px-6 py-5 space-y-4">
-                  {/* 质押数量输入 */}
+                <div className="px-6 py-4 space-y-3">
+                  {/* 质押数量 */}
                   <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-xs text-slate-400">{zh ? "质押数量" : "Stake Amount"}</p>
                       <p className="text-[10px] text-slate-400">{zh ? "余额：0 rGLD" : "Balance: 0 rGLD"}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <input
-                        type="number" min="0" placeholder="0"
-                        value={stakingAmt}
+                      <input type="number" min="0" placeholder="0" value={stakingAmt}
                         onChange={e => setStakingAmt(e.target.value)}
-                        className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0"
-                      />
+                        className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0" />
                       <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
                         <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
                         <span className="text-sm font-bold text-amber-700">rGLD</span>
@@ -322,30 +535,25 @@ export default function GoldToken() {
                     <p className="text-xs text-slate-400 mb-2">{zh ? "锁仓周期" : "Lock Period"}</p>
                     <div className="flex gap-2">
                       {[30, 60, 90].map(d => (
-                        <button
-                          key={d}
-                          onClick={() => setStakingDays(d)}
+                        <button key={d} onClick={() => setStakingDays(d)}
                           className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
-                            stakingDays === d
-                              ? "bg-amber-500 text-white shadow-sm shadow-amber-200"
-                              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                          }`}
-                        >{d}{zh ? " 天" : "D"}</button>
+                            stakingDays === d ? "bg-amber-500 text-white shadow-sm shadow-amber-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                          }`}>
+                          {d}{zh ? " 天" : "D"}
+                        </button>
                       ))}
                     </div>
                   </div>
 
                   {/* APY + 预估收益 */}
-                  <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
+                  <div className="bg-amber-50 rounded-2xl p-3.5 border border-amber-100">
                     <div className="flex items-center justify-between">
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-2xl font-extrabold text-emerald-600 font-mono">~{STAKING_APY}%</span>
                         <span className="text-xs text-slate-500">{zh ? "年化" : "APY"}</span>
                         <div className="relative">
-                          <button
-                            onClick={() => setShowApyTooltip(v => !v)}
-                            className="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-500 text-[10px] font-bold transition-colors"
-                          >?</button>
+                          <button onClick={() => setShowApyTooltip(v => !v)}
+                            className="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-500 text-[10px] font-bold transition-colors">?</button>
                           {showApyTooltip && (
                             <div className="absolute left-0 top-6 z-30 w-64 bg-slate-900 text-white text-xs rounded-2xl p-4 shadow-xl">
                               <p className="font-bold mb-1.5">{zh ? "收益机制" : "How Yield Works"}</p>
@@ -364,11 +572,12 @@ export default function GoldToken() {
                         <p className="text-lg font-extrabold text-slate-900 font-mono">${stakingEst}</p>
                       </div>
                     </div>
+                    <p className="text-[10px] text-slate-400 mt-1.5">{zh ? "解押后收益自动进入 Yield Vault" : "Yield auto-credited to Yield Vault on unstake"}</p>
                   </div>
 
                   {/* 质押按钮 */}
                   <button
-                    className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all duration-200 active:scale-95 ${
+                    className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 ${
                       !connected || !stakingAmt || parseFloat(stakingAmt) <= 0
                         ? "bg-slate-100 text-slate-400 cursor-not-allowed"
                         : "bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-200"
@@ -387,13 +596,28 @@ export default function GoldToken() {
 
               {/* Tab: 解押 */}
               {stakingTab === "unstake" && (
-                <div className="px-6 py-5 space-y-4">
-                  {/* 当前质押仓位 */}
-                  <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
-                    <p className="text-xs text-slate-400 mb-2">{zh ? "当前质押仓位" : "Staked Position"}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-extrabold text-slate-900 font-mono">0.0000 <span className="text-amber-500 text-base">rGLD</span></span>
-                      <span className="text-xs text-slate-400">{zh ? "到期：—" : "Expires: —"}</span>
+                <div className="px-6 py-4 space-y-3">
+                  {/* 当前质押仓位列表 */}
+                  <div>
+                    <p className="text-xs text-slate-400 mb-2">{zh ? "当前质押仓位" : "Active Stakes"}</p>
+                    <div className="space-y-2">
+                      {MOCK_STAKES.map(s => (
+                        <div key={s.id} className={`rounded-2xl border px-4 py-3 ${s.status === "expired" ? "bg-slate-50 border-slate-200" : "bg-amber-50 border-amber-100"}`}>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-base font-extrabold text-slate-900 font-mono">{s.amount.toFixed(4)}</span>
+                              <span className="text-amber-500 text-xs font-bold">rGLD</span>
+                            </div>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${s.status === "expired" ? "bg-slate-200 text-slate-500" : "bg-amber-100 text-amber-700"}`}>
+                              {s.status === "expired" ? (zh ? "已到期" : "Expired") : (zh ? "质押中" : "Active")}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-[10px] text-slate-400">
+                            <span>{zh ? `锁仓 ${s.lockDays} 天 · 到期 ${s.endDate}` : `${s.lockDays}D Lock · Expires ${s.endDate}`}</span>
+                            <span className="text-emerald-600 font-semibold">{zh ? `累计 +$${s.accrued}` : `+$${s.accrued} accrued`}</span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
@@ -401,15 +625,12 @@ export default function GoldToken() {
                   <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-xs text-slate-400">{zh ? "解押数量" : "Unstake Amount"}</p>
-                      <p className="text-[10px] text-slate-400">{zh ? "已质押：0 rGLD" : "Staked: 0 rGLD"}</p>
+                      <p className="text-[10px] text-slate-400">{zh ? "已到期：2.5000 rGLD" : "Expired: 2.5000 rGLD"}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <input
-                        type="number" min="0" placeholder="0"
-                        value={unstakeAmt}
+                      <input type="number" min="0" placeholder="0" value={unstakeAmt}
                         onChange={e => setUnstakeAmt(e.target.value)}
-                        className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0"
-                      />
+                        className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0" />
                       <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
                         <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
                         <span className="text-sm font-bold text-amber-700">rGLD</span>
@@ -419,20 +640,28 @@ export default function GoldToken() {
 
                   {/* 解押按钮 */}
                   <button
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm bg-slate-100 text-slate-400 cursor-not-allowed"
-                    disabled
+                    className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 ${
+                      !connected || !unstakeAmt || parseFloat(unstakeAmt) <= 0
+                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                        : "bg-slate-800 hover:bg-slate-900 text-white shadow-md"
+                    }`}
+                    disabled={!connected || !unstakeAmt || parseFloat(unstakeAmt) <= 0}
                   >
-                    {zh ? "暂无可解押仓位" : "No Staked Position"}
+                    {!connected
+                      ? (zh ? "请先连接钱包" : "Connect Wallet First")
+                      : !unstakeAmt || parseFloat(unstakeAmt) <= 0
+                        ? (zh ? "输入解押数量" : "Enter Unstake Amount")
+                        : (zh ? `解押 ${unstakeAmt} rGLD` : `Unstake ${unstakeAmt} rGLD`)}
                   </button>
                   <p className="text-[10px] text-slate-400 text-center">
-                    {zh ? "提前解押将损失全部 Staking 收益" : "Early unstaking forfeits all accrued yield."}
+                    {zh ? "提前解押将损失全部 Staking 累计收益" : "Early unstaking forfeits all accrued yield."}
                   </p>
                 </div>
               )}
             </div>
 
             {/* ── 下半：Yield Vault（固定展示）── */}
-            <div className="px-6 py-5 space-y-4">
+            <div className="flex-1 flex flex-col px-6 py-4 space-y-3">
               {/* Vault 标题 */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -448,25 +677,53 @@ export default function GoldToken() {
               <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl border border-amber-100 px-5 py-4">
                 <p className="text-xs text-slate-400 mb-1">{zh ? "可领收益（USDT）" : "Claimable Yield (USDT)"}</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-extrabold text-slate-900 font-mono">$0.00</span>
+                  <span className="text-3xl font-extrabold text-slate-900 font-mono">$9.72</span>
                   <span className="text-emerald-600 font-semibold text-sm">USDT</span>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1.5">{zh ? "来源：rGLD Staking 收益 · 解押后自动入账" : "Source: rGLD Staking Yield · Auto-credited on unstake"}</p>
+                <p className="text-[10px] text-slate-400 mt-1">{zh ? "来源：rGLD Staking 收益 · 解押后自动入账" : "Source: rGLD Staking Yield · Auto-credited on unstake"}</p>
+              </div>
+
+              {/* 收益历史记录 */}
+              <div className="flex-1">
+                <p className="text-xs text-slate-400 mb-2">{zh ? "收益记录" : "Yield History"}</p>
+                <div className="rounded-2xl border border-slate-100 overflow-hidden">
+                  <div className="grid grid-cols-3 px-4 py-2 bg-slate-50 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                    <span>{zh ? "日期" : "Date"}</span>
+                    <span className="text-right">{zh ? "金额" : "Amount"}</span>
+                    <span className="text-right">{zh ? "来源" : "Source"}</span>
+                  </div>
+                  <div className="divide-y divide-slate-50">
+                    {MOCK_YIELD_HISTORY.map((row, i) => (
+                      <div key={i} className="grid grid-cols-3 px-4 py-2.5 text-xs hover:bg-slate-50 transition-colors">
+                        <span className="text-slate-500 font-mono">{row.date.slice(5)}</span>
+                        <span className="text-right font-semibold text-emerald-600">+${row.amount.toFixed(2)}</span>
+                        <span className="text-right text-slate-400 truncate">{row.source}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* 领取按钮 */}
               <button
-                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm bg-slate-100 text-slate-400 cursor-not-allowed"
-                disabled
+                className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm transition-all active:scale-95 ${
+                  !connected
+                    ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                    : "bg-emerald-500 hover:bg-emerald-600 text-white shadow-md shadow-emerald-200"
+                }`}
+                disabled={!connected}
               >
                 <Zap size={15} />
-                {zh ? "暂无可提取收益" : "No Yield to Withdraw"}
+                {!connected
+                  ? (zh ? "请先连接钱包" : "Connect Wallet First")
+                  : (zh ? "领取 $9.72 USDT" : "Claim $9.72 USDT")}
               </button>
               <p className="text-[10px] text-slate-400 text-center">
                 {zh ? "Staking 解押后收益自动进入此处，可随时提取至钱包" : "Staking yield flows here on unstake. Withdraw to wallet anytime."}
               </p>
             </div>
           </div>
+
         </div>
       </div>
 
