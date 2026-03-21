@@ -379,49 +379,33 @@ export default function GoldToken() {
                 </div>
               </div>
 
-              {/* 价格大数字 */}
-              <div className="flex items-baseline gap-3 mb-1">
-                <span className="text-3xl font-extrabold text-slate-900 font-mono">${GLD_PRICE.toFixed(2)}</span>
-                <div className={`flex items-center gap-0.5 text-sm font-bold ${isUp ? "text-emerald-600" : "text-red-500"}`}>
-                  {isUp ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                  {isUp ? "+" : ""}{GLD_CHANGE.toFixed(2)} ({isUp ? "+" : ""}{GLD_CHANGE_PCT.toFixed(2)}%)
-                </div>
-                <span className="text-[10px] text-slate-400 ml-auto">{zh ? "24h 涨跌" : "24h Change"}</span>
-              </div>
+              {/* 一句话介绍 */}
+              <p className="text-xs text-slate-500 mb-4">
+                {zh
+                  ? "GLD ETF：全球最大黄金 ETF，由 State Street 发行，底层 100% 实物黄金支撑，流动性极强。"
+                  : "GLD ETF: The world's largest gold ETF by State Street, 100% physically backed by gold bullion with exceptional liquidity."}
+              </p>
 
-              {/* 走势迷你图 */}
-              <div className="mt-2 mb-1">
-                <div className="flex gap-1 mb-2">
-                  {(["7D", "1M", "6M", "1Y"] as const).map(r => (
-                    <button
-                      key={r}
-                      onClick={() => setTrendRange(r)}
-                      className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold transition-all ${
-                        trendRange === r
-                          ? "bg-amber-500 text-white shadow-sm"
-                          : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                      }`}
-                    >
-                      {r}
-                    </button>
-                  ))}
+              {/* 三格数据 */}
+              <div className="grid grid-cols-3 gap-3">
+                {/* 当前价格 */}
+                <div className="bg-slate-50 rounded-2xl px-4 py-3">
+                  <p className="text-[10px] text-slate-400 mb-1">{zh ? "当前价格" : "Current Price"}</p>
+                  <p className="text-lg font-extrabold text-slate-900 font-mono">${GLD_PRICE.toFixed(2)}</p>
                 </div>
-                <GldSparkLine data={GLD_DATA[trendRange]} />
-              </div>
-
-              {/* 关键指标四格 */}
-              <div className="grid grid-cols-4 gap-2 mt-2">
-                {[
-                  { label: zh ? "今开" : "Open",  value: `$${GLD_OPEN.toFixed(2)}` },
-                  { label: zh ? "最高" : "High",   value: `$${GLD_HIGH.toFixed(2)}`, color: "text-emerald-600" },
-                  { label: zh ? "最低" : "Low",    value: `$${GLD_LOW.toFixed(2)}`,  color: "text-red-500" },
-                  { label: zh ? "AUM" : "AUM",     value: zh ? GLD_AUM : GLD_AUM_EN },
-                ].map(item => (
-                  <div key={item.label} className="bg-slate-50 rounded-xl px-2.5 py-2 text-center">
-                    <p className="text-[9px] text-slate-400 mb-0.5">{item.label}</p>
-                    <p className={`text-xs font-bold font-mono ${item.color ?? "text-slate-800"}`}>{item.value}</p>
+                {/* AUM */}
+                <div className="bg-slate-50 rounded-2xl px-4 py-3">
+                  <p className="text-[10px] text-slate-400 mb-1">AUM</p>
+                  <p className="text-lg font-extrabold text-slate-900 font-mono">{zh ? GLD_AUM : GLD_AUM_EN}</p>
+                </div>
+                {/* 24h 涨跌幅 */}
+                <div className="bg-slate-50 rounded-2xl px-4 py-3">
+                  <p className="text-[10px] text-slate-400 mb-1">{zh ? "24h 涨跌幅" : "24h Change"}</p>
+                  <div className={`flex items-center gap-1 text-lg font-extrabold font-mono ${isUp ? "text-emerald-600" : "text-red-500"}`}>
+                    {isUp ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                    <span>{isUp ? "+" : ""}{GLD_CHANGE_PCT.toFixed(2)}%</span>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
 
