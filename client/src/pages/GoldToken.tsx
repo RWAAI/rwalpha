@@ -28,6 +28,7 @@ export default function GoldToken() {
   const [connected] = useState(false);
   const [stakingTab, setStakingTab] = useState<"stake" | "unstake" | "vault">("stake");
   const [unstakeAmt, setUnstakeAmt] = useState("");
+  const [showApyTooltip, setShowApyTooltip] = useState(false);
 
   useEffect(() => {
     const handler = () => setZh(localStorage.getItem("rwa-lang") !== "en");
@@ -291,9 +292,7 @@ export default function GoldToken() {
                   );
                 })}
               </div>
-              <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-100">
-                ~{STAKING_APY}% APY
-              </span>
+              <span className="text-xs text-slate-400">{zh ? "rGLD Staking" : "rGLD Staking"}</span>
             </div>
 
             {/* Tab: 质押 */}
@@ -339,18 +338,37 @@ export default function GoldToken() {
                   </div>
                 </div>
 
-                {/* 预估收益 */}
-                <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100">
+                {/* 预估收益 + APY 展示 */}
+                <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100 space-y-3">
+                  {/* APY 大数字 + 问号弹层 */}
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs text-slate-500 mb-0.5">{zh ? "预计收益（解押后进入 Yield Vault）" : "Est. Yield (to Yield Vault on unstake)"}</p>
-                      <p className="text-2xl font-extrabold text-slate-900 font-mono">${stakingEst}</p>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl font-extrabold text-emerald-600 font-mono">~{STAKING_APY}%</span>
+                      <span className="text-sm text-slate-500">{zh ? "年化收益率" : "APY"}</span>
+                      <div className="relative">
+                        <button
+                          onClick={() => setShowApyTooltip(v => !v)}
+                          className="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-500 text-[10px] font-bold transition-colors"
+                        >?</button>
+                        {showApyTooltip && (
+                          <div className="absolute left-0 top-6 z-30 w-64 bg-slate-900 text-white text-xs rounded-2xl p-4 shadow-xl">
+                            <p className="font-bold mb-1.5">{zh ? "收益机制说明" : "How Yield Works"}</p>
+                            <p className="text-slate-300 leading-relaxed">
+                              {zh
+                                ? "质押 rGLD 后，RWAlpha 将底层 GLD ETF 的出借收益（Securities Lending）按 ~8% 年化分配给质押者。解押时，累计收益自动进入您的 Yield Vault，可随时提取至钱包。"
+                                : "When you stake rGLD, RWAlpha distributes securities lending income from the underlying GLD ETF at ~8% APY. Upon unstaking, accrued yield is automatically credited to your Yield Vault for withdrawal anytime."}
+                            </p>
+                            <button onClick={() => setShowApyTooltip(false)} className="mt-2 text-slate-400 hover:text-white text-[10px]">✕ {zh ? "关闭" : "Close"}</button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-[10px] text-slate-400 mb-0.5">APY</p>
-                      <p className="text-lg font-extrabold text-emerald-600">~{STAKING_APY}%</p>
+                      <p className="text-[10px] text-slate-400 mb-0.5">{zh ? "预计收益" : "Est. Yield"}</p>
+                      <p className="text-xl font-extrabold text-slate-900 font-mono">${stakingEst}</p>
                     </div>
                   </div>
+                  <p className="text-[10px] text-slate-500">{zh ? "解押后收益自动进入 Yield Vault" : "Yield auto-credited to Yield Vault on unstake"}</p>
                 </div>
 
                 {/* 质押按钮 */}
