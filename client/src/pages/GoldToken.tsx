@@ -10,7 +10,7 @@ import {
   ArrowUpRight, Zap, Lock, TrendingUp, Shield, Coins,
   ChevronLeft, ChevronDown, Wallet, RefreshCw, TrendingDown,
 } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -186,6 +186,7 @@ export default function GoldToken() {
   const [trendRange, setTrendRange] = useState<"7D" | "1M" | "6M" | "1Y">("1M");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const [, navigate] = useLocation();
 
   const { user, isAuthenticated, logout: oauthLogout } = useAuth();
   const isLoggedIn = isAuthenticated;
@@ -311,9 +312,17 @@ export default function GoldToken() {
                   <ChevronDown size={13} className={`text-slate-400 transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-40 rounded-2xl border border-slate-100 bg-white shadow-xl z-50 overflow-hidden py-2">
+                  <div className="absolute right-0 top-full mt-2 w-44 rounded-2xl border border-slate-100 bg-white shadow-xl shadow-slate-200/50 z-50 overflow-hidden py-2">
+                    <button onClick={() => { setUserMenuOpen(false); navigate('/profile'); }}
+                      className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors">
+                      {zh ? "个人资料" : "Profile"}
+                    </button>
+                    <button onClick={() => { setUserMenuOpen(false); navigate('/my-assets'); }}
+                      className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors">
+                      {zh ? "我的资产" : "My Assets"}
+                    </button>
                     <button onClick={() => { setUserMenuOpen(false); logout(); }}
-                      className="w-full text-center px-4 py-3 text-sm font-medium text-slate-800 hover:bg-slate-50 transition-colors">
+                      className="w-full text-center px-4 py-3 text-base font-medium text-slate-800 hover:bg-slate-50 transition-colors">
                       {zh ? "退出" : "Sign Out"}
                     </button>
                   </div>
