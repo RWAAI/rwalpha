@@ -616,12 +616,12 @@ export default function GoldToken() {
               {stakingMode === "flexible" && (
                 <div className="px-6 py-4 space-y-3">
                   {/* 活期说明 */}
-                  <div className="flex items-center justify-between bg-blue-50 rounded-2xl px-4 py-2.5 border border-blue-100">
+                  <div className="flex items-center justify-between px-1 py-1">
                     <div className="flex items-baseline gap-1.5">
                       <span className="text-xl font-extrabold text-emerald-600 font-mono">~{STAKING_APY_FLEXIBLE}%</span>
                       <span className="text-xs text-slate-500">{zh ? "年化 · 随时进出" : "APY · Anytime"}</span>
                     </div>
-                    <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] text-blue-500 font-medium">
                       {zh ? "无锁仓" : "No Lock"}
                     </span>
                   </div>
