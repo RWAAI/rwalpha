@@ -369,8 +369,8 @@ export default function LandingPage() {
             <img
               key={lang}
               src={lang === 'zh'
-                ? 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/vault-app-zh_0567da0d.webp'
-                : 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/vault-app-en_9a14127b.png'
+                ? 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/截屏2026-03-21下午3.44.46_52878051.png'
+                : 'https://d2xsxph8kpxj0f.cloudfront.net/310519663279457379/asxYnytTefdYpzwe5Qg6qu/截屏2026-03-21下午3.45.05_f5e7727e.png'
               }
               alt="RWAlpha Product Preview"
               className="w-full h-auto object-cover"
