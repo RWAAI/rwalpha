@@ -275,7 +275,7 @@ export default function GoldToken() {
           <Link href="/">
             <button className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 transition-colors">
               <ChevronLeft size={14} />
-              {zh ? "返回产品页" : "Back to Product"}
+              {zh ? "返回首页" : "Back to Home"}
             </button>
           </Link>
         </div>
@@ -993,7 +993,6 @@ export default function GoldToken() {
       <section className="bg-white border-t border-slate-100 py-16 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <span className="inline-block text-xs font-semibold tracking-widest text-amber-600 uppercase mb-3">FAQ</span>
             <h2 className="text-2xl font-bold text-slate-900">
               {zh ? '常见问题' : 'Frequently Asked Questions'}
             </h2>
