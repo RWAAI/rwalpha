@@ -26,7 +26,9 @@ const GLD_OPEN = 295.22;
 const GLD_AUM  = "746亿";
 const GLD_AUM_EN = "$74.6B";
 const RGLD_NAV = 296.45;       // rGLD 1:1 挂钩 GLD
-const STAKING_APY = 8.0;
+const STAKING_APY_FLEXIBLE = 5.0;  // 活期年化
+const STAKING_APY_LOCKED   = 8.0;  // 锁仓年化
+const STAKING_APY = 8.0; // 保留兼容
 
 // GLD 近30天走势数据（模拟）
 const GLD_TREND = [
@@ -42,8 +44,11 @@ const GLD_TREND = [
   { date: "03-21", value: 296.45 },
 ];
 
-// 模拟质押仓位
-const MOCK_STAKES = [
+// 模拟活期质押仓位
+const MOCK_FLEXIBLE_STAKE = { amount: 3.2000, accrued: 2.18, since: "2026-03-01" };
+
+// 模拟锁仓质押仓位
+const MOCK_LOCKED_STAKES = [
   { id: 1, amount: 2.5000, lockDays: 60, startDate: "2026-01-20", endDate: "2026-03-20", accrued: 9.72, status: "expired" },
   { id: 2, amount: 5.0000, lockDays: 90, startDate: "2026-02-01", endDate: "2026-05-02", accrued: 14.58, status: "active" },
 ];
@@ -123,9 +128,15 @@ export default function GoldToken() {
   const [stakingDays, setStakingDays] = useState(30);
   const [connected, setConnected] = useState(false);
   const [walletModal, setWalletModal] = useState(false);
-  const [stakingTab, setStakingTab] = useState<"stake" | "unstake">("stake");
+  // 双档 Tab：flexible（活期）| locked（锁仓）
+  const [stakingMode, setStakingMode] = useState<"flexible" | "locked">("flexible");
+  // 每档各自的 stake/unstake 子 Tab
+  const [flexTab, setFlexTab] = useState<"stake" | "unstake">("stake");
+  const [lockTab, setLockTab] = useState<"stake" | "unstake">("stake");
   const [unstakeAmt, setUnstakeAmt] = useState("");
+  const [flexUnstakeAmt, setFlexUnstakeAmt] = useState("");
   const [showApyTooltip, setShowApyTooltip] = useState(false);
+  const [earlyUnstakeConfirm, setEarlyUnstakeConfirm] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -166,9 +177,14 @@ export default function GoldToken() {
       : (parseFloat(spendAmt) * RGLD_NAV).toFixed(2)
     : "0";
 
-  const stakingEst = stakingAmt && parseFloat(stakingAmt) > 0
-    ? ((parseFloat(stakingAmt) * RGLD_NAV * STAKING_APY / 100) * (stakingDays / 365)).toFixed(2)
+  const stakingEstLocked = stakingAmt && parseFloat(stakingAmt) > 0
+    ? ((parseFloat(stakingAmt) * RGLD_NAV * STAKING_APY_LOCKED / 100) * (stakingDays / 365)).toFixed(2)
     : "0.00";
+  const stakingEstFlex = stakingAmt && parseFloat(stakingAmt) > 0
+    ? ((parseFloat(stakingAmt) * RGLD_NAV * STAKING_APY_FLEXIBLE / 100) * (30 / 365)).toFixed(2)
+    : "0.00";
+  // 兼容旧引用
+  const stakingEst = stakingMode === "flexible" ? stakingEstFlex : stakingEstLocked;
 
   const isUp = GLD_CHANGE_PCT >= 0;
 
@@ -486,176 +502,323 @@ export default function GoldToken() {
           </div>
 
           {/* ════════════════════════════════════════
-              右侧：Staking 金库 + Yield Vault
+              右侧：Staking 金库（双档）+ Yield Vault
           ════════════════════════════════════════ */}
           <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
 
-            {/* ── 上半：Stake / Unstake Tab ── */}
+            {/* ── 提前解押确认弹层 ── */}
+            {earlyUnstakeConfirm && (
+              <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setEarlyUnstakeConfirm(false)}>
+                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6" onClick={e => e.stopPropagation()}>
+                  <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">⚠️</span>
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-base text-center mb-2">{zh ? "确认提前解押？" : "Confirm Early Unstake?"}</h3>
+                  <p className="text-slate-500 text-sm text-center leading-relaxed mb-5">
+                    {zh
+                      ? "提前解押将损失全部累计 Staking 收益（$14.58 USDT），本金将完整返还至您的钱包。"
+                      : "Early unstaking forfeits all accrued yield ($14.58 USDT). Your principal will be returned in full."}
+                  </p>
+                  <div className="flex gap-3">
+                    <button onClick={() => setEarlyUnstakeConfirm(false)}
+                      className="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+                      {zh ? "取消" : "Cancel"}
+                    </button>
+                    <button onClick={() => setEarlyUnstakeConfirm(false)}
+                      className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-bold transition-colors">
+                      {zh ? "确认解押" : "Confirm Unstake"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── 上半：双档 Staking ── */}
             <div className="flex flex-col border-b border-slate-100">
-              {/* Tab 头部 */}
+              {/* 标题 + 双档切换 */}
               <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-50">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-amber-400"></div>
                   <span className="font-bold text-slate-800 text-base">rGLD Staking</span>
                 </div>
+                {/* 活期 / 锁仓 主 Tab */}
                 <div className="flex gap-0.5 bg-slate-100 rounded-xl p-0.5">
-                  {(["stake", "unstake"] as const).map(tab => (
-                    <button key={tab} onClick={() => setStakingTab(tab)}
-                      className={`px-3.5 py-1.5 rounded-lg text-sm font-bold transition-all ${
-                        stakingTab === tab ? "bg-white text-slate-800 shadow" : "text-slate-500 hover:text-slate-700"
-                      }`}>
-                      {tab === "stake" ? (zh ? "质押" : "Stake") : (zh ? "解押" : "Unstake")}
-                    </button>
-                  ))}
+                  <button onClick={() => setStakingMode("flexible")}
+                    className={`px-3.5 py-1.5 rounded-lg text-sm font-bold transition-all ${
+                      stakingMode === "flexible" ? "bg-white text-slate-800 shadow" : "text-slate-500 hover:text-slate-700"
+                    }`}>
+                    {zh ? "活期" : "Flexible"}
+                  </button>
+                  <button onClick={() => setStakingMode("locked")}
+                    className={`px-3.5 py-1.5 rounded-lg text-sm font-bold transition-all ${
+                      stakingMode === "locked" ? "bg-white text-slate-800 shadow" : "text-slate-500 hover:text-slate-700"
+                    }`}>
+                    {zh ? "锁仓" : "Locked"}
+                  </button>
                 </div>
               </div>
 
-              {/* Tab: 质押 */}
-              {stakingTab === "stake" && (
+              {/* ── 活期档 ── */}
+              {stakingMode === "flexible" && (
                 <div className="px-6 py-4 space-y-3">
-                  {/* 质押数量 */}
-                  <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-xs text-slate-400">{zh ? "质押数量" : "Stake Amount"}</p>
-                      <p className="text-[10px] text-slate-400">{zh ? "余额：0 rGLD" : "Balance: 0 rGLD"}</p>
+                  {/* 活期说明 */}
+                  <div className="flex items-center justify-between bg-blue-50 rounded-2xl px-4 py-2.5 border border-blue-100">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-xl font-extrabold text-emerald-600 font-mono">~{STAKING_APY_FLEXIBLE}%</span>
+                      <span className="text-xs text-slate-500">{zh ? "年化 · 随时进出" : "APY · Anytime"}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <input type="number" min="0" placeholder="0" value={stakingAmt}
-                        onChange={e => setStakingAmt(e.target.value)}
-                        className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0" />
-                      <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
-                        <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
-                        <span className="text-sm font-bold text-amber-700">rGLD</span>
-                      </div>
-                    </div>
+                    <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">
+                      {zh ? "无锁仓" : "No Lock"}
+                    </span>
                   </div>
 
-                  {/* 锁仓周期 */}
-                  <div>
-                    <p className="text-xs text-slate-400 mb-2">{zh ? "锁仓周期" : "Lock Period"}</p>
-                    <div className="flex gap-2">
-                      {[30, 60, 90].map(d => (
-                        <button key={d} onClick={() => setStakingDays(d)}
-                          className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
-                            stakingDays === d ? "bg-amber-500 text-white shadow-sm shadow-amber-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                          }`}>
-                          {d}{zh ? " 天" : "D"}
-                        </button>
-                      ))}
-                    </div>
+                  {/* 活期 Stake / Unstake 子 Tab */}
+                  <div className="flex gap-1 bg-slate-100 rounded-xl p-0.5 w-fit">
+                    {(["stake", "unstake"] as const).map(t => (
+                      <button key={t} onClick={() => setFlexTab(t)}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                          flexTab === t ? "bg-white text-slate-800 shadow" : "text-slate-500 hover:text-slate-700"
+                        }`}>
+                        {t === "stake" ? (zh ? "质押" : "Stake") : (zh ? "解押" : "Unstake")}
+                      </button>
+                    ))}
                   </div>
 
-                  {/* APY + 预估收益 */}
-                  <div className="bg-amber-50 rounded-2xl p-3.5 border border-amber-100">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-2xl font-extrabold text-emerald-600 font-mono">~{STAKING_APY}%</span>
-                        <span className="text-xs text-slate-500">{zh ? "年化" : "APY"}</span>
-                        <div className="relative">
-                          <button onClick={() => setShowApyTooltip(v => !v)}
-                            className="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-500 text-[10px] font-bold transition-colors">?</button>
-                          {showApyTooltip && (
-                            <div className="absolute left-0 top-6 z-30 w-64 bg-slate-900 text-white text-xs rounded-2xl p-4 shadow-xl">
-                              <p className="font-bold mb-1.5">{zh ? "收益机制" : "How Yield Works"}</p>
-                              <p className="text-slate-300 leading-relaxed">
-                                {zh
-                                  ? "质押 rGLD 后，RWAlpha 将底层 GLD ETF 的出借收益（Securities Lending）按 ~8% 年化分配给质押者。解押时，累计收益自动进入您的 Yield Vault，可随时提取至钱包。"
-                                  : "When you stake rGLD, RWAlpha distributes securities lending income from the underlying GLD ETF at ~8% APY. Upon unstaking, accrued yield is automatically credited to your Yield Vault for withdrawal anytime."}
-                              </p>
-                              <button onClick={() => setShowApyTooltip(false)} className="mt-2 text-slate-400 hover:text-white text-[10px]">✕ {zh ? "关闭" : "Close"}</button>
+                  {flexTab === "stake" && (
+                    <>
+                      {/* 当前活期仓位 */}
+                      <div className="bg-blue-50 rounded-2xl border border-blue-100 px-4 py-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-[10px] text-slate-400 mb-0.5">{zh ? "活期质押中" : "Flexible Staked"}</p>
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-lg font-extrabold text-slate-900 font-mono">{MOCK_FLEXIBLE_STAKE.amount.toFixed(4)}</span>
+                              <span className="text-amber-500 text-xs font-bold">rGLD</span>
                             </div>
-                          )}
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[10px] text-slate-400 mb-0.5">{zh ? "累计收益" : "Accrued"}</p>
+                            <p className="text-sm font-extrabold text-emerald-600 font-mono">+${MOCK_FLEXIBLE_STAKE.accrued}</p>
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-slate-400 mt-1.5">{zh ? `质押自 ${MOCK_FLEXIBLE_STAKE.since} · 按日累积` : `Since ${MOCK_FLEXIBLE_STAKE.since} · Accrues daily`}</p>
+                      </div>
+
+                      {/* 追加质押 */}
+                      <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs text-slate-400">{zh ? "追加质押数量" : "Add Stake"}</p>
+                          <p className="text-[10px] text-slate-400">{zh ? "余额：0 rGLD" : "Balance: 0 rGLD"}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input type="number" min="0" placeholder="0" value={stakingAmt}
+                            onChange={e => setStakingAmt(e.target.value)}
+                            className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0" />
+                          <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
+                            <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
+                            <span className="text-sm font-bold text-amber-700">rGLD</span>
+                          </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-[10px] text-slate-400 mb-0.5">{zh ? "预计收益" : "Est. Yield"}</p>
-                        <p className="text-lg font-extrabold text-slate-900 font-mono">${stakingEst}</p>
-                      </div>
-                    </div>
-                    <p className="text-[10px] text-slate-400 mt-1.5">{zh ? "解押后收益自动进入 Yield Vault" : "Yield auto-credited to Yield Vault on unstake"}</p>
-                  </div>
+                      <button
+                        className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 ${
+                          !connected || !stakingAmt || parseFloat(stakingAmt) <= 0
+                            ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                            : "bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-200"
+                        }`}
+                        disabled={!connected || !stakingAmt || parseFloat(stakingAmt) <= 0}
+                      >
+                        {!connected ? (zh ? "请先连接钱包" : "Connect Wallet First")
+                          : !stakingAmt || parseFloat(stakingAmt) <= 0 ? (zh ? "输入质押数量" : "Enter Amount")
+                          : (zh ? `活期质押 ${stakingAmt} rGLD` : `Flexible Stake ${stakingAmt} rGLD`)}
+                      </button>
+                    </>
+                  )}
 
-                  {/* 质押按钮 */}
-                  <button
-                    className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 ${
-                      !connected || !stakingAmt || parseFloat(stakingAmt) <= 0
-                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                        : "bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-200"
-                    }`}
-                    disabled={!connected || !stakingAmt || parseFloat(stakingAmt) <= 0}
-                  >
-                    <Lock size={14} />
-                    {!connected
-                      ? (zh ? "请先连接钱包" : "Connect Wallet First")
-                      : !stakingAmt || parseFloat(stakingAmt) <= 0
-                        ? (zh ? "输入质押数量" : "Enter Stake Amount")
-                        : (zh ? `质押 ${stakingAmt} rGLD · ${stakingDays} 天` : `Stake ${stakingAmt} rGLD · ${stakingDays}D`)}
-                  </button>
+                  {flexTab === "unstake" && (
+                    <>
+                      <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs text-slate-400">{zh ? "解押数量" : "Unstake Amount"}</p>
+                          <p className="text-[10px] text-slate-400">{zh ? `活期仓位：${MOCK_FLEXIBLE_STAKE.amount} rGLD` : `Staked: ${MOCK_FLEXIBLE_STAKE.amount} rGLD`}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input type="number" min="0" placeholder="0" value={flexUnstakeAmt}
+                            onChange={e => setFlexUnstakeAmt(e.target.value)}
+                            className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0" />
+                          <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
+                            <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
+                            <span className="text-sm font-bold text-amber-700">rGLD</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 ${
+                          !connected || !flexUnstakeAmt || parseFloat(flexUnstakeAmt) <= 0
+                            ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                            : "bg-slate-800 hover:bg-slate-900 text-white shadow-md"
+                        }`}
+                        disabled={!connected || !flexUnstakeAmt || parseFloat(flexUnstakeAmt) <= 0}
+                      >
+                        {!connected ? (zh ? "请先连接钱包" : "Connect Wallet First")
+                          : !flexUnstakeAmt || parseFloat(flexUnstakeAmt) <= 0 ? (zh ? "输入解押数量" : "Enter Amount")
+                          : (zh ? `解押 ${flexUnstakeAmt} rGLD` : `Unstake ${flexUnstakeAmt} rGLD`)}
+                      </button>
+                      <p className="text-[10px] text-emerald-600 text-center font-medium">
+                        ✓ {zh ? "活期随时解押，收益实时到账 Yield Vault" : "Flexible: unstake anytime, yield credited instantly"}
+                      </p>
+                    </>
+                  )}
                 </div>
               )}
 
-              {/* Tab: 解押 */}
-              {stakingTab === "unstake" && (
+              {/* ── 锁仓档 ── */}
+              {stakingMode === "locked" && (
                 <div className="px-6 py-4 space-y-3">
-                  {/* 当前质押仓位列表 */}
-                  <div>
-                    <p className="text-xs text-slate-400 mb-2">{zh ? "当前质押仓位" : "Active Stakes"}</p>
-                    <div className="space-y-2">
-                      {MOCK_STAKES.map(s => (
-                        <div key={s.id} className={`rounded-2xl border px-4 py-3 ${s.status === "expired" ? "bg-slate-50 border-slate-200" : "bg-amber-50 border-amber-100"}`}>
-                          <div className="flex items-center justify-between mb-1.5">
-                            <div className="flex items-baseline gap-1.5">
-                              <span className="text-base font-extrabold text-slate-900 font-mono">{s.amount.toFixed(4)}</span>
-                              <span className="text-amber-500 text-xs font-bold">rGLD</span>
-                            </div>
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${s.status === "expired" ? "bg-slate-200 text-slate-500" : "bg-amber-100 text-amber-700"}`}>
-                              {s.status === "expired" ? (zh ? "已到期" : "Expired") : (zh ? "质押中" : "Active")}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between text-[10px] text-slate-400">
-                            <span>{zh ? `锁仓 ${s.lockDays} 天 · 到期 ${s.endDate}` : `${s.lockDays}D Lock · Expires ${s.endDate}`}</span>
-                            <span className="text-emerald-600 font-semibold">{zh ? `累计 +$${s.accrued}` : `+$${s.accrued} accrued`}</span>
+                  {/* 锁仓说明 */}
+                  <div className="flex items-center justify-between bg-amber-50 rounded-2xl px-4 py-2.5 border border-amber-100">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-xl font-extrabold text-emerald-600 font-mono">~{STAKING_APY_LOCKED}%</span>
+                      <span className="text-xs text-slate-500">{zh ? "年化 · 锁仓增强" : "APY · Lock Boost"}</span>
+                    </div>
+                    <span className="text-[10px] bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">
+                      {zh ? "提前解押罚没收益" : "Penalty on early exit"}
+                    </span>
+                  </div>
+
+                  {/* 锁仓 Stake / Unstake 子 Tab */}
+                  <div className="flex gap-1 bg-slate-100 rounded-xl p-0.5 w-fit">
+                    {(["stake", "unstake"] as const).map(t => (
+                      <button key={t} onClick={() => setLockTab(t)}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                          lockTab === t ? "bg-white text-slate-800 shadow" : "text-slate-500 hover:text-slate-700"
+                        }`}>
+                        {t === "stake" ? (zh ? "质押" : "Stake") : (zh ? "解押" : "Unstake")}
+                      </button>
+                    ))}
+                  </div>
+
+                  {lockTab === "stake" && (
+                    <>
+                      {/* 质押数量 */}
+                      <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs text-slate-400">{zh ? "质押数量" : "Stake Amount"}</p>
+                          <p className="text-[10px] text-slate-400">{zh ? "余额：0 rGLD" : "Balance: 0 rGLD"}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input type="number" min="0" placeholder="0" value={stakingAmt}
+                            onChange={e => setStakingAmt(e.target.value)}
+                            className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0" />
+                          <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
+                            <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
+                            <span className="text-sm font-bold text-amber-700">rGLD</span>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 解押数量 */}
-                  <div className="bg-slate-50 rounded-2xl border border-slate-200 px-4 py-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-xs text-slate-400">{zh ? "解押数量" : "Unstake Amount"}</p>
-                      <p className="text-[10px] text-slate-400">{zh ? "已到期：2.5000 rGLD" : "Expired: 2.5000 rGLD"}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input type="number" min="0" placeholder="0" value={unstakeAmt}
-                        onChange={e => setUnstakeAmt(e.target.value)}
-                        className="flex-1 text-2xl font-semibold text-slate-400 bg-transparent outline-none w-0 min-w-0" />
-                      <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-2.5 py-1 shrink-0">
-                        <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[9px] text-white font-bold">G</div>
-                        <span className="text-sm font-bold text-amber-700">rGLD</span>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* 解押按钮 */}
-                  <button
-                    className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 ${
-                      !connected || !unstakeAmt || parseFloat(unstakeAmt) <= 0
-                        ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                        : "bg-slate-800 hover:bg-slate-900 text-white shadow-md"
-                    }`}
-                    disabled={!connected || !unstakeAmt || parseFloat(unstakeAmt) <= 0}
-                  >
-                    {!connected
-                      ? (zh ? "请先连接钱包" : "Connect Wallet First")
-                      : !unstakeAmt || parseFloat(unstakeAmt) <= 0
-                        ? (zh ? "输入解押数量" : "Enter Unstake Amount")
-                        : (zh ? `解押 ${unstakeAmt} rGLD` : `Unstake ${unstakeAmt} rGLD`)}
-                  </button>
-                  <p className="text-[10px] text-slate-400 text-center">
-                    {zh ? "提前解押将损失全部 Staking 累计收益" : "Early unstaking forfeits all accrued yield."}
-                  </p>
+                      {/* 锁仓周期 */}
+                      <div>
+                        <p className="text-xs text-slate-400 mb-2">{zh ? "锁仓周期" : "Lock Period"}</p>
+                        <div className="flex gap-2">
+                          {[30, 60, 90].map(d => (
+                            <button key={d} onClick={() => setStakingDays(d)}
+                              className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
+                                stakingDays === d ? "bg-amber-500 text-white shadow-sm shadow-amber-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                              }`}>
+                              {d}{zh ? " 天" : "D"}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* APY + 预估收益 */}
+                      <div className="bg-amber-50 rounded-2xl p-3.5 border border-amber-100">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-xl font-extrabold text-emerald-600 font-mono">~{STAKING_APY_LOCKED}%</span>
+                            <span className="text-xs text-slate-500">{zh ? "年化" : "APY"}</span>
+                            <div className="relative">
+                              <button onClick={() => setShowApyTooltip(v => !v)}
+                                className="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-500 text-[10px] font-bold transition-colors">?</button>
+                              {showApyTooltip && (
+                                <div className="absolute left-0 top-6 z-30 w-64 bg-slate-900 text-white text-xs rounded-2xl p-4 shadow-xl">
+                                  <p className="font-bold mb-1.5">{zh ? "锁仓收益机制" : "Locked Yield"}</p>
+                                  <p className="text-slate-300 leading-relaxed">
+                                    {zh
+                                      ? "锁仓期间 RWAlpha 将 GLD ETF 出借收益按 ~8% 年化分配。到期自动解锁，收益进入 Yield Vault。提前解押将损失全部累计收益，本金完整返还。"
+                                      : "During lock period, RWAlpha distributes GLD ETF securities lending income at ~8% APY. Auto-unlocks at maturity. Early exit forfeits all accrued yield; principal returned in full."}
+                                  </p>
+                                  <button onClick={() => setShowApyTooltip(false)} className="mt-2 text-slate-400 hover:text-white text-[10px]">✕ {zh ? "关闭" : "Close"}</button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[10px] text-slate-400 mb-0.5">{zh ? `预计收益 (${stakingDays}天)` : `Est. Yield (${stakingDays}D)`}</p>
+                            <p className="text-lg font-extrabold text-slate-900 font-mono">${stakingEstLocked}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95 ${
+                          !connected || !stakingAmt || parseFloat(stakingAmt) <= 0
+                            ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                            : "bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-200"
+                        }`}
+                        disabled={!connected || !stakingAmt || parseFloat(stakingAmt) <= 0}
+                      >
+                        <Lock size={14} />
+                        {!connected ? (zh ? "请先连接钱包" : "Connect Wallet First")
+                          : !stakingAmt || parseFloat(stakingAmt) <= 0 ? (zh ? "输入质押数量" : "Enter Stake Amount")
+                          : (zh ? `锁仓质押 ${stakingAmt} rGLD · ${stakingDays} 天` : `Lock Stake ${stakingAmt} rGLD · ${stakingDays}D`)}
+                      </button>
+                    </>
+                  )}
+
+                  {lockTab === "unstake" && (
+                    <>
+                      {/* 锁仓仓位列表 */}
+                      <div className="space-y-2">
+                        {MOCK_LOCKED_STAKES.map(s => (
+                          <div key={s.id} className={`rounded-2xl border px-4 py-3 ${
+                            s.status === "expired" ? "bg-slate-50 border-slate-200" : "bg-amber-50 border-amber-100"
+                          }`}>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <div className="flex items-baseline gap-1.5">
+                                <span className="text-base font-extrabold text-slate-900 font-mono">{s.amount.toFixed(4)}</span>
+                                <span className="text-amber-500 text-xs font-bold">rGLD</span>
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                  s.status === "expired" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                                }`}>
+                                  {s.status === "expired" ? (zh ? "✓ 可解押" : "✓ Unlocked") : (zh ? "锁仓中" : "Locked")}
+                                </span>
+                                <button
+                                  onClick={() => s.status === "active" ? setEarlyUnstakeConfirm(true) : undefined}
+                                  className={`text-xs font-bold px-2.5 py-1 rounded-xl transition-all ${
+                                    s.status === "expired"
+                                      ? "bg-slate-800 text-white hover:bg-slate-900"
+                                      : "bg-red-50 text-red-500 hover:bg-red-100 border border-red-100"
+                                  }`}>
+                                  {s.status === "expired" ? (zh ? "解押" : "Unstake") : (zh ? "提前解押" : "Early Exit")}
+                                </button>
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between text-[10px] text-slate-400">
+                              <span>{zh ? `锁仓 ${s.lockDays} 天 · 到期 ${s.endDate}` : `${s.lockDays}D Lock · Expires ${s.endDate}`}</span>
+                              <span className="text-emerald-600 font-semibold">{zh ? `累计 +$${s.accrued}` : `+$${s.accrued} accrued`}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[10px] text-slate-400 text-center">
+                        {zh ? "到期仓位可直接解押；提前解押将损失全部累计收益，本金完整返还" : "Expired stakes can be unstaked freely. Early exit forfeits yield; principal returned in full."}
+                      </p>
+                    </>
+                  )}
                 </div>
               )}
             </div>
